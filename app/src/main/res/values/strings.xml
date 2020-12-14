@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Seesame</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Seesame</string>
+    <string name="title_placeorder">Place Order</string>
+    <string name="title_myorders">My Orders</string>
+    <string name="title_Profile">Profile</string>
+
+
 </resources>
