@@ -6,17 +6,293 @@
     android:layout_height="match_parent"
     tools:context=".ui.dashboard.DashboardFragment">
 
-    <TextView
-        android:id="@+id/text_dashboard"
+
+
+
+    <LinearLayout
+        android:visibility="invisible"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:background="@drawable/search_border"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:adjustViewBounds="true"
+            android:paddingStart="6dp"
+            android:src="@drawable/search_icon" />
+
+        <EditText
+            android:id="@+id/edt_search_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Choose your Favourites"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:lines="1"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="#999999"
+            android:textSize="14sp" />
+
+
+
+
+        <ImageView
+
+            android:id="@+id/iv_clear_text"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/search_icon"
+            android:visibility="gone" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/layout_border"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <fragment
+
+            android:id="@+id/autocomplete_fragment"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            />
+
+    </LinearLayout>
+
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+        app:layout_constraintVertical_bias="0.07999998">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="700dp"
+            android:orientation="vertical">
+
+
+            // Location Layout
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:id="@+id/layout_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@drawable/layout_border"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_marginTop="@dimen/fab_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:src="@drawable/location" />
+
+                    <TextView
+                        android:id="@+id/tv_areaName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="@string/areaName"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <TextView
+
+                    android:id="@+id/tv_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="@string/address"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@drawable/layout_border"
+                android:fontFamily="@font/poppins"
+                android:drawableTint="@color/colorWhite"
+                android:textColorHint="@color/color_text"
+
+                android:textSize="16sp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:fontFamily="@font/poppins"
+                    android:backgroundTint="@color/colorWhite"
+                    android:id="@+id/edtTxt_foodPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="@dimen/text_16"
+                    android:editable="false"
+                    android:ems="10"
+                    android:hint="Price"
+                    android:inputType="number"
+                    android:paddingStart="10dp"
+                    android:textSize="@dimen/text_14" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            // Spinner time
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@drawable/layout_border"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+
+                <!-- Spinner Element -->
+                <Spinner
+                    android:id="@+id/spinner_expiretime"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@drawable/layout_border"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+
+                <!-- Spinner Element -->
+                <Spinner
+                    android:id="@+id/spinner_deliverypartner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@drawable/layout_border"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+
+                <!-- Spinner Element -->
+                <Spinner
+                    android:id="@+id/spinner_cuisines"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    />
+
+            </LinearLayout>
+
+            <Button
+               android:id="@+id/btn_placeorder"
+                android:textColor="@color/colorWhite"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="@dimen/text_16"
+                android:text="@string/plcordr"
+                android:background="@drawable/btn_gradient"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/max_padding"
+                android:layout_marginEnd="@dimen/max_padding"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"/>
+
+
+
+
+<!--
+            <Spinner
+                android:background="@drawable/layout_border"
+                android:layout_marginTop="20dp"
+                android:id="@+id/spinner_cuisines"
+                style="@style/spinner_style"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:popupElevation="0dp"
+                android:spinnerMode="dropdown" />-->
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+    <!--    <fragment
+            android:visibility="gone"
+            android:id="@+id/autocomplete_fragment"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />-->
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

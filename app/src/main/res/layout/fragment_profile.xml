@@ -1,22 +1,252 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:id="@+id/contraints_layout"
+    android:layout_height="match_parent">
 
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:progressBarStyleLarge"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:progress="50"
+        android:progressDrawable="@drawable/circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+<!--
+    <LinearLayout
+        android:id="@+id/layout_progressbar"
+        android:gravity="center"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/circular_layout"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:progressBarStyleLarge"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:progress="50"
+            android:progressDrawable="@drawable/circle" />
+
+    </LinearLayout>-->
+
+
+
+
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_restprfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@drawable/facebk_bg"
+                android:fontFamily="@font/poppins"
+                android:text="@string/rst"
+                android:textColor="@color/white"
+                android:textSize="@dimen/fab_margin"
+                android:visibility="gone" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:background="@drawable/bg_gradient"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <!--<com.mikhaellopez.circularimageview.CircularImageView
+                    android:layout_gravity="center"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/facemimge"
+                    app:civ_border_color="@color/colorPrimary"
+                    app:civ_border_width="4dp"
+                    app:civ_shadow="true"
+                    app:civ_shadow_color="@color/colorPrimary"
+                    app:civ_shadow_radius="5dp" />-->
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/user_profilepic"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/deafultprofilepic"
+                    app:civ_border_color="@color/colorWhite"
+                    app:civ_border_width="4dp"
+                    app:civ_shadow="true"
+                    app:civ_shadow_color="@color/color_text"
+                    app:civ_shadow_radius="5dp" />
+                <EditText
+                    android:id="@+id/edt_username"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="@font/poppins"
+                    android:gravity="center"
+                    android:text="@string/username"
+                    android:textColor="@color/colorWhite"
+                    android:textCursorDrawable="@color/white"
+                    android:textSize="@dimen/text_16"></EditText>
+
+
+
+
+            </LinearLayout>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/top_margin">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_mobileno"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:fontFamily="@font/poppins"
+                    android:hint="@string/mobileNo"
+                    android:textSize="@dimen/text_14" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:visibility="gone">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_fullname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:fontFamily="@font/poppins"
+                    android:hint="@string/name"
+                    android:textSize="@dimen/fab_margin" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/top_margin">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:editable="false"
+                    android:id="@+id/edt_emailId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:fontFamily="@font/poppins"
+                    android:hint="@string/hintemail"
+                    android:textSize="@dimen/text_14" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="@dimen/fab_margin">
+
+
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:layout_marginEnd="@dimen/dp_32"
+                    android:divider="@color/colorWhite" />
+
+
+                <!--      <EditText
+                     android:paddingLeft="50dp"
+                     android:drawableRight="@drawable/arrow"
+                     android:textSize="@dimen/text_16"
+                     android:textColor="@color/colorBlack"
+                     android:fontFamily="@font/poppins_medium"
+                     android:text="@string/help"
+                     android:id="@+id/edt_help"
+                     android:layout_width="fill_parent"
+                     android:layout_height="30dp"
+                     android:background="@android:color/transparent" >
+                 </EditText>-->
+
+                <!--     <TextView
+                     android:drawablePadding="40dp"
+                     android:layout_marginStart="20dp"
+                     android:id="@+id/txt_abtus"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="16dp"
+                     android:drawableRight="@drawable/arrow"
+                     android:gravity="center_vertical"
+                     android:onClick="txt_abtus"
+                     android:text="@string/help"
+                     android:textColor="@color/colorBlack" />-->
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
     </ScrollView>
 
 
+    <Button
+        android:onClick="Onclick_logout"
+        android:id="@+id/btn_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="70dp"
+        android:background="@drawable/logout_btnbg"
+        android:fontFamily="@font/poppins_medium"
+        android:text="@string/logout"
+        android:textColor="@color/colorRed"
+        android:textSize="@dimen/text_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

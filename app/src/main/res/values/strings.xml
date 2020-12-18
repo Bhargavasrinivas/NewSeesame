@@ -1,9 +1,46 @@
 <resources>
     <string name="app_name">Seesame</string>
     <string name="title_home">Seesame</string>
-    <string name="title_placeorder">Place Order</string>
+    <string name="title_placeorder">Post Free Ads</string>
     <string name="title_myorders">My Orders</string>
-    <string name="title_Profile">Profile</string>
+    <string name="title_Profile">Account</string>
+   <!-- <string name="page_text_1">CODE</string>-->
+    <string name="page_text_1">Share and Save</string>
+    <string name="page_text_2">Why not share the delivery fee , small savings do make a difference</string>
+    <string name="page_text_3">SLEEP</string>
+    <string name="become_member_text">Terms of Service</string>
+    <string name="on_boarding_login_button_text">Member\'s Login</string>
+    <string name="above_login_button_text">Already a club member?</string>
+    <string name="free_account">By signing up, you agree to our </string>
+    <string name="terms_conditions"><![CDATA[I accept the Terms & Conditions]]></string>
+    <string name="and">and</string>
+    <string name="policy">Privacy Policy</string>
+    <string name="google">continue with google</string>
+    <string name="facebk">continue with facebook</string>
+    <string name="twitter">continue with twitter</string>
+    <string name="name">Name</string>
+    <string name="hintemail">Email ID</string>
+    <string name="mobileNo">Mobile No</string>
+    <string name="rst">Reset</string>
+    <string name="username">User Name</string>
+    <string name="help">Help</string>
+    <string name="logout">Logout</string>
+    <string name="areaName">Kuvempu Nagara</string>
+    <string name="address">#741, $th Main, Adhichunachangiri Road Mysore</string>
+    <string name="logoutmsg">Are you sure want to logout from account ?</string>
+    <string name="api_key">AIzaSyAW0FlOWDg1vtzZaYSLSvVKJaYCRHdp1rs</string>
+    <string name="craving">What are you craving?</string>
 
+    <string name="act">Accept</string>
+    <string name="dumy_title">Hotel Name</string>
+    <string name="orderplc">Place Oder</string>
+    <string name="resturnt">Choose resturnt</string>
+    <string name="landmark">LamndMark</string>
+    <string name="flatno">FlatNo</string>
+    <string name="plcordr">Place Order</string>
+    <string name="facebook_app_id">204658317922817</string>
+    <string name="fb_login_protocol_scheme">fb204658317922817</string>
+    <!-- <string name="fb_login_protocol_scheme">fb140912210840040</string>-->
+    <string name="fbid">140912210840040</string>
 
 </resources>
