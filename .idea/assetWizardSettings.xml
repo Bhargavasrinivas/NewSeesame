@@ -48,7 +48,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\Lenovo\Desktop\Seesame\2.png" />
+                                                <entry key="imagePath" value="C:\Users\Lenovo\Desktop\Seesame\post.png" />
                                                 <entry key="opacityPercent" value="80" />
                                               </map>
                                             </option>
@@ -82,8 +82,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\Lenovo\Desktop\Seesame\2.png" />
-                                      <entry key="outputName" value="myorder" />
+                                      <entry key="imageAsset" value="C:\Users\Lenovo\Desktop\Seesame\post.png" />
+                                      <entry key="outputName" value="post" />
                                       <entry key="theme" value="CUSTOM" />
                                       <entry key="themeColor" value="333333" />
                                     </map>

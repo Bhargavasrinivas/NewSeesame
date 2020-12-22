@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.seesame.ui.dashboard.DashboardFragment"
+        android:name="com.seesame.ui.PostFreeAdd.PostFreeAddFragment"
         android:label="@string/title_placeorder"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.seesame.ui.notifications.NotificationsFragment"
+        android:name="com.seesame.ui.Myorders.MyorderFragment"
         android:label="@string/title_myorders"
         tools:layout="@layout/fragment_notifications" />
 

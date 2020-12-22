@@ -282,15 +282,15 @@ public class LoginActivity extends AppCompatActivity {
 
                             dbrefernce = FirebaseDatabase.getInstance().getReference("userSignup").child(userId);
 
-                            HashMap<String, String> userMap = new HashMap<>();
-                            userMap.put("id", userId);
-                            userMap.put("userName", userName);
-                            userMap.put("mailId", email);
-                            userMap.put("password", "Seesame@123$");
-                            userMap.put("imgUrl", imgUrl);
-                            userMap.put("mobileNo", "");
+                            HashMap<String, String> orderMap = new HashMap<>();
+                            orderMap.put("id", userId);
+                            orderMap.put("userName", userName);
+                            orderMap.put("mailId", email);
+                            orderMap.put("password", "Seesame@123$");
+                            orderMap.put("imgUrl", imgUrl);
+                            orderMap.put("mobileNo", "");
 
-                            dbrefernce.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            dbrefernce.setValue(orderMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
 

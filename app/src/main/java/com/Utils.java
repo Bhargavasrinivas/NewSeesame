@@ -15,4 +15,7 @@ public class Utils {
     public static String userprofilepic = "";
     public static String mobileNo = "";
     public static String userId = "";
+    public static double userlat;
+    public static double userlang;
+
 }

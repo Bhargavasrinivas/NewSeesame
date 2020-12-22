@@ -1,10 +1,14 @@
 package com.seesame.ui.profile;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +43,8 @@ import com.seesame.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.content.Context.ACTIVITY_SERVICE;
+
 
 public class ProfileFragment extends Fragment {
 
@@ -52,16 +58,16 @@ public class ProfileFragment extends Fragment {
     private ProgressBar progressBar;
     private FirebaseUser firebaseUser;
     String[] mobileArray = {"Help", "Privacy Policy", "Terms of Service"};
+    private String userId;
+    boolean onloadflag = false, datachangeflag = false;
 
     @SuppressLint("ResourceAsColor")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        progressBar = root.findViewById(R.id.progressBar);
-        progressBar.setMax(100);
-        progressBar.setProgress(20);
-
-
+        //   progressBar = root.findViewById(R.id.progressBar);
+        //progressBar.setMax(100);
+        //  progressBar.setProgress(20);
         initUi(root);
 
         ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(), R.layout.row_item, R.id.label, mobileArray);
@@ -72,32 +78,81 @@ public class ProfileFragment extends Fragment {
 
         readUsertInfo();
 
+
+        edt_username.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //    Toast.makeText(getActivity(), "Want change name", Toast.LENGTH_SHORT).show();
+
+                datachangeflag = true;
+
+                btn_logout.setText("UPDATE");
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                //  Toast.makeText(getActivity(), "Want change name", Toast.LENGTH_SHORT).show();
+
+
+            }
+        });
+
+
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
-                        getString(R.string.logoutmsg), Snackbar.LENGTH_LONG)
-                        .setAction("NO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
 
-                            }
-                        })
-                        .setAction("YES", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
+                if (btn_logout.getText().equals("UPDATE")) {
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("userSignup");
+                    reference.child("mobileNo").setValue("8892575075");
 
-                                FirebaseAuth.getInstance().signOut();
+                } else {
+
+                    Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
+                            getString(R.string.logoutmsg), Snackbar.LENGTH_LONG)
+                            .setAction("NO", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                }
+                            })
+                            .setAction("YES", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    FirebaseAuth.getInstance().signOut();
 
 
-                            }
-                        });
+                                    if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
+                                        ((ActivityManager) getActivity().getSystemService(ACTIVITY_SERVICE))
+                                                .clearApplicationUserData(); // note: it has a return value!
+                                    } else {
+                                        // use old hacky way, which can be removed
+                                        // once minSdkVersion goes above 19 in a few years.
+                                    }
 
-                snackBar.setActionTextColor(Color.RED);
+
+                                    //  final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                                    //    firebaseUser.child("myDb/awais@gmailcom/leftSpace").setValue("YourDateHere");
 
 
-                snackBar.show();
+                                }
+                            });
+
+                    snackBar.setActionTextColor(Color.RED);
+                    snackBar.show();
+
+
+                }
+
 
             }
         });
@@ -144,7 +199,10 @@ public class ProfileFragment extends Fragment {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("userSignup");
         reference.keepSynced(true);
 
+        //  reference.orderByChild("id").equalTo(Utils.userId).addListenerForSingleValueEvent(new ValueEventListener() {
+
         reference.orderByChild("id").equalTo(Utils.userId).addListenerForSingleValueEvent(new ValueEventListener() {
+
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -152,13 +210,16 @@ public class ProfileFragment extends Fragment {
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     edt_username.setText((CharSequence) snapshot1.child("userName").getValue());
                     edt_emailId.setText((CharSequence) snapshot1.child("mailId").getValue());
+                    userId = String.valueOf(snapshot1.child("id").getValue());
+
+                    //  Log.i("UserId ", String.valueOf(snapshot1.child("id").getValue()));
 
                     if ((!snapshot1.child("imgUrl").getValue().toString().isEmpty() || snapshot1.child("imgUrl").getValue().toString() != null)) {
                         Glide.with(getActivity()).load(snapshot1.child("imgUrl").getValue().toString()).into(user_profilepic);
                     }
                 }
 
-                progressBar.setVisibility(View.GONE);
+                //    progressBar.setVisibility(View.GONE);
 
             }
 
