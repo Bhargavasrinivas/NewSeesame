@@ -281,7 +281,7 @@ public class LoginActivity extends AppCompatActivity {
                             //  String token_id = FirebaseInstanceId.getInstance().getToken();
 
                             dbrefernce = FirebaseDatabase.getInstance().getReference("userSignup").child(userId);
-
+                            Utils.userId = userId;
                             HashMap<String, String> orderMap = new HashMap<>();
                             orderMap.put("id", userId);
                             orderMap.put("userName", userName);

@@ -63,12 +63,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:text="@string/areaName"
+                    android:text=""
                     android:textColor="@color/colorBlack"
                     android:textSize="@dimen/text_16"
                     android:textStyle="bold" />
 
             </LinearLayout>
+
+
+          <!--  android:text="@string/areaName"-->
 
             <TextView
                 android:id="@+id/tv_address"
@@ -78,9 +81,11 @@
                 android:layout_marginTop="-4dp"
                 android:layout_marginBottom="2dp"
                 android:fontFamily="@font/poppins_medium"
-                android:text="@string/address"
+                android:text=""
                 android:textStyle="normal" />
         </LinearLayout>
+
+      <!--  android:text="@string/address"-->
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"

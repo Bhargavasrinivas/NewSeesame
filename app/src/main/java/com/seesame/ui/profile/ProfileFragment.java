@@ -91,7 +91,7 @@ public class ProfileFragment extends Fragment {
 
                 datachangeflag = true;
 
-                btn_logout.setText("UPDATE");
+                //   btn_logout.setText("UPDATE");
 
             }
 
@@ -128,7 +128,7 @@ public class ProfileFragment extends Fragment {
                                 @Override
                                 public void onClick(View v) {
 
-                                    FirebaseAuth.getInstance().signOut();
+                                    //     FirebaseAuth.getInstance().signOut();
 
 
                                     if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
@@ -138,7 +138,6 @@ public class ProfileFragment extends Fragment {
                                         // use old hacky way, which can be removed
                                         // once minSdkVersion goes above 19 in a few years.
                                     }
-
 
                                     //  final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                                     //    firebaseUser.child("myDb/awais@gmailcom/leftSpace").setValue("YourDateHere");
@@ -163,8 +162,6 @@ public class ProfileFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 String value = (String) parent.getItemAtPosition(position);
-
-
                 Intent policy = new Intent(getActivity(), WebViewActivity.class);
                 policy.putExtra("PageInfo", value);
                 startActivity(policy);

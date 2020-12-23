@@ -60,12 +60,13 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
     private PostFreeAddViewModel dashboardViewModel;
     private Spinner spinner_expiretime, spinner_deliverypartner, spinner_cuisines;
     List<String> delveryPartnerList, timeList, cuisinesList;
-    private AutocompleteSupportFragment autocompleteFragment;
-    private TextView tv_areaName, tv_address;
+    private AutocompleteSupportFragment autocompleteFragment, autocomplete_pickupfragment;
+    private TextView tv_areaName, tv_address, tv_pickupareaName, tv_pickupaddress;
+    private View layout_pickuplocation, layout_resturntlocation;
     private EditText edtTxt_foodPrice;
     private Button btn_placeorder;
-    private String expiryTime = "a", deliverypartner, cuisines, areaName, userAddress, placeId, postalCode, currentDate, currentTime,
-            userName, userId;
+    private String expiryTime = "a", deliverypartner, cuisines, resturntName, userAddress, placeId, resturntPostalCode, locationpostalCode, currentDate, currentTime,
+            userName, userId, pickupAreaName, pickupAddress;
     private ProgressBar progressBar;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -76,7 +77,6 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
 
         initUI(root);
 
-        readUsertInfo();
 
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -85,7 +85,7 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
             }
         });
 
-        getAddresssbyLatlong(Utils.userlat, Utils.userlang);
+        //   getAddresssbyLatlong(Utils.userlat, Utils.userlang, "location");
 
         String apiKey = getString(R.string.api_key);
         Places.initialize(getActivity(), apiKey);
@@ -112,85 +112,40 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
 
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-       /* SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDatenew = dateFormat.format(cal.getTime());
-        // formattedDate have current date/time
-        // Toast.makeText(this, formattedDate, Toast.LENGTH_SHORT).show();
-        Log.i("DateFormate ", formattedDatenew);*/
-
-
         SimpleDateFormat simpleDateFormattime = new SimpleDateFormat("hh:mm a");
-        Log.i("timedataformata ", String.valueOf(simpleDateFormattime));
-
-        //   Log.i("currentDate", String.valueOf(currentTime));
-
         // Create a new PlacesClient instance
         PlacesClient placesClient = Places.createClient(getActivity());
 
 
-        //    ((EditText)autocompleteFragment.getView().findViewById(R.id.autocomplete_fragment)).setTextSize(10.0f);
-/*
-        Typeface face = Typeface.createFromAsset(getAssets(),
-                "fonts/epimodem.ttf");
-        ((EditText)placeAutocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input)).setTypeface(face);*/
-
-
-        /*EditText etPlace = (EditText)autocompleteFragment.getView().findViewById(R.id.autocomplete_fragment);
-        etPlace.setHint("Type your address");
-        etPlace.setHintTextColor(R.color.colorRed);*/
-
-        // autocompleteFragment.getView().setVisibility(View.INVISIBLE);
-        //  autocompleteFragment.getView().setB
-
-        // autocompleteFragment.setText("Choose your favourite");
-
         autocompleteFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        //  autocompleteFragment.getText(R.id.autocomplete_fragment);
 
         autocompleteFragment.setHint("Choose your favourite");
 
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.LAT_LNG, Place.Field.NAME));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.ID, Place.Field.LAT_LNG));
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
 
+
+                resturntName = place.getName();
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-
-
                 Log.i("WebUrl ", String.valueOf(place.getWebsiteUri()));
-
-
                 LatLng latLng = place.getLatLng();
                 String mStringLatitude = String.valueOf(latLng.latitude);
                 String mStringLongitude = String.valueOf(latLng.longitude);
-
                 Log.i("Latitude ", mStringLatitude);
-
                 Log.i("Longitutude ", mStringLongitude);
-
 
                 double latitude, longitutude;
                 latitude = Double.parseDouble(mStringLatitude);
                 longitutude = Double.parseDouble(mStringLongitude);
 
-                Utils.userlat = latitude;
-                Utils.userlang = longitutude;
+
                 //   getAddresssbyLatlong(latitude, longitutude);
                 //var latitude = place.geometry.location.lat();
-                getAddresssbyLatlong(latitude, longitutude);
+                getAddresssbyLatlong(latitude, longitutude, "resturntant");
             }
 
             @Override
@@ -198,6 +153,38 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
+
+
+        autocomplete_pickupfragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete_pickupfragment);
+        autocomplete_pickupfragment.setHint("Choose your pick up location");
+        autocomplete_pickupfragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.LAT_LNG));
+        autocomplete_pickupfragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                LatLng latLng = place.getLatLng();
+                String mStringLatitude = String.valueOf(latLng.latitude);
+                String mStringLongitude = String.valueOf(latLng.longitude);
+
+             /*   double pickuplatitude, pickuplatitude;
+                pickuplatitude = Double.parseDouble(mStringLatitude);
+                pickuplatitude = Double.parseDouble(mStringLongitude);*/
+
+                Utils.userlat = Double.parseDouble(mStringLatitude);
+                Utils.userlang = Double.parseDouble(mStringLongitude);
+
+                getAddresssbyLatlong(Utils.userlat, Utils.userlang, "location");
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+
+            }
+        });
+
+
+
+
+
 
 
 
@@ -219,7 +206,30 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
 
                 }*/
 
-                placeOrderApiCall();
+
+                if (edtTxt_foodPrice.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(), "Please enter price ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+                if (expiryTime.contains("Choose expriry time in min")) {
+                    Toast.makeText(getActivity(), "Please choose expiry time ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (deliverypartner.contains("Choose delivery partner")) {
+                    Toast.makeText(getActivity(), "Please choose delivery partner", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (cuisines.contains("Choose cuisines")) {
+                    Toast.makeText(getActivity(), "Please choose cuisines", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+                readUsertInfo();
 
 
             }
@@ -234,55 +244,6 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         spinner_expiretime.setOnItemSelectedListener(this);
         spinner_cuisines.setOnItemSelectedListener(this);
         spinner_deliverypartner.setOnItemSelectedListener(this);
-
-
-
-
-
-
-      /*  spinner_expiretime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-
-                Toast.makeText(getActivity(), parent.toString(), Toast.LENGTH_SHORT).show();
-
-
-
-
-*//*
-                if (selectionCurrent != position){
-                    // Your code here
-                    selectionCurrent = position;
-
-                    Toast.makeText(getActivity(), selectionCurrent, Toast.LENGTH_SHORT).show();
-                }*//*
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });*/
-
-/*
-
-        spinner_expiretime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                Toast.makeText(getActivity(), position, Toast.LENGTH_SHORT).show();
-
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-*/
 
 
         timeList = new ArrayList<>();
@@ -369,9 +330,15 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         edtTxt_foodPrice = view.findViewById(R.id.edtTxt_foodPrice);
         btn_placeorder = view.findViewById(R.id.btn_placeorder);
         progressBar = view.findViewById(R.id.progressBar);
+        layout_pickuplocation = view.findViewById(R.id.layout_pickuplocation);
+        layout_resturntlocation = view.findViewById(R.id.layout_resturntlocation);
+        tv_pickupareaName = view.findViewById(R.id.tv_pickupareaName);
+        tv_pickupaddress = view.findViewById(R.id.tv_pickupaddress);
+
+
     }
 
-    private void getAddresssbyLatlong(double lat, double lang) {
+    private void getAddresssbyLatlong(double lat, double lang, String data) {
 
         Geocoder geocoder;
         List<Address> addresses;
@@ -384,15 +351,30 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
             String country = addresses.get(0).getCountryName();
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName();
-            String data = addresses.get(0).getSubLocality();
+            String locality = addresses.get(0).getSubLocality();
             String data2 = addresses.get(0).getSubAdminArea();
 
-            tv_areaName.setText(addresses.get(0).getSubLocality());
-            tv_address.setText(addresses.get(0).getAddressLine(0));
 
-            areaName = addresses.get(0).getSubLocality();
-            userAddress = addresses.get(0).getAddressLine(0);
-            postalCode = addresses.get(0).getPostalCode();
+            if (data.contains("location")) {
+                layout_pickuplocation.setVisibility(View.VISIBLE);
+                tv_pickupareaName.setText(addresses.get(0).getSubLocality());
+                tv_pickupaddress.setText(addresses.get(0).getAddressLine(0));
+                pickupAreaName = addresses.get(0).getSubLocality();
+                pickupAddress = addresses.get(0).getAddressLine(0);
+                locationpostalCode = addresses.get(0).getPostalCode();
+            } else {
+                layout_resturntlocation.setVisibility(View.VISIBLE);
+                //   tv_areaName.setText(addresses.get(0).getSubLocality());
+                tv_areaName.setText(resturntName);
+                tv_address.setText(addresses.get(0).getAddressLine(0));
+                //resturntName = addresses.get(0).getSubLocality();
+                userAddress = addresses.get(0).getAddressLine(0);
+                resturntPostalCode = addresses.get(0).getPostalCode();
+                // postalCode = addresses.get(0).getPostalCode();
+            }
+
+
+
 
 
 
@@ -418,6 +400,8 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         String uniqueId = refernce.push().getKey();
 
         HashMap<String, String> orderMap = new HashMap<>();
+        orderMap.put("customerName", userName);
+        orderMap.put("customerUserId", userId);
         orderMap.put("orderId", uniqueId);
         orderMap.put("orderDate", currentDate);
         orderMap.put("orderTime", currentTime);
@@ -428,15 +412,13 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         orderMap.put("orderCategoryId", "1");
         orderMap.put("serviceSelecetd", deliverypartner);
         orderMap.put("orderStatus", "Pending");
-        orderMap.put("customerName", userName);
-        orderMap.put("customerUserId", userId);
         orderMap.put("customerChatId", "");
-        orderMap.put("deliveryPostalCode", postalCode);
+        orderMap.put("deliveryPostalCode", locationpostalCode);
         orderMap.put("deliverylatitude", String.valueOf(Utils.userlat));
         orderMap.put("deliverylongititude", String.valueOf(Utils.userlang));
         orderMap.put("deliveryPlaceId", "");
-        orderMap.put("deliveryAreaname", areaName);
-        orderMap.put("deliveryAddress", userAddress);
+        orderMap.put("deliveryAreaname", pickupAreaName);
+        orderMap.put("deliveryAddress", pickupAddress);
         orderMap.put("partnerName", "");
         orderMap.put("partnerUserId", "");
         orderMap.put("partnerChatId", "");
@@ -451,6 +433,11 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         orderMap.put("orderCancel", "");
         orderMap.put("orderAccepted", "");
         orderMap.put("orderCompleted", "");
+        orderMap.put("resturntName", resturntName);
+        orderMap.put("resturntAddress", userAddress);
+        orderMap.put("resturntPostalCode", "");
+
+
         refernce.child("Orders").push().setValue(orderMap);
         progressBar.setVisibility(View.GONE);
         Toast.makeText(getActivity(), "Add's sucessfully posted ", Toast.LENGTH_SHORT).show();
@@ -465,6 +452,8 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
     }
 
     private void readUsertInfo() {
+
+        String id = Utils.userId;
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -490,7 +479,7 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
 
                     Utils.userId = String.valueOf(snapshot1.child("id").getValue());
 
-
+                    placeOrderApiCall();
                    /* if ((!snapshot1.child("imgUrl").getValue().toString().isEmpty() || snapshot1.child("imgUrl").getValue().toString() != null)) {
                         Glide.with(getActivity()).load(snapshot1.child("imgUrl").getValue().toString()).into(user_profilepic);
                     }*/

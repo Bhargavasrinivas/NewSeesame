@@ -56,7 +56,7 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> {
         try {
 
             orderedMapList.get(position);
-            holder.tv_hotlename.setText(orderedMapList.get(position).get("deliveryAreaname"));
+            holder.tv_hotlename.setText(orderedMapList.get(position).get("resturntName"));
             holder.tv_price.setText(orderedMapList.get(position).get("orderPrice") + "$");
 
 
@@ -88,12 +88,16 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> {
                 int mins = (int) (differncetime / (1000 * 60)) % 60;
                 Log.i("ExpireTime ", String.valueOf(mins));
 
-                if (mins < 0) {
+
+                int differnceTime = expiryTime - mins;
+
+
+                if (differnceTime <= 0) {
                     holder.tv_expiretime.setText("Exprired");
                     holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
 
                 } else {
-                    int differnceTime = expiryTime - mins;
+
                     Log.i("GrandTime ", String.valueOf(differnceTime));
                     holder.tv_expiretime.setText("Exprires in " + differnceTime + " mins");
                 }

@@ -1,10 +1,14 @@
 package com.seesame.ui.Myorders;
 
+import android.app.ActivityManager;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.Adapters.MyorderAdpter;
 import com.Utils;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +33,8 @@ import com.seesame.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static android.content.Context.ACTIVITY_SERVICE;
 
 public class MyorderFragment extends Fragment {
 
@@ -55,7 +62,7 @@ public class MyorderFragment extends Fragment {
 
         initView(root);
 
-
+        getAllMyOrders();
         tablyout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -63,10 +70,26 @@ public class MyorderFragment extends Fragment {
                 switch (tab.getPosition()) {
                     case 0:
                         layout_myorders.setVisibility(View.VISIBLE);
-                        getAllOrders();
+                        // getAllMyOrders();
+                        if (orderedMapList.size() == 0) {
+
+                            Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
+                                    getString(R.string.noOrders), Snackbar.LENGTH_LONG);
+                            snackBar.show();
+
+
+                        }
                         break;
                     case 1:
                         layout_myorders.setVisibility(View.GONE);
+
+                        if (orderedMapList.size() == 0) {
+
+                            Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
+                                    getString(R.string.nodeliverredOrders), Snackbar.LENGTH_LONG);
+                            snackBar.show();
+
+                        }
                         break;
 
                 }
@@ -101,18 +124,19 @@ public class MyorderFragment extends Fragment {
     }
 
 
-    private void getAllOrders() {
+    private void getAllMyOrders() {
 
         orderedMapList = new ArrayList<HashMap<String, String>>();
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
-    //    reference.keepSynced(true);
+        //    reference.keepSynced(true);
         reference.orderByChild("customerUserId").equalTo(Utils.userId).addListenerForSingleValueEvent(new ValueEventListener() {
             // reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                progressBar.setVisibility(View.GONE);
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
 
                     // OrderList
@@ -153,6 +177,14 @@ public class MyorderFragment extends Fragment {
                     orderredMap.put("orderAccepted", String.valueOf(snapshot1.child("orderAccepted").getValue()));
                     orderredMap.put("orderCompleted", String.valueOf(snapshot1.child("orderCompleted").getValue()));
 
+                    orderredMap.put("resturntName", String.valueOf(snapshot1.child("resturntName").getValue()));
+                    orderredMap.put("resturntAddress", String.valueOf(snapshot1.child("resturntAddress").getValue()));
+                    orderredMap.put("resturntPostalCode", String.valueOf(snapshot1.child("resturntPostalCode").getValue()));
+
+
+
+
+
                   /*  if (!snapshot1.child("customerUserId").getValue().equals(Utils.userId)) {
 
                         orderedMapList.add(orderredMap);
@@ -160,12 +192,21 @@ public class MyorderFragment extends Fragment {
                     orderedMapList.add(orderredMap);
                 }
 
+                if (orderedMapList.size() == 0) {
+
+                    Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
+                            getString(R.string.noOrders), Snackbar.LENGTH_LONG);
+                    snackBar.show();
+
+
+                }
+
+
                 recyclerView_myorders.setLayoutManager(new LinearLayoutManager(getActivity()));
                 recyclerView_myorders.setHasFixedSize(true);
                 myorderAdpter = new MyorderAdpter(getActivity(), orderedMapList);
                 recyclerView_myorders.setAdapter(myorderAdpter);
 
-                progressBar.setVisibility(View.GONE);
 
             }
 

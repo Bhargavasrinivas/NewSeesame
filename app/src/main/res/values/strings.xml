@@ -4,7 +4,7 @@
     <string name="title_placeorder">Post Free Ads</string>
     <string name="title_myorders">My Orders</string>
     <string name="title_Profile">Account</string>
-   <!-- <string name="page_text_1">CODE</string>-->
+    <!-- <string name="page_text_1">CODE</string>-->
     <string name="page_text_1">Share and Save</string>
     <string name="page_text_2">Why not share the delivery fee , small savings do make a difference</string>
     <string name="page_text_3"> Form a group</string>
@@ -42,5 +42,16 @@
     <string name="fb_login_protocol_scheme">fb204658317922817</string>
     <!-- <string name="fb_login_protocol_scheme">fb140912210840040</string>-->
     <string name="fbid">140912210840040</string>
+    <string name="noOrders">You have not placed any order yet</string>
+    <string name="nodeliverredOrders">You have not placed any order yet</string>
+    <string name="title_activity_user_list">UserListActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
 </resources>
