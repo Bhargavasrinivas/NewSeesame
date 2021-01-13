@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.service.autofill.UserData;
 import android.view.Window;
 import android.webkit.WebView;
 
@@ -23,14 +24,14 @@ public class WebViewActivity extends AppCompatActivity {
         initViews();
 
         weburlCall(pageData);
-      //  webview.loadUrl("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/terms-conditions.html?alt=media&token=e08057e9-569a-47bf-b343-8cbbe2b83506");
+        //  webview.loadUrl("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/terms-conditions.html?alt=media&token=e08057e9-569a-47bf-b343-8cbbe2b83506");
     }
 
 
     private void initViews() {
         webview = findViewById(R.id.webview);
         Intent info = getIntent();
-        pageData =info.getExtras().getString("PageInfo");
+        pageData = info.getExtras().getString("PageInfo");
     }
 
 
@@ -51,6 +52,13 @@ public class WebViewActivity extends AppCompatActivity {
                 webview.loadUrl("https://www.budgetworkwear.com.au/pages/embroidery-1");
                 break;
 
+            case "Ratings":
+
+                Intent login = new Intent(getApplication(), UserrateListActivity.class);
+                startActivity(login);
+                finish();
+
+                break;
 
             case "login":
               /*  Intent login = new Intent(WebviewActivity.this, LoginActivity.class);

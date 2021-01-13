@@ -6,6 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".ui.Myorders.MyorderFragment">
 
+
+    <LinearLayout
+        android:id="@+id/layout_noorders"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tablyout">
+
+        <ImageView
+            android:id="@+id/img_norders"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:src="@drawable/emptyorderimg" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text="@string/orderempty"
+            android:textSize="@dimen/text_16" />
+
+    </LinearLayout>
+
+
     <LinearLayout
         android:id="@+id/layout_myorders"
         android:layout_width="0dp"
@@ -21,7 +52,15 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_myorders"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="36dp" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_ordersCompleted"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="36dp" />
 
 
     </LinearLayout>
@@ -38,6 +77,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tv_noorder"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:fontFamily="@font/poppins_medium"
+        android:gravity="center"
+        android:text="@string/nocompletdrdr"
+        android:textSize="@dimen/text_16"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tablyout" />
 
 
     <TextView
@@ -68,7 +122,7 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pending Orders" />
+            android:text="Order History" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"

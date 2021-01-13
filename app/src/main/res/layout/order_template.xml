@@ -15,18 +15,71 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp">
+            android:layout_height="wrap_content">
+
+
+          <!--  Price View-->
 
 
             <!-- Accept View-->
 
             <LinearLayout
-
-                android:gravity="center"
                 android:layout_marginTop="5dp"
+                android:layout_marginStart="10dp"
+                android:weightSum="3"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
+                app:layout_constraintVertical_bias="0.0">
+
+                <TextView
+
+                    android:paddingLeft="3dp"
+                    android:textSize="@dimen/text_14"
+                    android:id="@+id/tv_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.75"
+                    android:fontFamily="@font/poppins"
+                    android:text="10.5$">
+
+                </TextView>
+
+                <ImageView
+                    android:layout_weight="0.5"
+                    android:src="@drawable/chatclr"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp">
+
+                </ImageView>
+
+
+                <TextView
+                    android:id="@+id/tv_chat"
+                    android:textColor="@color/txt_color"
+                    android:fontFamily="@font/poppins"
+                    android:layout_weight="0.75"
+                    android:text="Chat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+
                 android:layout_width="75dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="45dp"
+                android:gravity="center"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -35,20 +88,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_hotlename"
                 app:layout_constraintVertical_bias="0.65999997">
 
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:src="@drawable/arrow"
-                    android:visibility="gone" />
+
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/btn_accept"
-                    android:textSize="@dimen/text_14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins"
                     android:text="@string/act"
                     android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_14"
                     android:textStyle="bold" />
 
 
@@ -74,9 +124,10 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_hotlename" />
 
             <LinearLayout
+
                 android:id="@+id/linearLayout5"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:orientation="horizontal"
                 android:weightSum="3"
@@ -97,27 +148,25 @@
 
                 </TextView>
 
+                <ImageView
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/clock"
+                    android:layout_width="20dp"
+                    android:layout_height="15dp"/>
+
+
                 <TextView
+                    android:layout_weight="1"
                     android:textSize="@dimen/text_14"
                     android:id="@+id/tv_expiretime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:fontFamily="@font/poppins"
                     android:text="Expries in 20 mins">
 
                 </TextView>
 
-                <TextView
-                    android:textSize="@dimen/text_14"
-                    android:id="@+id/tv_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/poppins"
-                    android:text="10.5$">
-
-                </TextView>
 
             </LinearLayout>
 
@@ -128,7 +177,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="20dp"
                 android:fontFamily="@font/poppins_medium"
                 android:text="@string/dumy_title"
                 android:textColor="@color/colorBlack"

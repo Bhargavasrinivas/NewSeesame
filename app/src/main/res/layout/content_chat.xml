@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+    <ImageButton
+        android:id="@+id/btn_orderacpt"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/circular_layout"
+        android:fontFamily="@font/poppins"
+        android:src="@drawable/accpt"
+        android:textColor="@color/colorWhite"
+        android:textSize="6sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <TextView
+
+            android:id="@+id/tv_ordrcancel"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text="Cancel"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_16" />
+
+
+        <TextView
+            android:id="@+id/tv_orderacpt"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text="Accept"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_16" />
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:id="@+id/bottom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/chatbox_bg"
+        android:padding="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toStartOf="@+id/btn_orderacpt"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:id="@+id/text_send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/btn_send"
+            android:background="@android:color/transparent"
+            android:hint="Type a message" />
+
+        <ImageButton
+            android:id="@+id/btn_send"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/circular_layout"
+            android:src="@drawable/arrowt" />
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclervw"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

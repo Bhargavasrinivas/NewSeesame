@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.Adapters.CompletedOrderAdpter;
 import com.Adapters.MyorderAdpter;
 import com.Utils;
 import com.google.android.material.snackbar.Snackbar;
@@ -32,6 +35,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.seesame.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import static android.content.Context.ACTIVITY_SERVICE;
@@ -40,12 +45,17 @@ public class MyorderFragment extends Fragment {
 
     private MyordersViewModel notificationsViewModel;
     TabLayout tablyout;
-    RecyclerView recyclerView_myorders;
-    View layout_myorders;
+    RecyclerView recyclerView_myorders, recyclerView_ordersCompleted;
+    View layout_myorders, layout_noorders;
     private MyorderAdpter myorderAdpter;
     private ArrayList<HashMap<String, String>> orderedMapList;
+    private ArrayList<HashMap<String, String>> orderedcompletedMapList;
     HashMap<String, String> orderredMap;
+    private CompletedOrderAdpter completedOrderAdpter;
     private ProgressBar progressBar;
+    private TextView tv_noorder;
+    private ImageView img_norders;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -63,37 +73,46 @@ public class MyorderFragment extends Fragment {
         initView(root);
 
         getAllMyOrders();
+
         tablyout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 
                 switch (tab.getPosition()) {
                     case 0:
+                        tv_noorder.setVisibility(View.GONE);
                         layout_myorders.setVisibility(View.VISIBLE);
+                        recyclerView_myorders.setVisibility(View.VISIBLE);
+                        recyclerView_ordersCompleted.setVisibility(View.GONE);
+
+                        Comparator c = Collections.reverseOrder();
+                        Collections.sort(orderedMapList, c);
                         // getAllMyOrders();
                         if (orderedMapList.size() == 0) {
 
-                            Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
-                                    getString(R.string.noOrders), Snackbar.LENGTH_LONG);
-                            snackBar.show();
+                            layout_noorders.setVisibility(View.VISIBLE);
 
-
+                          /*  Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
+                              getString(R.string.noOrders), Snackbar.LENGTH_LONG);
+                            snackBar.show();*/
                         }
                         break;
                     case 1:
-                        layout_myorders.setVisibility(View.GONE);
+                        layout_myorders.setVisibility(View.VISIBLE);
+                        recyclerView_myorders.setVisibility(View.GONE);
+                        recyclerView_ordersCompleted.setVisibility(View.VISIBLE);
+                        layout_noorders.setVisibility(View.GONE);
 
-                        if (orderedMapList.size() == 0) {
+                        if (orderedcompletedMapList.size() == 0) {
 
-                            Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
+                            tv_noorder.setVisibility(View.VISIBLE);
+                         /*   Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
                                     getString(R.string.nodeliverredOrders), Snackbar.LENGTH_LONG);
-                            snackBar.show();
-
+                            snackBar.show();*/
                         }
                         break;
 
                 }
-
 
             }
 
@@ -117,7 +136,11 @@ public class MyorderFragment extends Fragment {
 
         tablyout = view.findViewById(R.id.tablyout);
         recyclerView_myorders = view.findViewById(R.id.recyclerView_myorders);
+        recyclerView_ordersCompleted = view.findViewById(R.id.recyclerView_ordersCompleted);
         layout_myorders = view.findViewById(R.id.layout_myorders);
+        tv_noorder = view.findViewById(R.id.tv_noorder);
+        img_norders = view.findViewById(R.id.img_norders);
+        layout_noorders = view.findViewById(R.id.layout_noorders);
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setMax(100);
         progressBar.setProgress(20);
@@ -127,6 +150,10 @@ public class MyorderFragment extends Fragment {
     private void getAllMyOrders() {
 
         orderedMapList = new ArrayList<HashMap<String, String>>();
+
+        orderedcompletedMapList = new ArrayList<HashMap<String, String>>();
+
+
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
@@ -140,7 +167,6 @@ public class MyorderFragment extends Fragment {
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
 
                     // OrderList
-
                     orderredMap = new HashMap<>();
                     orderredMap.put("orderId", String.valueOf(snapshot1.child("orderId").getValue()));
                     orderredMap.put("orderDate", String.valueOf(snapshot1.child("orderDate").getValue()));
@@ -186,19 +212,29 @@ public class MyorderFragment extends Fragment {
 
 
                   /*  if (!snapshot1.child("customerUserId").getValue().equals(Utils.userId)) {
-
+                       orderedcompletedMapList
                         orderedMapList.add(orderredMap);
                     }*/
-                    orderedMapList.add(orderredMap);
+
+                    String status = String.valueOf(snapshot1.child("orderStatus").getValue());
+
+                    if (status.equalsIgnoreCase("Completed")) {
+                        orderedcompletedMapList.add(orderredMap);
+                    } else {
+                        orderedMapList.add(orderredMap);
+
+                    }
+
+
                 }
 
                 if (orderedMapList.size() == 0) {
 
-                    Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
+                 /*   Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
                             getString(R.string.noOrders), Snackbar.LENGTH_LONG);
-                    snackBar.show();
+                    snackBar.show();*/
 
-
+                    layout_noorders.setVisibility(View.VISIBLE);
                 }
 
 
@@ -206,6 +242,12 @@ public class MyorderFragment extends Fragment {
                 recyclerView_myorders.setHasFixedSize(true);
                 myorderAdpter = new MyorderAdpter(getActivity(), orderedMapList);
                 recyclerView_myorders.setAdapter(myorderAdpter);
+
+
+                recyclerView_ordersCompleted.setLayoutManager(new LinearLayoutManager(getActivity()));
+                recyclerView_ordersCompleted.setHasFixedSize(true);
+                completedOrderAdpter = new CompletedOrderAdpter(getActivity(), orderedcompletedMapList);
+                recyclerView_ordersCompleted.setAdapter(completedOrderAdpter);
 
 
             }

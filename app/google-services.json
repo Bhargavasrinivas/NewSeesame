@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "115208236281",
+    "firebase_url": "https://seesame-go-dutch-default-rtdb.firebaseio.com",
     "project_id": "seesame-go-dutch",
     "storage_bucket": "seesame-go-dutch.appspot.com"
   },

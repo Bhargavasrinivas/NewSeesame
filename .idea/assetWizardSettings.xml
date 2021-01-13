@@ -24,7 +24,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\Lenovo\AppData\Local\Temp\baseline_search_24.xml" />
+                                                <entry key="imagePath" value="C:\Users\Lenovo\AppData\Local\Temp\baseline_close_24.xml" />
                                                 <entry key="opacityPercent" value="80" />
                                               </map>
                                             </option>
@@ -36,7 +36,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/search/baseline_search_24.xml" />
+                                                <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/close/baseline_close_24.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -48,7 +48,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\Lenovo\Desktop\Seesame\post.png" />
+                                                <entry key="imagePath" value="C:\Users\Lenovo\Downloads\chat.png" />
                                                 <entry key="opacityPercent" value="80" />
                                               </map>
                                             </option>
@@ -81,11 +81,10 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\Lenovo\Desktop\Seesame\post.png" />
-                                      <entry key="outputName" value="post" />
+                                      <entry key="imageAsset" value="C:\Users\Lenovo\Downloads\chat.png" />
+                                      <entry key="outputName" value="close" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="333333" />
+                                      <entry key="themeColor" value="cc0727" />
                                     </map>
                                   </option>
                                 </PersistentState>

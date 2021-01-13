@@ -5,9 +5,6 @@
     android:layout_width="match_parent"
     android:id="@+id/contraints_layout"
     android:layout_height="match_parent">
-
-
-
 <!--
     <LinearLayout
         android:id="@+id/layout_progressbar"
@@ -49,45 +46,20 @@
 
 
         <LinearLayout
-
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <Button
-                android:id="@+id/btn_restprfile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:background="@drawable/facebk_bg"
-                android:fontFamily="@font/poppins"
-                android:text="@string/rst"
-                android:textColor="@color/white"
-                android:textSize="@dimen/fab_margin"
-                android:visibility="gone" />
-
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="230dp"
+                android:layout_height="wrap_content"
                 android:background="@drawable/bg_gradient"
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <!--<com.mikhaellopez.circularimageview.CircularImageView
-                    android:layout_gravity="center"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/facemimge"
-                    app:civ_border_color="@color/colorPrimary"
-                    app:civ_border_width="4dp"
-                    app:civ_shadow="true"
-                    app:civ_shadow_color="@color/colorPrimary"
-                    app:civ_shadow_radius="5dp" />-->
 
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_marginTop="10dp"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/user_profilepic"
                     android:layout_width="100dp"
@@ -100,18 +72,59 @@
                     app:civ_shadow="true"
                     app:civ_shadow_color="@color/color_text"
                     app:civ_shadow_radius="5dp" />
-                <EditText
-                    android:id="@+id/edt_username"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:fontFamily="@font/poppins"
-                    android:gravity="center"
-                    android:text="@string/username"
-                    android:textColor="@color/colorWhite"
-                    android:textCursorDrawable="@color/white"
-                    android:textSize="@dimen/text_16"></EditText>
 
+                <LinearLayout
+                  android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:weightSum="1">
+
+
+                    <EditText
+
+                        android:id="@+id/edt_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:fontFamily="@font/poppins"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="@string/username"
+                        android:textColor="@color/colorWhite"
+                        android:textCursorDrawable="@color/white"
+                        android:textSize="@dimen/text_16" />
+                    <ImageView
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center"
+                        android:id="@+id/img_uname"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_weight="0.15"
+                        android:src="@drawable/checkwht" />
+
+
+
+
+                </LinearLayout>
+
+
+                <RatingBar
+                    android:progressTint="@color/white"
+                    android:scaleX=".5"
+                    android:scaleY=".5"
+                    android:id="@+id/rating_bar"
+                    android:layout_marginTop="10dp"
+                    android:numStars="5"
+                    android:stepSize="0.5"
+                    android:isIndicator="true"
+                     android:saveEnabled="true"
+                    android:layout_width="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="wrap_content">
+
+                </RatingBar>
 
 
 
@@ -119,7 +132,46 @@
 
 
 
-            <com.google.android.material.textfield.TextInputLayout
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                android:layout_width="match_parent"
+                android:layout_height="70dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_weight="0.75"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_mobileno"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:hint="@string/mobileNo"
+                        android:textSize="@dimen/text_14" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:layout_marginTop="30dp"
+                    android:id="@+id/img_mobile"
+                    android:visibility="gone"
+                    android:background="@drawable/checkclr"
+                    android:layout_weight="0.25"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"/>
+
+
+            </LinearLayout>
+
+
+      <!--      <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/top_margin">
@@ -134,6 +186,12 @@
                     android:hint="@string/mobileNo"
                     android:textSize="@dimen/text_14" />
             </com.google.android.material.textfield.TextInputLayout>
+
+
+-->
+
+
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -175,7 +233,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="@dimen/fab_margin">
-
 
                 <ListView
                     android:id="@+id/listView"
@@ -222,17 +279,15 @@
 
 
     <Button
-        android:onClick="Onclick_logout"
         android:id="@+id/btn_logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="60dp"
         android:background="@drawable/logout_btnbg"
         android:fontFamily="@font/poppins_medium"
+        android:onClick="Onclick_logout"
         android:text="@string/logout"
-        android:textColor="@color/colorRed"
+        android:textColor="@color/txt_color"
         android:textSize="@dimen/text_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

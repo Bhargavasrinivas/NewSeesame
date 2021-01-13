@@ -17,31 +17,37 @@
             android:layout_width="match_parent"
             android:layout_height="120dp">
 
-
             <!-- Accept View-->
+
+            <ImageButton
+                android:id="@+id/img_closeOrder"
+                android:background="@drawable/circlegrey"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/close"
+                app:layout_constraintEnd_toEndOf="@+id/tv_hotlename"
+                app:layout_constraintTop_toTopOf="parent" />
+
 
             <LinearLayout
 
-                android:layout_width="75dp"
-                android:layout_height="40dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:gravity="center"
+                android:weightSum="3"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="25dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toBottomOf="@+id/tv_hotlename"
                 app:layout_constraintVertical_bias="0.65999997">
 
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:src="@drawable/arrow"
-                    android:visibility="gone" />
 
                 <TextView
+                    android:layout_weight="1"
                     android:id="@+id/btn_accept"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -50,6 +56,24 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/text_14"
                     android:textStyle="bold" />
+
+
+                <ImageView
+                    android:paddingLeft="15dp"
+                    android:layout_weight="1"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/chatclr" />
+
+
+                <TextView
+                    android:id="@+id/tv_chat"
+                    android:text="@string/cht"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+
+
 
 
             </LinearLayout>

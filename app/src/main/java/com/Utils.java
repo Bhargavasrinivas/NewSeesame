@@ -17,5 +17,5 @@ public class Utils {
     public static String userId = "";
     public static double userlat;
     public static double userlang;
-
+    public static boolean chatlist = false;
 }
