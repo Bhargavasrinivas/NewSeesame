@@ -42,6 +42,7 @@ public class UserrateListActivity extends AppCompatActivity {
     private ArrayList<RateModel> ratingList = new ArrayList<>();
     private RateModel rateModel;
     private UserRatelistAdpater userRatelistAdpater;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,13 @@ public class UserrateListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ratingList = new ArrayList<RateModel>();
         initView();
-        readUsertInfo();
+
+        Bundle b = getIntent().getExtras();
+        userId = b.getString("userId");
+
+
+        readUsertInfo(userId);
+
 
     }
 
@@ -83,7 +90,7 @@ public class UserrateListActivity extends AppCompatActivity {
     }
 
 
-    private void readUsertInfo() {
+    private void readUsertInfo(final String userId) {
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -92,7 +99,7 @@ public class UserrateListActivity extends AppCompatActivity {
 
         //  reference.orderByChild("id").equalTo(Utils.userId).addListenerForSingleValueEvent(new ValueEventListener() {
 
-        reference.orderByChild("id").equalTo(Utils.userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.orderByChild("id").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
 
 
             @Override
@@ -116,7 +123,7 @@ public class UserrateListActivity extends AppCompatActivity {
                 }
 
 
-                fetchRatings();
+                fetchRatings(userId);
                 //    progressBar.setVisibility(View.GONE);
 
             }
@@ -132,7 +139,7 @@ public class UserrateListActivity extends AppCompatActivity {
     }
 
 
-    private void fetchRatings() {
+    private void fetchRatings(String userId) {
 
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -140,7 +147,7 @@ public class UserrateListActivity extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Ratings");
         reference.keepSynced(true);
 
-        reference.orderByChild("userId").equalTo(Utils.userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -158,20 +165,17 @@ public class UserrateListActivity extends AppCompatActivity {
 
                 }
 
-                if(ratingList.size() == 0){
+                if (ratingList.size() == 0) {
 
-                 tv_nocomments.setVisibility(View.VISIBLE);
+                    tv_nocomments.setVisibility(View.VISIBLE);
 
-                }else {
+                } else {
                     tv_nocomments.setVisibility(View.GONE);
                     recyclervw_userratelist.setLayoutManager(new LinearLayoutManager(getApplication()));
                     recyclervw_userratelist.setHasFixedSize(true);
                     userRatelistAdpater = new UserRatelistAdpater(UserrateListActivity.this, ratingList);
                     recyclervw_userratelist.setAdapter(userRatelistAdpater);
                 }
-
-
-
 
 
             }

@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,14 +41,14 @@ public class UserListActivity extends AppCompatActivity {
     private ArrayList<HashMap<String, String>> userMapList;
     private String orderId,orderName;
     HashMap<String, String> userMap;
-
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initView();
 
         // Intent info = getIntent();
@@ -70,8 +72,9 @@ public class UserListActivity extends AppCompatActivity {
     }
 
     private void readallUsers(String orderId) {
-
-
+        progressBar.setMax(100);
+        progressBar.setProgress(20);
+        progressBar.setVisibility(View.VISIBLE);
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("OrderDeliveryAgentList");
         reference.keepSynced(true);
@@ -117,7 +120,7 @@ public class UserListActivity extends AppCompatActivity {
                 userListadapter = new UserListadapter(UserListActivity.this, userMapList, false);
                 recyclervw_userlist.setAdapter(userListadapter);
 
-
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -128,10 +131,22 @@ public class UserListActivity extends AppCompatActivity {
 
 
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     private void initView() {
 
         recyclervw_userlist = findViewById(R.id.recyclervw_userlist);
+        progressBar = findViewById(R.id.progressBar);
     }
 
 }

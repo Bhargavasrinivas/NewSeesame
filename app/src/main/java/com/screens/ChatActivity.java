@@ -65,7 +65,7 @@ public class ChatActivity extends AppCompatActivity {
     private MessageAdapter messageAdapter;
     private boolean listflag = false;
     APIService apiService;
-    private TextView tv_ordrcancel, tv_orderacpt;
+    private TextView tv_ordrcancel, tv_orderacpt, tv_ratings;
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String userKey = "userKey";
     SharedPreferences sharedpreferences;
@@ -103,17 +103,28 @@ public class ChatActivity extends AppCompatActivity {
         pagedata = b.getString("pageData");
         orderName = b.getString("orderName");
 
+        Log.i("SenderId ",senderId);
+        Log.i("receiverId ",receiverId);
+
+
+        Toast.makeText(getApplicationContext(), "PageData " + pagedata, Toast.LENGTH_SHORT).show();
+
 
         if (pagedata.equalsIgnoreCase("DeliveryAgent")) {
             this.setTitle("Chat" + "-" + b.getString("resturntName"));
         } else {
 
             this.setTitle("Chat" + "-" + orderName);
+            tv_ordrcancel.setVisibility(View.GONE);
+            tv_orderacpt.setVisibility(View.GONE);
+
         }
 
         if (!pagedata.equalsIgnoreCase("DeliveryAgent")) {
 
             btn_orderacpt.setVisibility(View.GONE);
+            tv_ordrcancel.setVisibility(View.GONE);
+            tv_orderacpt.setVisibility(View.GONE);
         }
 
         //    bundle.putString("pageData", "DeliveryAgent");
@@ -187,6 +198,9 @@ public class ChatActivity extends AppCompatActivity {
                                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
                                 reference.child(orderId).child("orderStatus").setValue("Accepted");
                                 reference.child(orderId).child("partnerUserId").setValue(senderId);
+                                Toast.makeText(getApplicationContext(), "Order has been succfully accepted", Toast.LENGTH_SHORT).show();
+                                finish();
+
 
                             }
                         });
@@ -203,49 +217,6 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                // Change the Order Status to Completed
-              /*  DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
-                reference.child(orderId).child("orderStatus").setValue("Completed");
-                reference.child(orderId).child("partnerUserId").setValue(senderId);*/
-                //  reference.child("mobileNo").setValue(edt_mobileno.getText().toString().trim());
-
-              /*  reference.child(orderId).child("partnerlatitude").setValue("Completed");
-                reference.child(orderId).child("partnerlongititude").setValue("Completed");
-                reference.child(orderId).child("partnerAreaName").setValue("Completed");
-                reference.child(orderId).child("partnerAddress").setValue("Completed");
-                reference.child(orderId).child("orderAccepted").setValue("Completed");*/
-
-
-          /*      final AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                final AlertDialog alert = builder.create();
-                builder.setTitle("Are you sure want accept this  Free add?")
-                        .setCancelable(false)
-
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                alert.dismiss();
-
-                            }
-                        })
-                        .setPositiveButton("Go", new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
-                                reference.child(orderId).child("orderStatus").setValue("Completed");
-                                reference.child(orderId).child("partnerUserId").setValue(senderId);
-                            }
-                        });
-
-
-                alert.show();*/
-
-             /*   Snackbar snackBar = Snackbar.make(getApplicationContext().findViewById(android.R.id.content),
-                        getString(R.string.noOrders), Snackbar.LENGTH_LONG);
-                snackBar.show();*/
-
-                //   Toast.makeText(getApplication(), "Clicked on Me ", Toast.LENGTH_SHORT).show();
                 Snackbar snackBar = Snackbar.make(parentLayout.findViewById(android.R.id.content),
                         getString(R.string.acctporder), Snackbar.LENGTH_LONG)
                         .setAction("NO", new View.OnClickListener() {
@@ -272,6 +243,39 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+
+        tv_ratings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if (pagedata.equalsIgnoreCase("DeliveryAgent")) {
+
+                    intent(receiverId);
+
+                }else {
+                    intent(receiverId);
+
+                }
+
+
+
+
+            }
+        });
+
+
+    }
+
+    private void intent(String userId){
+
+        Intent ratingList = new Intent(getApplication(), UserrateListActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("userId",userId);
+        ratingList.putExtras(bundle);
+        startActivity(ratingList);
+        finish();
+
     }
 
 
@@ -283,6 +287,8 @@ public class ChatActivity extends AppCompatActivity {
         btn_orderacpt = findViewById(R.id.btn_orderacpt);
         tv_ordrcancel = findViewById(R.id.tv_ordrcancel);
         tv_orderacpt = findViewById(R.id.tv_orderacpt);
+        tv_ratings = findViewById(R.id.tv_ratings);
+
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
 
@@ -314,6 +320,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
     }
+
 
     private void readallMessage() {
         mchat = new ArrayList<>();

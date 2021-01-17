@@ -82,9 +82,9 @@
                                   <option name="values">
                                     <map>
                                       <entry key="imageAsset" value="C:\Users\Lenovo\Downloads\chat.png" />
-                                      <entry key="outputName" value="close" />
+                                      <entry key="outputName" value="closewt" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="cc0727" />
+                                      <entry key="themeColor" value="ffffff" />
                                     </map>
                                   </option>
                                 </PersistentState>

@@ -320,38 +320,14 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
 
         timeList = new ArrayList<>();
         //  timeList.add("Choose expriry time");
+        timeList.add("15");
         timeList.add("30");
-        timeList.add("31");
-        timeList.add("32");
-        timeList.add("33");
-        timeList.add("34");
-        timeList.add("35");
-        timeList.add("36");
-        timeList.add("37");
-        timeList.add("38");
-        timeList.add("39");
-        timeList.add("40");
-        timeList.add("41");
-        timeList.add("42");
-        timeList.add("43");
-        timeList.add("44");
         timeList.add("45");
-        timeList.add("46");
-        timeList.add("47");
-        timeList.add("48");
-        timeList.add("49");
-        timeList.add("50");
-        timeList.add("51");
-        timeList.add("52");
-        timeList.add("53");
-        timeList.add("54");
-        timeList.add("55");
-        timeList.add("56");
-        timeList.add("57");
-        timeList.add("58");
-        timeList.add("59");
         timeList.add("60");
-
+        timeList.add("1 Day");
+        timeList.add("3 Day");
+        timeList.add("5 Day");
+        timeList.add("7 Day");
 
         delveryPartnerList = new ArrayList<>();
         //  delveryPartnerList.add("Choose delivery partner");
@@ -543,6 +519,8 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         orderMap.put("orderCancel", "");
         orderMap.put("orderAccepted", "");
         orderMap.put("orderCompleted", "");
+        orderMap.put("ownerRating", "false");
+        orderMap.put("partnerRating", "false");
 
 
         if (cuisines.contains("Groceries")) {
@@ -568,8 +546,8 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         MyorderFragment NAME = new MyorderFragment();
         fragmentTransaction.replace(R.id.nav_host_fragment, NAME);
         fragmentTransaction.commit();
-      //  NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.mobile_navigation);
-      //  navigationView.getMenu().getItem(2).setChecked(true);
+        //  NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.mobile_navigation);
+        //  navigationView.getMenu().getItem(2).setChecked(true);
         // navigationView.setCheckedItem(R.id.navigation_notifications);
 
     }

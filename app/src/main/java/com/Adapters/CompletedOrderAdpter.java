@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.Utils;
 import com.screens.RatingActivity;
 import com.screens.UserListActivity;
 import com.seesame.R;
@@ -56,22 +57,29 @@ public class CompletedOrderAdpter extends RecyclerView.Adapter<CompletedOrderAdp
             holder.tv_hotlename.setText(orderedcompletedMapList.get(position).get("resturntName"));
             holder.tv_price.setText(orderedcompletedMapList.get(position).get("orderPrice") + "$");
 
-         //   holder.tv_expiretime.setText("Exprires in " + orderedcompletedMapList.get(position).get("expireTime") + "mins");
-
-
             holder.tv_expiretime.setText("Completed");
 
+            String customerUserId = orderedcompletedMapList.get(position).get("customerUserId");
+            String ownerating =  orderedcompletedMapList.get(position).get("ownerRating");
 
-            /*Calendar c = Calendar.getInstance();
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            currentDate = df.format(c.getTime());
+            //customerUserId
 
-            SimpleDateFormat timeFormate = new SimpleDateFormat("HH:mm:ss");
-            currentTime = timeFormate.format(new Date());
-            expiryTime = Integer.parseInt(orderedcompletedMapList.get(position).get("expireTime"));
+            if ((Utils.userId.equalsIgnoreCase(customerUserId) &&  ownerating.equalsIgnoreCase("true"))) {
 
-*/
-         //   orderTime = orderedcompletedMapList.get(position).get("orderTime");
+                holder.tv_rateUs.setVisibility(View.GONE);
+            }
+
+
+            String partnerId = orderedcompletedMapList.get(position).get("partnerUserId");
+
+             String partnerRating = orderedcompletedMapList.get(position).get("partnerRating");
+
+
+            if(( !partnerId.equalsIgnoreCase(Utils.userId) &&  orderedcompletedMapList.get(position).get("partnerRating").equalsIgnoreCase("ture")  ) ) {
+
+                holder.tv_rateUs.setVisibility(View.GONE);
+
+            }
 
 
 
@@ -88,10 +96,6 @@ public class CompletedOrderAdpter extends RecyclerView.Adapter<CompletedOrderAdp
                     bundle.putString("orderId", orderedcompletedMapList.get(position).get("orderId"));
                     orderinfo.putExtras(bundle);
                     context.startActivity(orderinfo);
-
-
-                    //   context.startActivity(new Intent(context, UserListActivity.class));
-
 
                 }
             });
@@ -126,7 +130,8 @@ public class CompletedOrderAdpter extends RecyclerView.Adapter<CompletedOrderAdp
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tv_hotlename, tv_distance, tv_expiretime, tv_price, tv_chat,tv_rateUs;
+        private TextView tv_hotlename, tv_distance, tv_expiretime, tv_price, tv_chat, tv_rateUs;
+        private View layout_main;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -138,6 +143,7 @@ public class CompletedOrderAdpter extends RecyclerView.Adapter<CompletedOrderAdp
             tv_rateUs = itemView.findViewById(R.id.tv_rateUs);
             tv_chat = itemView.findViewById(R.id.tv_chat);
             tv_hotlename = itemView.findViewById(R.id.tv_hotlename);
+            layout_main = itemView.findViewById(R.id.layout_main);
 
 
         }

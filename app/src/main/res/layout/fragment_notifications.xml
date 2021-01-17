@@ -7,6 +7,33 @@
     tools:context=".ui.Myorders.MyorderFragment">
 
 
+    <Spinner
+        android:id="@+id/orderSpinner"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintEnd_toStartOf="@+id/img_chats"
+        app:layout_constraintStart_toEndOf="@+id/img_filter"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_marginTop="10dp"
+        android:id="@+id/img_filter"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/fliter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:layout_marginTop="10dp"
+        android:id="@+id/img_chats"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/chaticon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/layout_noorders"
         android:layout_width="match_parent"
@@ -110,6 +137,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.tabs.TabLayout
+        android:layout_marginTop="30dp"
         android:id="@+id/tablyout"
         android:layout_width="430dp"
         android:layout_height="wrap_content"

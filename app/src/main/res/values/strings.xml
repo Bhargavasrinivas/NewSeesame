@@ -44,7 +44,7 @@
     <string name="fbid">140912210840040</string>
     <string name="noOrders">You have not placed any order yet</string>
     <string name="nodeliverredOrders">You have not placed any order yet</string>
-    <string name="title_activity_user_list">Delivery Agents</string>
+    <string name="title_activity_user_list">Chat List</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
@@ -57,7 +57,7 @@
     <string name="pickiplocation">Choose your Meetup location</string>
     <string name="title_activity_chat">Chat</string>
     <string name="cht">Chat</string>
-    <string name="title_activity_cuisinescategorie">CuisinescategorieActivity</string>
+    <string name="title_activity_cuisinescategorie">Categorie</string>
     <string name="rate">Rate your order</string>
     <string name="posttl">Post Free Ads</string>
     <string name="acctporder">Are you sure want accept this  Free add?</string>
@@ -71,7 +71,9 @@
     <string name="expirytimelbl">Choose expiry time</string>
     <string name="deliveryprtnrlbl">Choose delivery partner</string>
     <string name="cuisines">Choose cuisines</string>
-    <string name="title_activity_userrate_list">My Ratings</string>
+    <string name="title_activity_userrate_list">Ratings</string>
     <string name="noratings">"No Ratings found "</string>
+    <string name="action_settings">setting</string>
+    <string name="extndtime">Extend Expiretime</string>
 
 </resources>

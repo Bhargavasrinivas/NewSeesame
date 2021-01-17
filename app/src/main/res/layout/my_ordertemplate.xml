@@ -15,42 +15,41 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp">
+            android:layout_height="wrap_content">
 
             <!-- Accept View-->
 
             <ImageButton
+
                 android:id="@+id/img_closeOrder"
                 android:background="@drawable/circlegrey"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
-                android:src="@drawable/close"
+                android:src="@drawable/closewt"
                 app:layout_constraintEnd_toEndOf="@+id/tv_hotlename"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
             <LinearLayout
-
-                android:layout_marginStart="10dp"
-                android:weightSum="3"
+                android:id="@+id/linearLayout9"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal"
+                android:weightSum="3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toBottomOf="@+id/tv_hotlename"
-                app:layout_constraintVertical_bias="0.65999997">
-
-
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
+                app:layout_constraintVertical_bias="0.0">
                 <TextView
-                    android:layout_weight="1"
                     android:id="@+id/btn_accept"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:fontFamily="@font/poppins_medium"
                     android:text="@string/act"
                     android:textColor="@color/colorPrimary"
@@ -58,23 +57,24 @@
                     android:textStyle="bold" />
 
 
-                <ImageView
-                    android:paddingLeft="15dp"
-                    android:layout_weight="1"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:src="@drawable/chatclr" />
-
-
                 <TextView
                     android:id="@+id/tv_chat"
-                    android:text="@string/cht"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/chatclr"
+                    android:drawablePadding="5dp"
+                    android:text="@string/cht" />
 
 
-
-
+                <Switch
+                    android:id="@+id/switch_order"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="15dp"
+                    android:src="@drawable/chatclr" />
 
             </LinearLayout>
 
@@ -85,7 +85,7 @@
                 android:layout_height="20dp"
                 android:layout_marginStart="10dp"
                 android:orientation="horizontal"
-                android:weightSum="3"
+                android:weightSum="4"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -126,6 +126,9 @@
 
                 </TextView>
 
+
+
+
             </LinearLayout>
 
             <TextView
@@ -162,6 +165,45 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toTopOf="parent" />
+
+
+            <LinearLayout
+                android:gravity="center"
+                android:weightSum="2"
+                android:id="@+id/layout_expiretime"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="120dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/layout_border"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
+
+              <!--
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/layout_border"
+                    android:orientation="vertical">-->
+
+
+                    <!-- Spinner Element -->
+                    <Spinner
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/spinner_expiretime"
+                        android:layout_width="match_parent"
+                        android:layout_marginBottom="10dp"
+                        android:layout_height="40dp" />
+
+               <!-- </LinearLayout>-->
+
+            </LinearLayout>
 
 
             <androidx.cardview.widget.CardView

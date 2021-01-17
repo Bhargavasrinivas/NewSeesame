@@ -212,7 +212,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
+      //  Toast.makeText(getActivity(), "onStart Called ", Toast.LENGTH_SHORT).show();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
     }
 
@@ -517,5 +517,17 @@ public class HomeFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+      //  Toast.makeText(getActivity(), "onResume Called ", Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+     //   Toast.makeText(getActivity(), "onPause Called ", Toast.LENGTH_SHORT).show();
+
+    }
 }

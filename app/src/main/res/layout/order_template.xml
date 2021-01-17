@@ -51,16 +51,10 @@
 
                 </TextView>
 
-                <ImageView
-                    android:layout_weight="0.5"
-                    android:src="@drawable/chatclr"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp">
-
-                </ImageView>
-
 
                 <TextView
+                    android:drawablePadding="10dp"
+                    android:drawableLeft="@drawable/chatclr"
                     android:id="@+id/tv_chat"
                     android:textColor="@color/txt_color"
                     android:fontFamily="@font/poppins"

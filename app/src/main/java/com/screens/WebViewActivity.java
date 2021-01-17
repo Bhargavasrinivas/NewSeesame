@@ -8,7 +8,10 @@ import android.service.autofill.UserData;
 import android.view.Window;
 import android.webkit.WebView;
 
+import com.Utils;
 import com.seesame.R;
+
+import okhttp3.internal.Util;
 
 public class WebViewActivity extends AppCompatActivity {
 
@@ -55,6 +58,9 @@ public class WebViewActivity extends AppCompatActivity {
             case "Ratings":
 
                 Intent login = new Intent(getApplication(), UserrateListActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("userId", Utils.userId);
+                login.putExtras(bundle);
                 startActivity(login);
                 finish();
 
