@@ -37,6 +37,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.models.Chat;
 import com.seesame.Client;
 import com.seesame.Data;
@@ -61,7 +62,7 @@ public class ChatActivity extends AppCompatActivity {
     private EditText text_send;
     List<Chat> mchat;
     private DatabaseReference dbrefernce;
-    private String orderId, receiverId, senderId, pagedata, agentName, orderName;
+    private String orderId, receiverId, senderId, pagedata, agentName, orderName, cuisines, price, resturntName;
     private MessageAdapter messageAdapter;
     private boolean listflag = false;
     APIService apiService;
@@ -69,6 +70,9 @@ public class ChatActivity extends AppCompatActivity {
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String userKey = "userKey";
     SharedPreferences sharedpreferences;
+    FirebaseUser fuser;
+    private TextView tv_welcmmsg;
+    private View layout_wlcmmsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +83,9 @@ public class ChatActivity extends AppCompatActivity {
         final View parentLayout = findViewById(android.R.id.content);
 
         initView();
+
+
+        //     updateToken(FirebaseInstanceId.getInstance().getToken());
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         Utils.chatlist = sharedpreferences.getBoolean("mykey", true);
@@ -102,9 +109,29 @@ public class ChatActivity extends AppCompatActivity {
         senderId = b.getString("senderId");
         pagedata = b.getString("pageData");
         orderName = b.getString("orderName");
+        cuisines = b.getString("cuisines");
+        price = b.getString("price");
+        resturntName = b.getString("resturntName");
 
-        Log.i("SenderId ",senderId);
-        Log.i("receiverId ",receiverId);
+        Log.i("SenderId ", senderId);
+        Log.i("receiverId ", receiverId);
+
+//Thanks for taking a look at my request , am looking to share  <$50> for food order at <$restaurant name>. If you are interested please Accept the order by clicking the below button
+
+        if (cuisines.equalsIgnoreCase("Groceries")) {
+
+            String pricetxt = price + "$";
+
+            String msg = "Thanks for taking a look at my request , am looking to share " + pricetxt + " " + "for Groceries order from" + " " + resturntName + "  If you are interested please Accept the order by clicking the below  accept button";
+
+            tv_welcmmsg.setText(msg);
+
+        } else {
+            String pricetxt = price + "$";
+            String msg = "Thanks for taking a look at my request , am looking to share " + pricetxt + " " + "for food order at " + resturntName + " If you are interested please Accept the order by clicking the below  accept button";
+            tv_welcmmsg.setText(msg);
+
+        }
 
 
         Toast.makeText(getApplicationContext(), "PageData " + pagedata, Toast.LENGTH_SHORT).show();
@@ -112,12 +139,14 @@ public class ChatActivity extends AppCompatActivity {
 
         if (pagedata.equalsIgnoreCase("DeliveryAgent")) {
             this.setTitle("Chat" + "-" + b.getString("resturntName"));
+            tv_orderacpt.setVisibility(View.VISIBLE);
         } else {
 
             this.setTitle("Chat" + "-" + orderName);
             tv_ordrcancel.setVisibility(View.GONE);
             tv_orderacpt.setVisibility(View.GONE);
-
+            layout_wlcmmsg.setVisibility(View.GONE);
+            tv_orderacpt.setVisibility(View.GONE);
         }
 
         if (!pagedata.equalsIgnoreCase("DeliveryAgent")) {
@@ -233,6 +262,8 @@ public class ChatActivity extends AppCompatActivity {
                                 reference.child(orderId).child("orderStatus").setValue("Completed");
                                 reference.child(orderId).child("partnerUserId").setValue(senderId);
 
+                                deletingCategoriData(cuisines);
+
                             }
                         });
 
@@ -253,12 +284,10 @@ public class ChatActivity extends AppCompatActivity {
 
                     intent(receiverId);
 
-                }else {
+                } else {
                     intent(receiverId);
 
                 }
-
-
 
 
             }
@@ -267,11 +296,11 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    private void intent(String userId){
+    private void intent(String userId) {
 
         Intent ratingList = new Intent(getApplication(), UserrateListActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("userId",userId);
+        bundle.putString("userId", userId);
         ratingList.putExtras(bundle);
         startActivity(ratingList);
         finish();
@@ -288,6 +317,10 @@ public class ChatActivity extends AppCompatActivity {
         tv_ordrcancel = findViewById(R.id.tv_ordrcancel);
         tv_orderacpt = findViewById(R.id.tv_orderacpt);
         tv_ratings = findViewById(R.id.tv_ratings);
+        tv_welcmmsg = findViewById(R.id.tv_welcmmsg);
+        layout_wlcmmsg = findViewById(R.id.layout_wlcmmsg);
+
+        //tv_welcmmsg
 
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
@@ -412,5 +445,49 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void deletingCategoriData(String categorie) {
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
+        reference.keepSynced(true);
+        reference.orderByChild("categorieName").equalTo(categorie).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    //   edt_username.setText((CharSequence) snapshot1.child("userName").getValue());
+
+                    long count = (long) snapshot1.child("count").getValue();
+
+                    String categorieId = (String) snapshot1.child("id").getValue();
+
+                    Log.i("Count ", String.valueOf(count));
+
+
+                    //  if (count == 0) {
+
+                    count = count - 1;
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
+                    //  reference.child("mobileNo").setValue(edt_mobileno.getText().toString().trim());
+                    reference.child(categorieId).child("count").setValue(count);
+                    Log.i("CountIncrese ", String.valueOf(count));
+                    //   }
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
 
 }

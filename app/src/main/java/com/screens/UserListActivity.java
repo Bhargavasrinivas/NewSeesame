@@ -39,9 +39,10 @@ public class UserListActivity extends AppCompatActivity {
     private List<User> mUsers;
     private RecyclerView recyclervw_userlist;
     private ArrayList<HashMap<String, String>> userMapList;
-    private String orderId,orderName;
+    private String orderId, orderName, price, resturntName, cuisines;
     HashMap<String, String> userMap;
     private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,12 +60,20 @@ public class UserListActivity extends AppCompatActivity {
         senderId = b.getString("senderId");
         pagedata = b.getString("pageData");
 */
-       // OrderName
+        // OrderName
 
         Bundle b = getIntent().getExtras();
         orderId = b.getString("orderId");
 
         orderName = b.getString("OrderName");
+        price = b.getString("price");
+        resturntName = b.getString("resturntName");
+        cuisines = b.getString("cuisines");
+
+
+
+
+
         userMapList = new ArrayList<HashMap<String, String>>();
 
         mUsers = new ArrayList<>();
@@ -102,8 +111,6 @@ public class UserListActivity extends AppCompatActivity {
                     userMap.put("orderName", orderName);
 
 
-
-
                     userMapList.add(userMap);
 
 
@@ -117,7 +124,7 @@ public class UserListActivity extends AppCompatActivity {
 
                 recyclervw_userlist.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 recyclervw_userlist.setHasFixedSize(true);
-                userListadapter = new UserListadapter(UserListActivity.this, userMapList, false);
+                userListadapter = new UserListadapter(UserListActivity.this, userMapList, false,price,cuisines,orderName);
                 recyclervw_userlist.setAdapter(userListadapter);
 
                 progressBar.setVisibility(View.GONE);
@@ -131,6 +138,7 @@ public class UserListActivity extends AppCompatActivity {
 
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

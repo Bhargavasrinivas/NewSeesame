@@ -29,7 +29,7 @@
     <string name="address">#741, $th Main, Adhichunachangiri Road Mysore</string>
     <string name="logoutmsg">Are you sure want to logout from account ?</string>
     <string name="api_key">AIzaSyAW0FlOWDg1vtzZaYSLSvVKJaYCRHdp1rs</string>
-    <string name="craving">What are you craving?</string>
+    <string name="craving">Looking for specific Ad ?</string>
 
     <string name="act">Accept</string>
     <string name="dumy_title">Hotel Name</string>
@@ -75,5 +75,6 @@
     <string name="noratings">"No Ratings found "</string>
     <string name="action_settings">setting</string>
     <string name="extndtime">Extend Expiretime</string>
+    <string name="todayplan">What are you planning  today?</string>
 
 </resources>

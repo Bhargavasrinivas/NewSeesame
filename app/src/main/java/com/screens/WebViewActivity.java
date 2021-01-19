@@ -50,9 +50,15 @@ public class WebViewActivity extends AppCompatActivity {
             case "Privacy Policy":
                 webview.loadUrl("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/privacy-policy.html?alt=media&token=be657fcd-5160-4034-96f7-777bea45f391");
                 break;
-            case "Help":
+            case "Contact Us":
                 // https://www.budgetsafetywear.com.au/pages/embroidery-2
                 webview.loadUrl("https://www.budgetworkwear.com.au/pages/embroidery-1");
+                break;
+
+            case "FAQ's":
+
+                webview.loadUrl("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/privacy-policy.html?alt=media&token=be657fcd-5160-4034-96f7-777bea45f391");
+
                 break;
 
             case "Ratings":
@@ -65,6 +71,8 @@ public class WebViewActivity extends AppCompatActivity {
                 finish();
 
                 break;
+
+
 
             case "login":
               /*  Intent login = new Intent(WebviewActivity.this, LoginActivity.class);

@@ -65,11 +65,11 @@ import static android.content.ContentValues.TAG;
 public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private PostFreeAddViewModel dashboardViewModel;
-    private Spinner spinner_expiretime, spinner_deliverypartner, spinner_cuisines;
-    List<String> delveryPartnerList, timeList, cuisinesList;
+    private Spinner spinner_expiretime, spinner_deliverypartner, spinner_cuisines, spinner_groups;
+    List<String> delveryPartnerList, timeList, cuisinesList, groupList;
     private AutocompleteSupportFragment autocompleteFragment, autocomplete_pickupfragment;
-    private TextView tv_areaName, tv_address, tv_pickupareaName, tv_pickupaddress, tv_chsfav;
-    private View layout_pickuplocation, layout_resturntlocation, layout_restaurant;
+    private TextView tv_areaName, tv_address, tv_pickupareaName, tv_pickupaddress, tv_chsfav, tv_cuisineslbl;
+    private View layout_pickuplocation, layout_resturntlocation, layout_restaurant, layout_cuisines;
     private EditText edtTxt_foodPrice;
     private Button btn_placeorder;
     private ArrayAdapter deliverypartneradpter;
@@ -77,7 +77,7 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
     String completeaddressrestunrt, completeaddresslocation;
     private AutoCompleteTextView autoCompleteTextView;
     private String expiryTime = "a", deliverypartner, cuisines, resturntName, locationName, userAddress, placeId, resturntPostalCode, locationpostalCode, currentDate, currentTime,
-            userName, userId, pickupAreaName, pickupAddress, orderDateTime;
+            userName, userId, pickupAreaName, pickupAddress, orderDateTime, spinnerGroups;
     private ProgressBar progressBar;
     BottomNavigationView navigation;
 
@@ -195,7 +195,7 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         ImageView pickupSearch = pickUpView.findViewById(R.id.places_autocomplete_search_button);
         pickupSearch.setImageResource(R.drawable.search_icon);
 
-        autocomplete_pickupfragment.setHint("e.g.town or city");
+        autocomplete_pickupfragment.setHint("e.g.Block or Building");
 
         autocomplete_pickupfragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -316,7 +316,7 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         spinner_expiretime.setOnItemSelectedListener(this);
         spinner_cuisines.setOnItemSelectedListener(this);
         spinner_deliverypartner.setOnItemSelectedListener(this);
-
+        spinner_groups.setOnItemSelectedListener(this);
 
         timeList = new ArrayList<>();
         //  timeList.add("Choose expriry time");
@@ -348,6 +348,14 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         cuisinesList.add("Pizza and Subway");
         cuisinesList.add("Western");
 
+        groupList = new ArrayList<>();
+        groupList.add("Group Food");
+        groupList.add("Group Groceries");
+        groupList.add("Sell Homemade Products");
+
+        ArrayAdapter groupAdpter = new ArrayAdapter(getActivity(), R.layout.spinner_item, groupList);
+        groupAdpter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_groups.setAdapter(groupAdpter);
 
         ArrayAdapter timedpter = new ArrayAdapter(getActivity(), R.layout.spinner_item, timeList);
         timedpter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -383,7 +391,9 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         tv_pickupaddress = view.findViewById(R.id.tv_pickupaddress);
         layout_restaurant = view.findViewById(R.id.layout_restaurant);
         tv_chsfav = view.findViewById(R.id.tv_chsfav);
-
+        spinner_groups = view.findViewById(R.id.spinner_groups);
+        tv_cuisineslbl = view.findViewById(R.id.tv_cuisineslbl);
+        layout_cuisines = view.findViewById(R.id.layout_cuisines);
 
     }
 
@@ -541,11 +551,9 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         progressBar.setVisibility(View.GONE);
         Toast.makeText(getActivity(), "Add's sucessfully posted ", Toast.LENGTH_SHORT).show();
 
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        MyorderFragment NAME = new MyorderFragment();
-        fragmentTransaction.replace(R.id.nav_host_fragment, NAME);
-        fragmentTransaction.commit();
+        insertCategoriData(cuisines);
+
+
         //  NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.mobile_navigation);
         //  navigationView.getMenu().getItem(2).setChecked(true);
         // navigationView.setCheckedItem(R.id.navigation_notifications);
@@ -606,6 +614,32 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
 
             return;
         }
+
+
+        if (parent.getId() == R.id.spinner_groups) {
+            spinnerGroups = String.valueOf(parent.getItemAtPosition(position));
+
+            Log.i("spinnerGroups ", spinnerGroups);
+            spinner_deliverypartner.setSelection(0);
+            spinner_expiretime.setSelection(0);
+            if (spinnerGroups.equalsIgnoreCase("Group Groceries")) {
+
+                layout_cuisines.setVisibility(View.GONE);
+                tv_cuisineslbl.setVisibility(View.GONE);
+                spinnerdelivertpartnerGroceries();
+                cuisines = "Groceries";
+
+            } else {
+
+                layout_cuisines.setVisibility(View.VISIBLE);
+                tv_cuisineslbl.setVisibility(View.VISIBLE);
+                spinnerdelivertPartnerFood();
+            }
+
+            return;
+        }
+
+
         if (parent.getId() == R.id.spinner_cuisines) {
             cuisines = String.valueOf(parent.getItemAtPosition(position));
 
@@ -614,29 +648,10 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
             spinner_expiretime.setSelection(0);
 
             if (cuisines.equalsIgnoreCase("Groceries")) {
-
-                delveryPartnerList.clear();
-                //  delveryPartnerList.add("Choose delivery partner");
-                delveryPartnerList.add("Red mart");
-                delveryPartnerList.add("Fair prirce");
-                //   spinner_deliverypartner.setSelection(1);
-                deliverypartneradpter.notifyDataSetChanged();
-                layout_restaurant.setVisibility(View.GONE);
-                tv_chsfav.setVisibility(View.GONE);
-                deliverypartner = "Red mart";
+                spinnerdelivertpartnerGroceries();
             } else {
 
-                delveryPartnerList.clear();
-                //    delveryPartnerList.add("Choose delivery partner");
-                delveryPartnerList.add("A");
-                delveryPartnerList.add("B");
-                delveryPartnerList.add("C");
-                delveryPartnerList.add("D");
-                // spinner_deliverypartner.setSelection(1);
-                deliverypartneradpter.notifyDataSetChanged();
-                layout_restaurant.setVisibility(View.VISIBLE);
-                tv_chsfav.setVisibility(View.VISIBLE);
-                deliverypartner = "A";
+                spinnerdelivertPartnerFood();
             }
 
 
@@ -650,5 +665,80 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+
     }
+
+
+    private void insertCategoriData(String categorieName) {
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
+        reference.keepSynced(true);
+        reference.orderByChild("categorieName").equalTo(categorieName).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    //   edt_username.setText((CharSequence) snapshot1.child("userName").getValue());
+
+                    long count = (long) snapshot1.child("count").getValue();
+
+                    String categorieId = (String) snapshot1.child("id").getValue();
+
+                    Log.i("Count ", String.valueOf(count));
+
+
+                    //  if (count == 0) {
+
+                    count = count + 1;
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
+                    //  reference.child("mobileNo").setValue(edt_mobileno.getText().toString().trim());
+                    reference.child(categorieId).child("count").setValue(count);
+                    Log.i("CountIncrese ", String.valueOf(count));
+                    //   }
+
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    MyorderFragment NAME = new MyorderFragment();
+                    fragmentTransaction.replace(R.id.nav_host_fragment, NAME);
+                    fragmentTransaction.commit();
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+    private void spinnerdelivertpartnerGroceries() {
+        delveryPartnerList.clear();
+        delveryPartnerList.add("Red mart");
+        delveryPartnerList.add("Fair prirce");
+        deliverypartneradpter.notifyDataSetChanged();
+        layout_restaurant.setVisibility(View.GONE);
+        tv_chsfav.setVisibility(View.GONE);
+        deliverypartner = "Red mart";
+    }
+
+    private void spinnerdelivertPartnerFood() {
+        delveryPartnerList.clear();
+        //    delveryPartnerList.add("Choose delivery partner");
+        delveryPartnerList.add("A");
+        delveryPartnerList.add("B");
+        delveryPartnerList.add("C");
+        delveryPartnerList.add("D");
+        // spinner_deliverypartner.setSelection(1);
+        deliverypartneradpter.notifyDataSetChanged();
+        layout_restaurant.setVisibility(View.VISIBLE);
+        tv_chsfav.setVisibility(View.VISIBLE);
+        deliverypartner = "A";
+    }
+
 }

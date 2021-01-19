@@ -69,7 +69,7 @@ public class ProfileFragment extends Fragment {
     private FirebaseUser firebaseUser;
     private ImageView img_mobile, img_uname;
     private RatingBar rating_bar;
-    String[] mobileArray = {"Ratings", "Help", "Privacy Policy", "Terms of Service"};
+    String[] mobileArray = {"Ratings", "Contact Us","FAQ's","Privacy Policy", "Terms of Service"};
     private String userId, dbUserName;
     boolean onloadflag = false, datachangeflag = false;
     public static final String MyPREFERENCES = "MyPrefs";
@@ -96,7 +96,6 @@ public class ProfileFragment extends Fragment {
         ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(), R.layout.row_item, R.id.label, mobileArray);
         listView.setAdapter(adapter);
         constraintLayout = root.findViewById(R.id.constraintLayout);
-
 
         /*   Funcation call to fetch user details */
 

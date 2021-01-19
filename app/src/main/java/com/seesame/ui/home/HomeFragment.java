@@ -82,6 +82,7 @@ public class HomeFragment extends Fragment {
     private AutocompleteSupportFragment autocompleteFragment;
     LocationManager locationManager;
     private Double currentlatitude, currentlongitude;
+    private String cuisines;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -93,10 +94,13 @@ public class HomeFragment extends Fragment {
         String apiKey = getString(R.string.api_key);
         Places.initialize(getActivity(), apiKey);
 
+
         Bundle b = getActivity().getIntent().getExtras();
         currentlatitude = b.getDouble("lat");
         currentlongitude = b.getDouble("longi");
+        cuisines = b.getString("cuisines");
 
+        // Toast.makeText(getActivity(), "cuisines " + cuisines, Toast.LENGTH_SHORT).show();
 
         Utils.userlat = currentlatitude;
         Utils.userlang = currentlongitude;
@@ -212,7 +216,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-      //  Toast.makeText(getActivity(), "onStart Called ", Toast.LENGTH_SHORT).show();
+        //  Toast.makeText(getActivity(), "onStart Called ", Toast.LENGTH_SHORT).show();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
     }
 
@@ -441,7 +445,7 @@ public class HomeFragment extends Fragment {
         reference.keepSynced(true);
 
         reference.addValueEventListener(new ValueEventListener() {
-            //   reference.orderByChild("cuisines").equalTo("Groceries").addListenerForSingleValueEvent(new ValueEventListener() {
+            //  reference.orderByChild("cuisines").equalTo(cuisines).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -520,14 +524,14 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-      //  Toast.makeText(getActivity(), "onResume Called ", Toast.LENGTH_SHORT).show();
+        //  Toast.makeText(getActivity(), "onResume Called ", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-     //   Toast.makeText(getActivity(), "onPause Called ", Toast.LENGTH_SHORT).show();
+        //   Toast.makeText(getActivity(), "onPause Called ", Toast.LENGTH_SHORT).show();
 
     }
 }

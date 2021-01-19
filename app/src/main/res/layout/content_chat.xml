@@ -113,15 +113,53 @@
 
     </RelativeLayout>
 
+
+    <LinearLayout
+
+        android:weightSum="1"
+        android:layout_marginStart="@dimen/text_10"
+        android:layout_marginEnd="@dimen/text_10"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/chat_left"
+        android:id="@+id/layout_wlcmmsg"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/deafultprofilepic"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/deafultprofilepic"
+            android:layout_toStartOf="@+id/show_message" />
+
+        <TextView
+            android:id="@+id/tv_welcmmsg"
+            android:textSize="@dimen/text_12"
+            android:fontFamily="@font/poppins_medium"
+            android:layout_marginStart="8dp"
+            android:text="fvhdjfvb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclervw"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_wlcmmsg"
         app:layout_constraintVertical_bias="0.0" />
 
 

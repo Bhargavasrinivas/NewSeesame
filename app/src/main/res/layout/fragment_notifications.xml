@@ -11,28 +11,31 @@
         android:id="@+id/orderSpinner"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        app:layout_constraintEnd_toStartOf="@+id/img_chats"
+        android:layout_marginStart="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_filter"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:layout_marginTop="10dp"
         android:id="@+id/img_filter"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/fliter"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/newfilter"
+        app:layout_constraintStart_toEndOf="@+id/img_chats"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <ImageView
-        android:layout_marginTop="10dp"
         android:id="@+id/img_chats"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/chaticon"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/newchat"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <LinearLayout
         android:id="@+id/layout_noorders"

@@ -272,6 +272,11 @@
 
             </LinearLayout>
 
+
+
+
+
+
         </LinearLayout>
 
 
@@ -292,5 +297,22 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+
+    <LinearLayout
+        android:visibility="gone"
+       android:background="@color/colorPrimary"
+        android:id="@+id/layoutSignUp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="@dimen/default_margin"
+        android:layout_marginStart="-1dp"
+
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/scrollView2"
+        app:layout_constraintStart_toEndOf="@+id/scrollView2" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

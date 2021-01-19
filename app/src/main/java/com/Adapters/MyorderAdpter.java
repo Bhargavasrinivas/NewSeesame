@@ -25,8 +25,11 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.Utils;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.screens.ChatActivity;
 import com.screens.UserListActivity;
 import com.seesame.R;
@@ -45,7 +48,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
     private ArrayList<HashMap<String, String>> orderedMapList;
     private final static double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
     private double totalDistance;
-    private String currentDate, currentTime, orderTime;
+    private String currentDate, currentTime, orderTime,cuisines;
     private int expiryTime;
     List<String> timeList;
     private String spinnerVal;
@@ -76,6 +79,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
             holder.tv_price.setText(orderedMapList.get(position).get("orderPrice") + "$");
             holder.tv_expiretime.setText("Exprires in " + orderedMapList.get(position).get("expireTime") + "mins");
             holder.btn_accept.setText(orderedMapList.get(position).get("orderStatus"));
+
 
             holder.layout_expiretime.setVisibility(View.GONE);
             holder.switch_order.setVisibility(View.GONE);
@@ -190,6 +194,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                     holder.btn_accept.setText("Exprired");
                     holder.layout_expiretime.setVisibility(View.VISIBLE);
                     holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                    deletingCategoriData(orderedMapList.get(position).get("orderStatus"));
                     return;
 
                 }
@@ -213,6 +218,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                         String orderId = orderedMapList.get(position).get("orderId");
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
                         reference.child(orderId).child("orderStatus").setValue("Exprired");
+                        deletingCategoriData(orderedMapList.get(position).get("orderStatus"));
 
                     } else {
 
@@ -228,6 +234,11 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                             String orderId = orderedMapList.get(position).get("orderId");
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
                             reference.child(orderId).child("orderStatus").setValue("Exprired");
+
+                              deletingCategoriData(orderedMapList.get(position).get("orderStatus"));
+
+
+
                         } else {
 
                             int differnceTime = (int) (expiryTime - difference_In_Minutes);
@@ -240,6 +251,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                                 String orderId = orderedMapList.get(position).get("orderId");
                                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
                                 reference.child(orderId).child("orderStatus").setValue("Exprired");
+                                deletingCategoriData(orderedMapList.get(position).get("orderStatus"));
 
                             } else {
                                 // Log.i("GrandTime ", String.valueOf(differnceTime));
@@ -285,6 +297,9 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                         bundle.putString("senderId", orderedMapList.get(position).get("customerUserId"));
                         bundle.putString("pageData", "Customer");
                         bundle.putString("orderName", orderedMapList.get(position).get("orderName"));
+                        bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
+                        bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
+                        bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
                         userInfo.putExtras(bundle);
                         context.startActivity(userInfo);
 
@@ -301,6 +316,8 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                             Bundle bundle = new Bundle();
                             bundle.putString("orderId", orderedMapList.get(position).get("orderId"));
                             bundle.putString("OrderName", orderedMapList.get(position).get("resturntName"));
+                            bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
+                            bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
                             orderinfo.putExtras(bundle);
                             context.startActivity(orderinfo);
                         } else {
@@ -312,6 +329,9 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                             bundle.putString("senderId", orderedMapList.get(position).get("customerUserId"));
                             bundle.putString("pageData", "Customer");
                             bundle.putString("orderName", orderedMapList.get(position).get("orderName"));
+                            bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
+                            bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
+                            bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
                             userInfo.putExtras(bundle);
                             context.startActivity(userInfo);
                         }
@@ -498,8 +518,48 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
 
 
     }
+    private void deletingCategoriData(String categorie) {
 
-    ;
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
+        reference.keepSynced(true);
+        reference.orderByChild("categorieName").equalTo(categorie).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    //   edt_username.setText((CharSequence) snapshot1.child("userName").getValue());
+
+                    long count = (long) snapshot1.child("count").getValue();
+
+                    String categorieId = (String) snapshot1.child("id").getValue();
+
+                    Log.i("Count ", String.valueOf(count));
+
+
+                    //  if (count == 0) {
+
+                    count = count - 1;
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
+                    //  reference.child("mobileNo").setValue(edt_mobileno.getText().toString().trim());
+                    reference.child(categorieId).child("count").setValue(count);
+                    Log.i("CountIncrese ", String.valueOf(count));
+                    //   }
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
 
 
 }

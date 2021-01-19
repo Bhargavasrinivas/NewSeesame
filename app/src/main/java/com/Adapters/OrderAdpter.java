@@ -229,16 +229,17 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                     bundle.putString("orderTime", orderedMapList.get(position).get("orderTime"));
                     bundle.putString("orderPrice", orderedMapList.get(position).get("orderPrice"));
                     bundle.putString("deliveryPartner", orderedMapList.get(position).get("deliveryPartner"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
+                    bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
+                    bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
                     bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
 
-
+                   /* bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
+                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
+                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
+                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
+                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
+                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
+                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));*/
                     orderInfo.putExtras(bundle);
                     mContext.startActivity(orderInfo);
 

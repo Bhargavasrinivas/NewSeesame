@@ -11,12 +11,49 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/main_toolbar_layout"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="50dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:weightSum="3">
+
+
+
+            <ImageView
+                android:visibility="gone"
+                android:layout_weight="0"
+                android:id="@+id/regbackicon"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_alignBottom="@+id/txttilte"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="5dp"
+                android:onClick="btnback_OnClick"
+                android:src="@drawable/close" />
+
+            <TextView
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:id="@+id/txttilte"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Categories"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_marginEnd="@dimen/margin_8"
+                android:id="@+id/tv_skip"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Skip"
+                 />
+        </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 

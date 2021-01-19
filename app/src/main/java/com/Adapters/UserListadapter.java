@@ -34,26 +34,19 @@ public class UserListadapter extends RecyclerView.Adapter<UserListadapter.ViewHo
 
     private Context mContext;
     private boolean ischat;
-    String theLastMessage;
+    String theLastMessage,price,cuisines,orderName;
     private ArrayList<HashMap<String, String>> userMapList;
 
-    public UserListadapter(UserListActivity userListActivity, ArrayList<HashMap<String, String>> userMapList, boolean b) {
+    public UserListadapter(UserListActivity userListActivity, ArrayList<HashMap<String, String>> userMapList, boolean b, String price, String cuisines, String orderName) {
 
         this.mContext = userListActivity;
         this.userMapList = userMapList;
         this.ischat = b;
+        this.price = price;
+        this.cuisines = cuisines;
+        this.orderName = orderName;
 
     }
-
-
-
-
-
-   /* public UserListadapter(Context mContext, List<User> mUsers, boolean ischat) {
-        this.mUsers = mUsers;
-        this.mContext = mContext;
-        this.ischat = ischat;
-    }*/
 
 
     @NonNull
@@ -121,7 +114,6 @@ public class UserListadapter extends RecyclerView.Adapter<UserListadapter.ViewHo
                 orderChatuserList.put("deliveryAgentName", "DeliveryAgnet");*/
 
                 String orderId = userMapList.get(position).get("orderId");
-
                 Intent userInfo = new Intent(mContext, ChatActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("orderId", userMapList.get(position).get("orderId"));
@@ -129,8 +121,9 @@ public class UserListadapter extends RecyclerView.Adapter<UserListadapter.ViewHo
                 bundle.putString("senderId", Utils.userId);
                 bundle.putString("pageData", "Customer");
                 bundle.putString("orderName", userMapList.get(position).get("orderName"));
-
-
+                bundle.putString("cuisines", cuisines);
+                bundle.putString("price", price);
+                bundle.putString("resturntName", userMapList.get(position).get("orderName"));
 
                 userInfo.putExtras(bundle);
 

@@ -329,7 +329,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.i("trimchar ", s1);*/
 
 
-            Intent main = new Intent(LoginActivity.this, MainActivity.class);
+            Intent main = new Intent(LoginActivity.this, CuisinescategorieActivity.class);
             Bundle bundle = new Bundle();
             bundle.putDouble("lat", latitude);
             bundle.putDouble("longi", longititude);
@@ -387,7 +387,7 @@ public class LoginActivity extends AppCompatActivity {
                                         //  Toast.makeText(getApplicationContext(), "Registered Succesfully", Toast.LENGTH_SHORT).show();
                                         progressHUD.dismiss();
                                         //startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                        Intent main = new Intent(LoginActivity.this, MainActivity.class);
+                                        Intent main = new Intent(LoginActivity.this, CuisinescategorieActivity.class);
                                         Bundle bundle = new Bundle();
                                         bundle.putDouble("lat", latitude);
                                         bundle.putDouble("longi", longititude);
@@ -462,12 +462,24 @@ public class LoginActivity extends AppCompatActivity {
 
                     //    startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
-                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
+                   /* Intent main = new Intent(LoginActivity.this, MainActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putDouble("lat", latitude);
+                    bundle.putDouble("longi", longititude);
+                    main.putExtras(bundle);
+                    startActivity(main);*/
+
+                    Intent main = new Intent(LoginActivity.this, CuisinescategorieActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putDouble("lat", latitude);
                     bundle.putDouble("longi", longititude);
                     main.putExtras(bundle);
                     startActivity(main);
+
+
+
+
+
 
 
                     //   login();
@@ -539,7 +551,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                             latitude = location.getLatitude();
                                             longititude = location.getLongitude();
-                                           // Toast.makeText(getApplicationContext(), "Lat " + location.getLatitude(), Toast.LENGTH_SHORT).show();
+                                          //  Toast.makeText(getApplicationContext(), "Lat " + location.getLatitude(), Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
