@@ -76,5 +76,7 @@
     <string name="action_settings">setting</string>
     <string name="extndtime">Extend Expiretime</string>
     <string name="todayplan">What are you planning  today?</string>
+    <string name="logoutermsg">Are you sure want to logout from account?</string>
+    <string name="posturad">Post your Ad</string>
 
 </resources>

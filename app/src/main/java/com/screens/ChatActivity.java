@@ -54,6 +54,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.screens.LoginActivity.Email;
+
 public class ChatActivity extends AppCompatActivity {
 
 
@@ -116,7 +118,6 @@ public class ChatActivity extends AppCompatActivity {
         Log.i("SenderId ", senderId);
         Log.i("receiverId ", receiverId);
 
-//Thanks for taking a look at my request , am looking to share  <$50> for food order at <$restaurant name>. If you are interested please Accept the order by clicking the below button
 
         if (cuisines.equalsIgnoreCase("Groceries")) {
 
@@ -142,21 +143,20 @@ public class ChatActivity extends AppCompatActivity {
             tv_orderacpt.setVisibility(View.VISIBLE);
         } else {
 
-            this.setTitle("Chat" + "-" + orderName);
+            this.setTitle("Chat" + "-" + b.getString("resturntName"));
             tv_ordrcancel.setVisibility(View.GONE);
             tv_orderacpt.setVisibility(View.GONE);
             layout_wlcmmsg.setVisibility(View.GONE);
             tv_orderacpt.setVisibility(View.GONE);
-        }
-
-        if (!pagedata.equalsIgnoreCase("DeliveryAgent")) {
-
             btn_orderacpt.setVisibility(View.GONE);
             tv_ordrcancel.setVisibility(View.GONE);
             tv_orderacpt.setVisibility(View.GONE);
         }
 
-        //    bundle.putString("pageData", "DeliveryAgent");
+     /*   if (!pagedata.equalsIgnoreCase("DeliveryAgent")) {
+
+        }*/
+
 
         readallMessage();
 
@@ -212,7 +212,11 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Snackbar snackBar = Snackbar.make(parentLayout.findViewById(android.R.id.content),
+
+                acceptAdsPopup();
+
+
+               /* Snackbar snackBar = Snackbar.make(parentLayout.findViewById(android.R.id.content),
                         getString(R.string.acctporder), Snackbar.LENGTH_LONG)
                         .setAction("NO", new View.OnClickListener() {
                             @Override
@@ -236,7 +240,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 snackBar.setActionTextColor(Color.RED);
                 snackBar.show();
-
+*/
 
             }
         });
@@ -489,5 +493,44 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    private void acceptAdsPopup() {
+
+        LayoutInflater factory = LayoutInflater.from(getApplication());
+        final View deleteDialogView = factory.inflate(R.layout.custom_popup, null);
+        final AlertDialog deleteDialog = new AlertDialog.Builder(this).create();
+        deleteDialog.setView(deleteDialogView);
+
+        //  deleteDialogView.findViewById(R.id.tv_msg).setTex
+
+        TextView tv_msg;
+
+        tv_msg = deleteDialogView.findViewById(R.id.tv_msg);
+
+        tv_msg.setText("Are you sure want to accept this Ad");
+
+        deleteDialogView.findViewById(R.id.btn_yes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
+                reference.child(orderId).child("orderStatus").setValue("Accepted");
+                reference.child(orderId).child("partnerUserId").setValue(senderId);
+                Toast.makeText(getApplicationContext(), "Order has been succfully accepted", Toast.LENGTH_SHORT).show();
+                finish();
+
+
+            }
+        });
+        deleteDialogView.findViewById(R.id.btn_no).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteDialog.dismiss();
+            }
+        });
+
+        deleteDialog.show();
+
+
+    }
 
 }

@@ -20,14 +20,12 @@
             <!-- Accept View-->
 
             <ImageButton
-
                 android:id="@+id/img_closeOrder"
-                android:background="@drawable/circlegrey"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:background="@drawable/newcancel"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
-                android:src="@drawable/closewt"
                 app:layout_constraintEnd_toEndOf="@+id/tv_hotlename"
                 app:layout_constraintTop_toTopOf="parent" />
 

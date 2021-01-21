@@ -7,34 +7,58 @@
     tools:context=".ui.Myorders.MyorderFragment">
 
 
-    <Spinner
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:background="@drawable/topbar_gradient"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+
+        <ImageView
+            android:layout_alignParentRight="true"
+            android:id="@+id/img_chats"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="@dimen/text_16"
+            android:src="@drawable/newchat"
+          />
+
+        <ImageView
+            android:layout_marginEnd="50dp"
+            android:layout_alignRight="@+id/img_chats"
+            android:id="@+id/img_filter"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/newfilter"
+            />
+
+
+
+
+
+    </RelativeLayout>
+
+
+
+
+   <!-- <Spinner
+        android:visibility="gone"
         android:id="@+id/orderSpinner"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_filter"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />-->
 
-    <ImageView
-        android:id="@+id/img_filter"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/newfilter"
-        app:layout_constraintStart_toEndOf="@+id/img_chats"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/img_chats"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/newchat"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+
 
 
     <LinearLayout
@@ -50,6 +74,7 @@
         app:layout_constraintTop_toTopOf="@+id/tablyout">
 
         <ImageView
+
             android:id="@+id/img_norders"
             android:layout_width="match_parent"
             android:layout_height="100dp"

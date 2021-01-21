@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private static final int REQUEST_CODE = 101;
     BottomNavigationView navigation;
+    NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,37 @@ public class MainActivity extends AppCompatActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         this.getSupportActionBar().hide();
+
+
+        navigation = findViewById(R.id.nav_view);
+
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        break;
+
+                    case R.id.navigation_dashboard:
+
+                        Toast.makeText(getApplicationContext(), "Selected me ", Toast.LENGTH_SHORT).show();
+
+                        break;
+
+                    case R.id.navigation_notifications:
+                        break;
+
+                }
+                return true;
+            }
+        });
+
+
+        //   R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications, R.id.navigation_profile)
+
+
+
+
        /* navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener((BottomNavigationView.OnNavigationItemSelectedListener) getApplicationContext());*/
 
@@ -121,9 +153,15 @@ public class MainActivity extends AppCompatActivity {
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications, R.id.navigation_profile)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+
+
+      /*  String messages = getIntent().getStringExtra("messages_count");
+        messages = messages.substring(10,11);
+        appBarConfiguration.showBadge(R.id.navigation_notifications).setNumber(Integer.parseInt(messages));*/
 
     }
 
@@ -187,27 +225,29 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-/*navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+/*navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
+
+    {
         @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment fragment = null;
-            switch (item.getItemId()) {
-                case R.id.action_one:
-                    // Switch to page one
-                    fragment = FragmentA.newInstance();
-                    break;
-                case R.id.action_two:
-                    // Switch to page two
-                    fragment = FragmentB.newInstance();
-                    break;
-                case R.id.action_three:
-                    // Switch to page three
-                    fragment = FragmentC.newInstance();
-                    break;
-            }
-            getSupportFragmentManager().beginTransaction().replace(R.id.container,fragment,"TAG").commit();
-            return true;
+        public boolean onNavigationItemSelected (@NonNull MenuItem item){
+        Fragment fragment = null;
+        switch (item.getItemId()) {
+            case R.id.action_one:
+                // Switch to page one
+                fragment = FragmentA.newInstance();
+                break;
+            case R.id.action_two:
+                // Switch to page two
+                fragment = FragmentB.newInstance();
+                break;
+            case R.id.action_three:
+                // Switch to page three
+                fragment = FragmentC.newInstance();
+                break;
         }
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "TAG").commit();
+        return true;
+    }
     });*/
 
 

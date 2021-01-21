@@ -1,6 +1,7 @@
 package com.seesame.ui.Myorders;
 
 import android.app.ActivityManager;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.screens.UserListActivity;
 import com.seesame.R;
 
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ import java.util.List;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
-public class MyorderFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class MyorderFragment extends Fragment {
 
     private MyordersViewModel notificationsViewModel;
     TabLayout tablyout;
@@ -62,7 +64,7 @@ public class MyorderFragment extends Fragment implements AdapterView.OnItemSelec
     private CompletedOrderAdpter completedOrderAdpter;
     private ProgressBar progressBar;
     private TextView tv_noorder;
-    private ImageView img_norders, img_filter;
+    private ImageView img_norders, img_filter, img_chats;
     private Spinner orderSpinner;
     List<String> orderList;
     private ArrayAdapter orderAdpter;
@@ -84,7 +86,7 @@ public class MyorderFragment extends Fragment implements AdapterView.OnItemSelec
         setHasOptionsMenu(true);
         orderedacceptedList = new ArrayList<HashMap<String, String>>();
         initView(root);
-        orderSpinner.setOnItemSelectedListener(this);
+        //  orderSpinner.setOnItemSelectedListener(this);
         // getAllMyOrders();
 
         tablyout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -93,7 +95,7 @@ public class MyorderFragment extends Fragment implements AdapterView.OnItemSelec
 
                 switch (tab.getPosition()) {
                     case 0:
-                        orderSpinner.setVisibility(View.VISIBLE);
+                        //   orderSpinner.setVisibility(View.VISIBLE);
                         img_filter.setVisibility(View.VISIBLE);
                         tv_noorder.setVisibility(View.GONE);
                         layout_myorders.setVisibility(View.VISIBLE);
@@ -102,7 +104,7 @@ public class MyorderFragment extends Fragment implements AdapterView.OnItemSelec
 
                        /* Comparator c = Collections.reverseOrder();
                         Collections.sort(orderedMapList, c);*/
-                        // getAllMyOrders();
+                        getAllMyOrders();
                         if (((orderedMapList == null || orderedMapList.size() == 0) && (orderedacceptedList.size() == 0 || orderedacceptedList == null))) {
 
                             layout_noorders.setVisibility(View.VISIBLE);
@@ -113,8 +115,8 @@ public class MyorderFragment extends Fragment implements AdapterView.OnItemSelec
                         }
                         break;
                     case 1:
-
-                        orderSpinner.setVisibility(View.GONE);
+                        getAllMyOrders();
+                        //  orderSpinner.setVisibility(View.GONE);
                         img_filter.setVisibility(View.GONE);
                         layout_myorders.setVisibility(View.VISIBLE);
                         recyclerView_myorders.setVisibility(View.GONE);
@@ -149,11 +151,27 @@ public class MyorderFragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public void onClick(View v) {
 
+
+                Toast.makeText(getActivity(), "Fliter", Toast.LENGTH_SHORT).show();
+
                 //  getActivity().openOptionsMenu();
 
                 // getActivity().invalidateOptionsMenu();
 
                 //  orderSpinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) getActivity());
+            }
+        });
+
+        img_chats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent chatList = new Intent(getActivity(), UserListActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("pageData","Allchats");
+                chatList.putExtras(bundle);
+                getActivity().startActivity(chatList);
+
             }
         });
 
@@ -173,13 +191,16 @@ public class MyorderFragment extends Fragment implements AdapterView.OnItemSelec
         layout_noorders = view.findViewById(R.id.layout_noorders);
         progressBar = view.findViewById(R.id.progressBar);
         img_filter = view.findViewById(R.id.img_filter);
-        orderSpinner = view.findViewById(R.id.orderSpinner);
-        orderList = new ArrayList<>();
+        img_chats = view.findViewById(R.id.img_chats);
+
+
+        //   orderSpinner = view.findViewById(R.id.orderSpinner);
+      /*  orderList = new ArrayList<>();
         orderList.add("My Orders");
         orderList.add("Accpeted Orders");
         ArrayAdapter orderAdpter = new ArrayAdapter(getActivity(), R.layout.spinner_item, orderList);
         orderAdpter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        orderSpinner.setAdapter(orderAdpter);
+        orderSpinner.setAdapter(orderAdpter);*/
 
         progressBar.setMax(100);
         progressBar.setProgress(20);
@@ -341,7 +362,7 @@ public class MyorderFragment extends Fragment implements AdapterView.OnItemSelec
 
     }
 
-    @Override
+  /* @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
         String value = String.valueOf(parent.getItemAtPosition(position));
@@ -361,10 +382,9 @@ public class MyorderFragment extends Fragment implements AdapterView.OnItemSelec
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
-    }
+    }*/
 
     private void acceptedOrders() {
-
 
 
         //  orderedcompletedMapList = new ArrayList<HashMap<String, String>>();

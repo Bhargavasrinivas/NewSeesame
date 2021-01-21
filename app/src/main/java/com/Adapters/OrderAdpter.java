@@ -42,7 +42,7 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
     private ArrayList<HashMap<String, String>> dumyorderedList;
     private final static double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
     private double totalDistance, ttlDistanceinmeters;
-    private String currentTime, orderTime;
+    private String currentTime, orderTime, userId;
     private int expiryTime;
     HashMap<String, String> orderredMap;
 
@@ -85,6 +85,10 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
 
 
             String orderDate = orderedMapList.get(position).get("orderStatusDate");
+
+            userId = orderedMapList.get(position).get("customerUserId");
+
+
             Log.i("orderDate ", orderDate);
 
 
@@ -118,10 +122,11 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
 
                 if (difference_In_Hours >= 1) {
                     // holder.tv_expiretime.setText("Exprired");
-                    holder.tv_expiretime.setVisibility(View.GONE);
-                    holder.btn_accept.setText("Exprired");
-                   // holder.layout_expiretime.setVisibility(View.VISIBLE);
+                    //   holder.tv_expiretime.setVisibility(View.GONE);
+                    //     holder.btn_accept.setText("Exprired");
+                    // holder.layout_expiretime.setVisibility(View.VISIBLE);
                     holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                    holder.tv_expiretime.setText("Exprired");
                     holder.tv_chat.setVisibility(View.GONE);
                     String orderId = orderedMapList.get(position).get("orderId");
                     DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
@@ -151,7 +156,6 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                         notifyDataSetChanged();
 
                     } else {
-
 
 
                         if (difference_In_Minutes < 0) {
@@ -209,53 +213,68 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                 @Override
                 public void onClick(View v) {
 
-                    //    mContext.startActivity(new Intent(mContext, UserListActivity.class));
-                    //  mContext.startActivity(new Intent(mContext, ChatActivity.class));
+
+                    if (orderedMapList.get(position).get("customerUserId").equalsIgnoreCase(Utils.userId)) {
 
 
-                    String orderId, customerId;
-                    orderId = orderedMapList.get(position).get("orderId");
-                    customerId = orderedMapList.get(position).get("customerUserId");
-                    Intent orderInfo = new Intent(mContext, ChatActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("orderId", orderId);
-                    bundle.putString("receiverId", customerId);
-                    bundle.putString("senderId", Utils.userId);
-                    bundle.putString("pageData", "DeliveryAgent");
-                    bundle.putString("customerName", orderedMapList.get(position).get("customerName"));
-                    bundle.putString("customerUserId", orderedMapList.get(position).get("customerUserId"));
-                    bundle.putString("orderId", orderedMapList.get(position).get("orderId"));
-                    bundle.putString("orderDate", orderedMapList.get(position).get("orderDate"));
-                    bundle.putString("orderTime", orderedMapList.get(position).get("orderTime"));
-                    bundle.putString("orderPrice", orderedMapList.get(position).get("orderPrice"));
-                    bundle.putString("deliveryPartner", orderedMapList.get(position).get("deliveryPartner"));
-                    bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
-                    bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
+                        if (orderedMapList.get(position).get("orderStatus").equalsIgnoreCase("Accepted")) {
 
-                   /* bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
-                    bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));*/
-                    orderInfo.putExtras(bundle);
-                    mContext.startActivity(orderInfo);
+                            String resName = orderedMapList.get(position).get("resturntName");
 
-                  /*  Intent chat = new Intent(mContext, ChatActivity.class);
-                    chat.putExtra("orderId ", "abcde");
-                    chat.putExtra("receiverId ", customerId);
-                    mContext.startActivity(chat);*/
+                            Intent userInfo = new Intent(mContext, ChatActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("orderId", orderedMapList.get(position).get("orderId"));
+                            bundle.putString("receiverId", orderedMapList.get(position).get("partnerUserId"));
+                            bundle.putString("senderId", orderedMapList.get(position).get("customerUserId"));
+                            bundle.putString("pageData", "Customer");
+                            bundle.putString("orderName", orderedMapList.get(position).get("orderName"));
+                            bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
+                            bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
+                            bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
+                            userInfo.putExtras(bundle);
+                            mContext.startActivity(userInfo);
+
+                        } else {
+
+                            Intent orderinfo = new Intent(mContext, UserListActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("orderId", orderedMapList.get(position).get("orderId"));
+                            bundle.putString("OrderName", orderedMapList.get(position).get("resturntName"));
+                            bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
+                            bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
+                            bundle.putString("pageData","Mychats");
+                            orderinfo.putExtras(bundle);
+                            mContext.startActivity(orderinfo);
+
+                        }
 
 
+                    } else {
 
+                        String orderId, customerId;
+                        orderId = orderedMapList.get(position).get("orderId");
+                        customerId = orderedMapList.get(position).get("customerUserId");
+                        Intent orderInfo = new Intent(mContext, ChatActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("orderId", orderId);
+                        bundle.putString("receiverId", customerId);
+                        bundle.putString("senderId", Utils.userId);
+                        bundle.putString("pageData", "DeliveryAgent");
+                        bundle.putString("customerName", orderedMapList.get(position).get("customerName"));
+                        bundle.putString("customerUserId", orderedMapList.get(position).get("customerUserId"));
+                        bundle.putString("orderId", orderedMapList.get(position).get("orderId"));
+                        bundle.putString("orderDate", orderedMapList.get(position).get("orderDate"));
+                        bundle.putString("orderTime", orderedMapList.get(position).get("orderTime"));
+                        bundle.putString("orderPrice", orderedMapList.get(position).get("orderPrice"));
+                        bundle.putString("deliveryPartner", orderedMapList.get(position).get("deliveryPartner"));
+                        bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
+                        bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
+                        bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
+                        orderInfo.putExtras(bundle);
+                        mContext.startActivity(orderInfo);
 
+                    }
 
-                   /* Log.i("Name", orderedMapList.get(position).get("resturntName"));
-                    Log.i("OrderID", orderedMapList.get(position).get("orderId"));
-                    Log.i("cuUserIdID", orderedMapList.get(position).get("customerUserId"));
-                    */
 
                 }
             });
@@ -478,7 +497,7 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
     }
 
 
-    private void updateDb(){
+    private void updateDb() {
 
 
     }

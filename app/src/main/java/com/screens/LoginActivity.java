@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                 = LocationServices
                 .getFusedLocationProviderClient(this);
 
-        getLastLocation();
+    //    getLastLocation();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putBoolean("mykey",true);

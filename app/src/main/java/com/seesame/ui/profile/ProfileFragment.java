@@ -26,6 +26,7 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -69,7 +70,7 @@ public class ProfileFragment extends Fragment {
     private FirebaseUser firebaseUser;
     private ImageView img_mobile, img_uname;
     private RatingBar rating_bar;
-    String[] mobileArray = {"Ratings", "Contact Us","FAQ's","Privacy Policy", "Terms of Service"};
+    String[] mobileArray = {"Ratings", "Contact Us", "FAQ's", "Privacy Policy", "Terms of Service"};
     private String userId, dbUserName;
     boolean onloadflag = false, datachangeflag = false;
     public static final String MyPREFERENCES = "MyPrefs";
@@ -202,7 +203,11 @@ public class ProfileFragment extends Fragment {
 
                 } else {
 
-                    Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
+
+                    logoutPopup();
+
+
+                 /*   Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
                             getString(R.string.logoutmsg), Snackbar.LENGTH_LONG)
                             .setAction("NO", new View.OnClickListener() {
                                 @Override
@@ -218,7 +223,7 @@ public class ProfileFragment extends Fragment {
 
 
                                     if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
-                                        /*  ((ActivityManager) getActivity().getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();*/ // note: it has a return value!
+                                        *//*  ((ActivityManager) getActivity().getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();*//* // note: it has a return value!
 
                                         SharedPreferences.Editor editor = sharedpreferences.edit();
                                         editor.remove(Email);
@@ -232,21 +237,15 @@ public class ProfileFragment extends Fragment {
 
 
                                     } else {
-                                        // use old hacky way, which can be removed
-                                        // once minSdkVersion goes above 19 in a few years.
 
                                     }
-
-                                    //  final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                                    //    firebaseUser.child("myDb/awais@gmailcom/leftSpace").setValue("YourDateHere");
-
 
                                 }
                             });
 
                     snackBar.setActionTextColor(Color.RED);
                     snackBar.show();
-
+*/
 
                 }
 
@@ -417,6 +416,47 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
+
+    }
+
+
+    private void logoutPopup() {
+
+        LayoutInflater factory = LayoutInflater.from(getActivity());
+        final View deleteDialogView = factory.inflate(R.layout.custom_popup, null);
+        final AlertDialog deleteDialog = new AlertDialog.Builder(getActivity()).create();
+        deleteDialog.setView(deleteDialogView);
+
+        deleteDialogView.findViewById(R.id.btn_yes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //your business logic
+
+                if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
+
+
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.remove(Email);
+                    editor.commit();
+
+                    deleteCache(getActivity());
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_HOME);
+                    startActivity(intent);
+                    getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
+                }
+
+            }
+        });
+        deleteDialogView.findViewById(R.id.btn_no).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteDialog.dismiss();
+            }
+        });
+
+        deleteDialog.show();
 
 
     }

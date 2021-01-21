@@ -18,4 +18,6 @@ public class Utils {
     public static double userlat;
     public static double userlang;
     public static boolean chatlist = false;
+    public static String filterValue = "";
+
 }

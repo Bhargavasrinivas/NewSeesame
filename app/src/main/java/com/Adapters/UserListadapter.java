@@ -34,7 +34,7 @@ public class UserListadapter extends RecyclerView.Adapter<UserListadapter.ViewHo
 
     private Context mContext;
     private boolean ischat;
-    String theLastMessage,price,cuisines,orderName;
+    String theLastMessage, price, cuisines, orderName;
     private ArrayList<HashMap<String, String>> userMapList;
 
     public UserListadapter(UserListActivity userListActivity, ArrayList<HashMap<String, String>> userMapList, boolean b, String price, String cuisines, String orderName) {

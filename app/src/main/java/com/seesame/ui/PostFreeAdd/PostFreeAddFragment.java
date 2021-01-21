@@ -1,5 +1,6 @@
 package com.seesame.ui.PostFreeAdd;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Address;
@@ -47,6 +48,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.screens.CuisinescategorieActivity;
+import com.screens.UserListActivity;
 import com.seesame.R;
 import com.seesame.ui.Myorders.MyorderFragment;
 
@@ -73,6 +76,7 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
     private EditText edtTxt_foodPrice;
     private Button btn_placeorder;
     private ArrayAdapter deliverypartneradpter;
+    private ImageView img_chatIcon;
     EditText favTextInput, pickupTextInput;
     String completeaddressrestunrt, completeaddresslocation;
     private AutoCompleteTextView autoCompleteTextView;
@@ -80,6 +84,7 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
             userName, userId, pickupAreaName, pickupAddress, orderDateTime, spinnerGroups;
     private ProgressBar progressBar;
     BottomNavigationView navigation;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -168,6 +173,23 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
                 double latitude, longitutude;
                 latitude = Double.parseDouble(mStringLatitude);
                 longitutude = Double.parseDouble(mStringLongitude);
+
+
+                img_chatIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+                        Toast.makeText(getActivity(), "Chaticon ", Toast.LENGTH_SHORT).show();
+
+                     /*   Intent chatList = new Intent(getActivity(), UserListActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("pageData","Allchats");
+                        chatList.putExtras(bundle);
+                        getActivity().startActivity(chatList);
+*/
+                    }
+                });
 
 
                 //   getAddresssbyLatlong(latitude, longitutude);
@@ -283,24 +305,6 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
                 }
 
 
-                Log.i("RestutntName ", deliverypartner);
-
-
-
-
-/*
-
-                if (favTextInput.getText().toString().isEmpty()) {
-                    Toast.makeText(getActivity(), "Please choose your  favourite resturnts", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-*/
-               /* if (pickupTextInput.getText().toString().isEmpty()) {
-                    Toast.makeText(getActivity(), "Please choose your pickup location", Toast.LENGTH_SHORT).show();
-                    return;
-                }*/
-
-
                 readUsertInfo();
 
 
@@ -394,6 +398,7 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         spinner_groups = view.findViewById(R.id.spinner_groups);
         tv_cuisineslbl = view.findViewById(R.id.tv_cuisineslbl);
         layout_cuisines = view.findViewById(R.id.layout_cuisines);
+        img_chatIcon = view.findViewById(R.id.img_chatIcon);
 
     }
 
@@ -697,12 +702,15 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
                     reference.child(categorieId).child("count").setValue(count);
                     Log.i("CountIncrese ", String.valueOf(count));
                     //   }
-
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     MyorderFragment NAME = new MyorderFragment();
                     fragmentTransaction.replace(R.id.nav_host_fragment, NAME);
                     fragmentTransaction.commit();
+                    BottomNavigationView bottomNavigationView = (getActivity()).findViewById(R.id.nav_view);
+                    bottomNavigationView.getMenu().findItem(R.id.navigation_notifications).setChecked(true);
+
+
                 }
 
 

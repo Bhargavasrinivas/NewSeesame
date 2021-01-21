@@ -48,7 +48,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
     private ArrayList<HashMap<String, String>> orderedMapList;
     private final static double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
     private double totalDistance;
-    private String currentDate, currentTime, orderTime,cuisines;
+    private String currentDate, currentTime, orderTime, cuisines;
     private int expiryTime;
     List<String> timeList;
     private String spinnerVal;
@@ -235,8 +235,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
                             reference.child(orderId).child("orderStatus").setValue("Exprired");
 
-                              deletingCategoriData(orderedMapList.get(position).get("orderStatus"));
-
+                            deletingCategoriData(orderedMapList.get(position).get("orderStatus"));
 
 
                         } else {
@@ -307,7 +306,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
 
                         String customeruserId = orderedMapList.get(position).get("customerUserId");
 
-                        /*  Condition to find who is the creator of post . on Click of Chat post creto rwill go to delivery lists
+                        /*  Condition to find who is the creator of post . on Click of Chat post creator of post  will go to delivery lists
                          * partner will go to chat directly*/
 
                         if (Utils.userId.equalsIgnoreCase(customeruserId)) {
@@ -318,6 +317,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                             bundle.putString("OrderName", orderedMapList.get(position).get("resturntName"));
                             bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
                             bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
+                            bundle.putString("pageData","Mychats");
                             orderinfo.putExtras(bundle);
                             context.startActivity(orderinfo);
                         } else {
@@ -339,8 +339,6 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
 
                     }
 
-
-                    //   context.startActivity(new Intent(context, UserListActivity.class));
 
 
                 }
@@ -406,34 +404,44 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                 public void onClick(View v) {
 
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("Are you sure you want to cancel this Free add?");
-                    builder.setMessage("")
-                            .setCancelable(false)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
+                    LayoutInflater factory = LayoutInflater.from(context);
+                    final View deleteDialogView = factory.inflate(R.layout.custom_popup, null);
+                    final AlertDialog deleteDialog = new AlertDialog.Builder(context).create();
+                    deleteDialog.setView(deleteDialogView);
 
 
-                                    String orderId = orderedMapList.get(position).get("orderId");
-                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
-                                    reference.child(orderId).child("orderStatus").setValue("Cancelled");
-                                    reference.child(orderId).child("orderCancel").setValue(currentDate);
-                                    reference.child(orderId).child("orderStatusDate").setValue(currentDate);
-                                    reference.child(orderId).child("orderStatusTime").setValue(currentDate);
-                                    //  myorderAdpter.notifyDataSetChanged();
-                                    //  notifyItemRangeChanged(Integer.parseInt(orderId), orderedMapList.size());
-                                    notifyDataSetChanged();
-                                    Toast.makeText(context, "Succesfully cancelled order", Toast.LENGTH_SHORT).show();
+                    TextView tv_msg;
 
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                    tv_msg = deleteDialogView.findViewById(R.id.tv_msg);
+
+                    tv_msg.setText("Are you sure want to cancel this Ad");
+
+                    deleteDialogView.findViewById(R.id.btn_yes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            String orderId = orderedMapList.get(position).get("orderId");
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
+                            reference.child(orderId).child("orderStatus").setValue("Cancelled");
+                            reference.child(orderId).child("orderCancel").setValue(currentDate);
+                            reference.child(orderId).child("orderStatusDate").setValue(currentDate);
+                            reference.child(orderId).child("orderStatusTime").setValue(currentDate);
+                            //  myorderAdpter.notifyDataSetChanged();
+                            //  notifyItemRangeChanged(Integer.parseInt(orderId), orderedMapList.size());
+                            notifyDataSetChanged();
+                            Toast.makeText(context, "Succesfully cancelled order", Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    });
+                    deleteDialogView.findViewById(R.id.btn_no).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            deleteDialog.dismiss();
+                        }
+                    });
+
+                    deleteDialog.show();
 
 
                 }
@@ -518,6 +526,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
 
 
     }
+
     private void deletingCategoriData(String categorie) {
 
 
@@ -557,6 +566,11 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
 
             }
         });
+
+
+    }
+
+    private void acceptAdsPopup() {
 
 
     }

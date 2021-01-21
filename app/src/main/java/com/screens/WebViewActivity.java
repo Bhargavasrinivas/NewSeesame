@@ -44,15 +44,19 @@ public class WebViewActivity extends AppCompatActivity {
 
         switch (data) {
 
+            //
             case "Terms of Service":
                 webview.loadUrl("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/terms-conditions.html?alt=media&token=e08057e9-569a-47bf-b343-8cbbe2b83506");
+                //  webview.loadUrl("https://www.akunatech.com/image/about/akuna_video.mp4");
+
                 break;
             case "Privacy Policy":
                 webview.loadUrl("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/privacy-policy.html?alt=media&token=be657fcd-5160-4034-96f7-777bea45f391");
                 break;
             case "Contact Us":
                 // https://www.budgetsafetywear.com.au/pages/embroidery-2
-                webview.loadUrl("https://www.budgetworkwear.com.au/pages/embroidery-1");
+                // webview.loadUrl("https://www.budgetworkwear.com.au/pages/embroidery-1");
+                webview.loadUrl("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/privacy-policy.html?alt=media&token=be657fcd-5160-4034-96f7-777bea45f391");
                 break;
 
             case "FAQ's":
@@ -71,7 +75,6 @@ public class WebViewActivity extends AppCompatActivity {
                 finish();
 
                 break;
-
 
 
             case "login":

@@ -39,7 +39,7 @@ public class UserListActivity extends AppCompatActivity {
     private List<User> mUsers;
     private RecyclerView recyclervw_userlist;
     private ArrayList<HashMap<String, String>> userMapList;
-    private String orderId, orderName, price, resturntName, cuisines;
+    private String orderId, orderName, price, resturntName, cuisines, pageData;
     HashMap<String, String> userMap;
     private ProgressBar progressBar;
 
@@ -60,24 +60,28 @@ public class UserListActivity extends AppCompatActivity {
         senderId = b.getString("senderId");
         pagedata = b.getString("pageData");
 */
-        // OrderName
 
         Bundle b = getIntent().getExtras();
         orderId = b.getString("orderId");
-
         orderName = b.getString("OrderName");
         price = b.getString("price");
         resturntName = b.getString("resturntName");
         cuisines = b.getString("cuisines");
-
-
-
+        pageData = b.getString("pageData");
 
 
         userMapList = new ArrayList<HashMap<String, String>>();
-
         mUsers = new ArrayList<>();
-        readallUsers(orderId);
+
+
+        if (pageData.equalsIgnoreCase("pageData")) {
+            getAllchatUsers();
+
+        } else {
+            readallUsers(orderId);
+        }
+
+
     }
 
     private void readallUsers(String orderId) {
@@ -124,7 +128,67 @@ public class UserListActivity extends AppCompatActivity {
 
                 recyclervw_userlist.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 recyclervw_userlist.setHasFixedSize(true);
-                userListadapter = new UserListadapter(UserListActivity.this, userMapList, false,price,cuisines,orderName);
+                userListadapter = new UserListadapter(UserListActivity.this, userMapList, false, price, cuisines, orderName);
+                recyclervw_userlist.setAdapter(userListadapter);
+
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    private void getAllchatUsers() {
+
+        progressBar.setMax(100);
+        progressBar.setProgress(20);
+        progressBar.setVisibility(View.VISIBLE);
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("OrderDeliveryAgentList");
+        reference.keepSynced(true);
+        //  Log.i("MyId ", firebaseUser.getUid());
+        reference.orderByChild("orderId").equalTo(orderId).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            // reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // if (search_users.getText().toString().equals("")) {
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                /*    User user = snapshot.getValue(User.class);
+                    Log.i("UserId ", user.getId());
+                    if (!user.getId().equals(firebaseUser.getUid())) {
+                        mUsers.add(user);
+                    }
+                    */
+                    userMap = new HashMap<>();
+                    userMap.put("chatId", String.valueOf(snapshot.child("chatId").getValue()));
+                    userMap.put("deliveryAgentId", String.valueOf(snapshot.child("deliveryAgentId").getValue()));
+                    userMap.put("deliveryAgentName", String.valueOf(snapshot.child("deliveryAgentName").getValue()));
+                    userMap.put("orderId", String.valueOf(snapshot.child("orderId").getValue()));
+                    userMap.put("orderName", orderName);
+
+
+                    userMapList.add(userMap);
+
+
+                    //     orderredMap.put("orderId", String.valueOf(snapshot1.child("orderId").getValue()));
+
+                }
+
+
+                  /*  recyclervw.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    recyclervw.setHasFixedSize(true);*/
+
+                recyclervw_userlist.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                recyclervw_userlist.setHasFixedSize(true);
+                userListadapter = new UserListadapter(UserListActivity.this, userMapList, false, price, cuisines, orderName);
                 recyclervw_userlist.setAdapter(userListadapter);
 
                 progressBar.setVisibility(View.GONE);

@@ -12,11 +12,20 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +39,9 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.Adapters.CompletedOrderAdpter;
+import com.Adapters.Filteradpter;
+import com.Adapters.MyorderAdpter;
 import com.Adapters.OrderAdpter;
 import com.Utils;
 import com.google.android.gms.common.api.Status;
@@ -60,6 +72,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class HomeFragment extends Fragment {
 
@@ -77,23 +90,26 @@ public class HomeFragment extends Fragment {
     private List<String> OrderList;
     private EditText edt_search_text;
     private ArrayList<HashMap<String, String>> orderedMapList;
+    private ArrayList<HashMap<String, String>> myOrderList;
     private OrderAdpter orderAdpter;
     private ProgressBar progressBar;
     private AutocompleteSupportFragment autocompleteFragment;
     LocationManager locationManager;
     private Double currentlatitude, currentlongitude;
     private String cuisines;
+    private ImageView img_filter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-
+        orderedMapList = new ArrayList<HashMap<String, String>>();
+        myOrderList = new ArrayList<HashMap<String, String>>();
 
         initUI(root);
         String apiKey = getString(R.string.api_key);
         Places.initialize(getActivity(), apiKey);
-
+        Utils.filterValue = "All Orders";
 
         Bundle b = getActivity().getIntent().getExtras();
         currentlatitude = b.getDouble("lat");
@@ -105,6 +121,89 @@ public class HomeFragment extends Fragment {
         Utils.userlat = currentlatitude;
         Utils.userlang = currentlongitude;
         getAddresss(currentlatitude, currentlongitude);
+
+
+        img_filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // inflate the layout of the popup window
+                LayoutInflater inflater = (LayoutInflater)
+                        getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+                final View popupView = inflater.inflate(R.layout.popup_layout, null);
+                // create the popup window
+                /*int width = LinearLayout.LayoutParams.WRAP_CONTENT;.
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;*/
+
+                int width = 500;
+                int height = 400;
+
+                boolean focusable = true; // lets taps outside the popup also dismiss it
+                final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+                popupWindow.showAtLocation(v, Gravity.RIGHT, 60, -700);
+
+           /*     popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        popupWindow.dismiss();
+                    }
+                });*/
+                ListView listView;
+                listView = popupView.findViewById(R.id.listView);
+                String[] mobileArray = {"All Orders", "My Order"};
+                ArrayList filterList = new ArrayList();
+                filterList.add("All Orders");
+                filterList.add("My Orders");
+
+
+                Filteradpter filteradpter = new Filteradpter(getActivity(), filterList, Utils.filterValue);
+                listView.setAdapter(filteradpter);
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        String value = String.valueOf(parent.getItemAtPosition(position));
+                        popupWindow.dismiss();
+
+                        if (value.equalsIgnoreCase("0")) {
+                            Utils.filterValue = "All Orders";
+                            getAllOrders();
+
+                        } else {
+                            Utils.filterValue = "My Orders";
+                            getAllMyOrders();
+                        }
+
+                    }
+                });
+
+
+                popupView.setOnTouchListener(new View.OnTouchListener() {
+
+                    //    TextView tv_allorder,tv_myorder;
+
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+
+
+                      /*  tv_allorder = popupView.findViewById(R.id.tv_allorder);
+                        tv_myorder = popupView.findViewById(R.id.tv_myorder);*/
+
+                        //  String textVal = tv_allorder.getText().toString();
+
+                        //    Toast.makeText(getActivity(), textVal, Toast.LENGTH_SHORT).show();
+
+                        popupWindow.dismiss();
+                        return true;
+                    }
+                });
+
+            }
+        });
+
 
         //  Toast.makeText(getActivity(), "currentlatitude " + currentlatitude, Toast.LENGTH_SHORT).show();
         autocompleteFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -229,6 +328,8 @@ public class HomeFragment extends Fragment {
         recyclerview_order = view.findViewById(R.id.recyclerview_order);
         edt_search_text = view.findViewById(R.id.edt_search_text);
         progressBar = view.findViewById(R.id.progressBar);
+        img_filter = view.findViewById(R.id.img_filter);
+
         progressBar.setMax(100);
         progressBar.setProgress(20);
 
@@ -438,7 +539,8 @@ public class HomeFragment extends Fragment {
 
     private void getAllOrders() {
 
-        orderedMapList = new ArrayList<HashMap<String, String>>();
+        orderedMapList.clear();
+        //  myOrderList = new ArrayList<HashMap<String, String>>();
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
@@ -502,6 +604,14 @@ public class HomeFragment extends Fragment {
 
                     }
 
+                  /*  if ((snapshot1.child("customerUserId").getValue().equals(Utils.userId))) {
+
+                        if (orderStatus.equalsIgnoreCase("Pending")) {
+                            myOrderList.add(orderredMap);
+                        }
+
+                    }
+*/
                 }
 
                 recyclerview_order.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -521,17 +631,132 @@ public class HomeFragment extends Fragment {
 
     }
 
+
+   /* private void getmyOrders(){
+
+
+        recyclerview_order.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerview_order.setHasFixedSize(true);
+        orderAdpter = new OrderAdpter(getActivity(), myOrderList);
+        recyclerview_order.setAdapter(orderAdpter);
+        orderAdpter.notifyDataSetChanged();
+    }*/
+
+    private void getAllMyOrders() {
+
+
+        myOrderList.clear();
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
+        //    reference.keepSynced(true);
+        reference.orderByChild("customerUserId").equalTo(Utils.userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            //  reference.orderByChild("customerUserId").equalTo(Utils.userId).orderByChild("partnerUserId").equalTo("").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+            // reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                // progressBar.setVisibility(View.GONE);
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+
+                    // OrderList
+                    orderredMap = new HashMap<>();
+                    orderredMap.put("orderId", String.valueOf(snapshot1.child("orderId").getValue()));
+                    orderredMap.put("orderDate", String.valueOf(snapshot1.child("orderDate").getValue()));
+                    orderredMap.put("orderTime", String.valueOf(snapshot1.child("orderTime").getValue()));
+                    orderredMap.put("orderPrice", String.valueOf(snapshot1.child("orderPrice").getValue()));
+                    orderredMap.put("deliveryPartner", String.valueOf(snapshot1.child("deliveryPartner").getValue()));
+                    orderredMap.put("expireTime", String.valueOf(snapshot1.child("expireTime").getValue()));
+                    orderredMap.put("cuisines", String.valueOf(snapshot1.child("cuisines").getValue()));
+                    orderredMap.put("orderCategoryId", String.valueOf(snapshot1.child("orderCategoryId").getValue()));
+                    orderredMap.put("serviceSelecetd", String.valueOf(snapshot1.child("serviceSelecetd").getValue()));
+                    orderredMap.put("orderStatus", String.valueOf(snapshot1.child("orderStatus").getValue()));
+                    orderredMap.put("customerName", String.valueOf(snapshot1.child("customerName").getValue()));
+                    orderredMap.put("customerUserId", String.valueOf(snapshot1.child("customerUserId").getValue()));
+                    orderredMap.put("customerUserId", String.valueOf(snapshot1.child("customerUserId").getValue()));
+                    orderredMap.put("deliveryPostalCode", String.valueOf(snapshot1.child("deliveryPostalCode").getValue()));
+                    orderredMap.put("deliverylatitude", String.valueOf(snapshot1.child("deliverylatitude").getValue()));
+                    orderredMap.put("deliverylongititude", String.valueOf(snapshot1.child("deliverylongititude").getValue()));
+                    orderredMap.put("deliveryPlaceId", String.valueOf(snapshot1.child("deliveryPlaceId").getValue()));
+                    orderredMap.put("deliveryAreaname", String.valueOf(snapshot1.child("deliveryAreaname").getValue()));
+                    orderredMap.put("deliveryAddress", String.valueOf(snapshot1.child("deliveryAddress").getValue()));
+                    orderredMap.put("partnerName", String.valueOf(snapshot1.child("partnerName").getValue()));
+
+                    orderredMap.put("partnerUserId", String.valueOf(snapshot1.child("partnerUserId").getValue()));
+                    orderredMap.put("partnerChatId", String.valueOf(snapshot1.child("partnerChatId").getValue()));
+                    orderredMap.put("partnerPostalCode", String.valueOf(snapshot1.child("partnerPostalCode").getValue()));
+                    orderredMap.put("partnerlatitude", String.valueOf(snapshot1.child("partnerlatitude").getValue()));
+                    orderredMap.put("partnerlongititude", String.valueOf(snapshot1.child("partnerlongititude").getValue()));
+                    orderredMap.put("partnerPlaceId", String.valueOf(snapshot1.child("partnerPlaceId").getValue()));
+                    orderredMap.put("partnerAreaName", String.valueOf(snapshot1.child("partnerAreaName").getValue()));
+                    orderredMap.put("partnerAddress", String.valueOf(snapshot1.child("partnerAddress").getValue()));
+                    orderredMap.put("orderStatusDate", String.valueOf(snapshot1.child("orderStatusDate").getValue()));
+                    orderredMap.put("orderStatusTime", String.valueOf(snapshot1.child("orderStatusTime").getValue()));
+                    orderredMap.put("orderCancel", String.valueOf(snapshot1.child("orderCancel").getValue()));
+                    orderredMap.put("orderAccepted", String.valueOf(snapshot1.child("orderAccepted").getValue()));
+                    orderredMap.put("orderCompleted", String.valueOf(snapshot1.child("orderCompleted").getValue()));
+
+                    orderredMap.put("resturntName", String.valueOf(snapshot1.child("resturntName").getValue()));
+                    orderredMap.put("resturntAddress", String.valueOf(snapshot1.child("resturntAddress").getValue()));
+                    orderredMap.put("resturntPostalCode", String.valueOf(snapshot1.child("resturntPostalCode").getValue()));
+
+                    orderredMap.put("ownerRating", String.valueOf(snapshot1.child("ownerRating").getValue()));
+                    orderredMap.put("partnerRating", String.valueOf(snapshot1.child("partnerRating").getValue()));
+
+
+                    String status = String.valueOf(snapshot1.child("orderStatus").getValue());
+
+                    String partnerUserId = String.valueOf(snapshot1.child("partnerUserId").getValue());
+
+                    if (status.equalsIgnoreCase("Completed")) {
+
+                    } else {
+                        myOrderList.add(orderredMap);
+
+                      /*  if(partnerUserId !=null){
+                            orderedMapList.add(orderredMap);
+                        }*/
+                    }
+
+
+                }
+
+                if (myOrderList.size() == 0) {
+
+                 /*   Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
+                            getString(R.string.noOrders), Snackbar.LENGTH_LONG);
+                    snackBar.show();*/
+
+                    // layout_noorders.setVisibility(View.VISIBLE);
+                }
+
+
+                recyclerview_order.setLayoutManager(new LinearLayoutManager(getActivity()));
+                recyclerview_order.setHasFixedSize(true);
+                orderAdpter = new OrderAdpter(getActivity(), myOrderList);
+                recyclerview_order.setAdapter(orderAdpter);
+                orderAdpter.notifyDataSetChanged();
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
         //  Toast.makeText(getActivity(), "onResume Called ", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
 
-        //   Toast.makeText(getActivity(), "onPause Called ", Toast.LENGTH_SHORT).show();
-
-    }
 }
