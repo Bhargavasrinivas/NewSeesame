@@ -65,8 +65,8 @@ public class UserListadapter extends RecyclerView.Adapter<UserListadapter.ViewHo
 
         //     final User user = mUsers.get(position);
         holder.username.setText(userMapList.get(position).get("deliveryAgentName"));
-
-
+        // holder.tv_msg.setText(userMapList.get(position).get("message"));
+        holder.tv_category.setText(userMapList.get(position).get("cuisines"));
 
 
       /*  if (ischat) {
@@ -185,16 +185,19 @@ public class UserListadapter extends RecyclerView.Adapter<UserListadapter.ViewHo
         public ImageView profile_image;
         private ImageView img_on;
         private ImageView img_off;
-        private TextView last_msg;
+        private TextView last_msg, tv_msg, tv_category;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             username = itemView.findViewById(R.id.username);
             profile_image = itemView.findViewById(R.id.profile_image);
-            img_on = itemView.findViewById(R.id.img_on);
+            tv_msg = itemView.findViewById(R.id.tv_msg);
+            tv_category = itemView.findViewById(R.id.tv_category);
+
+            /*img_on = itemView.findViewById(R.id.img_on);
             img_off = itemView.findViewById(R.id.img_off);
-            last_msg = itemView.findViewById(R.id.last_msg);
+            last_msg = itemView.findViewById(R.id.last_msg);*/
         }
     }
 

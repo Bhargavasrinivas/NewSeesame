@@ -1,73 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="10dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@id/profile_image"
+        android:layout_toRightOf="@id/profile_image"
+        android:fontFamily="@font/poppins_medium"
+        android:gravity="center"
+        android:text="username"
+        android:textColor="@color/txt_color"
+        android:textSize="@dimen/text_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintStart_toEndOf="@+id/profile_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Cateory"
+        android:textColor="@color/color_text"
+        android:textSize="@dimen/text_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/profile_image"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
+
+
+    <TextView
+        android:id="@+id/tv_msg"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="65dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="3dp"
+        android:fontFamily="@font/poppins"
+        android:text="Msg"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_12"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_category"
+        app:layout_constraintVertical_bias="0.0" />
+
+
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/margin_5"
+        android:id="@+id/profile_image"
         android:layout_width="35dp"
         android:layout_height="35dp"
+        android:src="@drawable/deafultprofilepic"
         app:civ_border_color="@color/colorPrimary"
+        app:civ_border_width="1dp"
         app:civ_shadow_color="@color/color_text"
         app:civ_shadow_radius="5dp"
-        app:civ_border_width="1dp"
-        android:id="@+id/profile_image"
-        android:src="@drawable/deafultprofilepic"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:gravity="center"
-        android:textColor="@color/txt_color"
-        android:fontFamily="@font/poppins_medium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="username"
-        android:id="@+id/username"
-        android:layout_toRightOf="@id/profile_image"
-        android:layout_toEndOf="@id/profile_image"
-        android:layout_marginLeft="10dp"
-        android:layout_centerVertical="true"
-        android:textSize="14sp"/>
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        app:civ_border_width="10dp"
-        app:civ_border_color="#05df29"
-        android:id="@+id/img_on"
-        android:visibility="gone"
-        android:src="@mipmap/ic_launcher"
-        android:layout_below="@id/username"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="-15dp"
-        android:layout_toRightOf="@id/profile_image"
-        android:layout_toEndOf="@id/profile_image"/>
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        app:civ_border_width="10dp"
-        app:civ_border_color="#bfbfbf"
-        android:id="@+id/img_off"
-        android:visibility="gone"
-        android:src="@mipmap/ic_launcher"
-        android:layout_below="@id/username"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="-15dp"
-        android:layout_toRightOf="@id/profile_image"
-        android:layout_toEndOf="@id/profile_image"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/username"
-        android:layout_toRightOf="@id/profile_image"
-        android:layout_marginTop="5dp"
-        android:paddingTop="5dp"
-        android:id="@+id/last_msg"
-        android:textColor="@color/colorPrimaryDark"
-        android:layout_marginLeft="20dp"
-        android:maxLines="1"/>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

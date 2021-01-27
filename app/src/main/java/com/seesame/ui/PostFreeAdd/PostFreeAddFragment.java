@@ -536,18 +536,46 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         orderMap.put("orderCompleted", "");
         orderMap.put("ownerRating", "false");
         orderMap.put("partnerRating", "false");
-
-
         if (cuisines.contains("Groceries")) {
-
             orderMap.put("resturntName", deliverypartner);
             orderMap.put("resturntAddress", userAddress);
             orderMap.put("resturntPostalCode", "");
-
         } else {
             orderMap.put("resturntName", resturntName);
             orderMap.put("resturntAddress", userAddress);
             orderMap.put("resturntPostalCode", "");
+        }
+
+        if (cuisines.equalsIgnoreCase("Indian")) {
+
+            orderMap.put("orderImg", Utils.Indian);
+        } else if (cuisines.equalsIgnoreCase("Beverages")) {
+
+            orderMap.put("orderImg", Utils.Beverages);
+
+        } else if (cuisines.equalsIgnoreCase("FastFood")) {
+
+            orderMap.put("orderImg", Utils.FastFood);
+
+        } else if (cuisines.equalsIgnoreCase("Desserts")) {
+
+            orderMap.put("orderImg", Utils.Desserts);
+
+        } else if (cuisines.equalsIgnoreCase("Groceries")) {
+
+            orderMap.put("orderImg", Utils.Groceries);
+
+        } else if (cuisines.equalsIgnoreCase("Pizza and Subway")) {
+
+            orderMap.put("orderImg", Utils.Pizz);
+
+        } else if (cuisines.equalsIgnoreCase("Western")) {
+
+            orderMap.put("orderImg", Utils.Western);
+
+        } else {
+
+            orderMap.put("orderImg", Utils.Chinnes);
 
         }
 
@@ -674,7 +702,7 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
     }
 
 
-    private void insertCategoriData(String categorieName) {
+    private void insertCategoriData(final String categorieName) {
 
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
@@ -695,6 +723,9 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
 
 
                     //  if (count == 0) {
+
+                 /*   DatabaseReference reference = FirebaseDatabase.getInstance().getReference("userSignup");
+                    reference.child(Utils.userId).child("userName").setValue(edt_username.getText().toString().trim());*/
 
                     count = count + 1;
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");

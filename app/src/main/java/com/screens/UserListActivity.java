@@ -3,6 +3,7 @@ package com.screens;
 import android.os.Bundle;
 
 import com.Adapters.UserListadapter;
+import com.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -74,7 +75,7 @@ public class UserListActivity extends AppCompatActivity {
         mUsers = new ArrayList<>();
 
 
-        if (pageData.equalsIgnoreCase("pageData")) {
+        if (pageData.equalsIgnoreCase("Allchats")) {
             getAllchatUsers();
 
         } else {
@@ -112,6 +113,8 @@ public class UserListActivity extends AppCompatActivity {
                     userMap.put("deliveryAgentId", String.valueOf(snapshot.child("deliveryAgentId").getValue()));
                     userMap.put("deliveryAgentName", String.valueOf(snapshot.child("deliveryAgentName").getValue()));
                     userMap.put("orderId", String.valueOf(snapshot.child("orderId").getValue()));
+                    userMap.put("ownerUserId", String.valueOf(snapshot.child("ownerUserId").getValue()));
+                    userMap.put("cuisines", String.valueOf(snapshot.child("cuisines").getValue()));
                     userMap.put("orderName", orderName);
 
 
@@ -151,41 +154,20 @@ public class UserListActivity extends AppCompatActivity {
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("OrderDeliveryAgentList");
         reference.keepSynced(true);
-        //  Log.i("MyId ", firebaseUser.getUid());
-        reference.orderByChild("orderId").equalTo(orderId).addListenerForSingleValueEvent(new ValueEventListener() {
-
-            // reference.addValueEventListener(new ValueEventListener() {
+        reference.orderByChild("ownerUserId").equalTo(Utils.userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // if (search_users.getText().toString().equals("")) {
-
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
-                /*    User user = snapshot.getValue(User.class);
-                    Log.i("UserId ", user.getId());
-                    if (!user.getId().equals(firebaseUser.getUid())) {
-                        mUsers.add(user);
-                    }
-                    */
                     userMap = new HashMap<>();
                     userMap.put("chatId", String.valueOf(snapshot.child("chatId").getValue()));
                     userMap.put("deliveryAgentId", String.valueOf(snapshot.child("deliveryAgentId").getValue()));
                     userMap.put("deliveryAgentName", String.valueOf(snapshot.child("deliveryAgentName").getValue()));
                     userMap.put("orderId", String.valueOf(snapshot.child("orderId").getValue()));
+                    userMap.put("ownerUserId", String.valueOf(snapshot.child("ownerUserId").getValue()));
+                    userMap.put("cuisines", String.valueOf(snapshot.child("cuisines").getValue()));
                     userMap.put("orderName", orderName);
-
-
                     userMapList.add(userMap);
-
-
-                    //     orderredMap.put("orderId", String.valueOf(snapshot1.child("orderId").getValue()));
-
                 }
-
-
-                  /*  recyclervw.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                    recyclervw.setHasFixedSize(true);*/
-
                 recyclervw_userlist.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 recyclervw_userlist.setHasFixedSize(true);
                 userListadapter = new UserListadapter(UserListActivity.this, userMapList, false, price, cuisines, orderName);

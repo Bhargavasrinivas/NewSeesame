@@ -29,7 +29,7 @@
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/topbar_gradient"
         android:gravity="center"
         android:orientation="horizontal"
         android:weightSum="3"

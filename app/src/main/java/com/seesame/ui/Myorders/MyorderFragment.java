@@ -6,14 +6,18 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.Adapters.CompletedOrderAdpter;
+import com.Adapters.Filteradpter;
 import com.Adapters.MyorderAdpter;
 import com.Utils;
 import com.google.android.material.snackbar.Snackbar;
@@ -49,6 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static android.content.Context.ACTIVITY_SERVICE;
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class MyorderFragment extends Fragment {
 
@@ -76,18 +82,15 @@ public class MyorderFragment extends Fragment {
         notificationsViewModel =
                 ViewModelProviders.of(this).get(MyordersViewModel.class);
         View root = inflater.inflate(R.layout.fragment_notifications, container, false);
-        //   final TextView textView = root.findViewById(R.id.text_notifications);
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                //  textView.setText(s);
-            }
-        });
+
         setHasOptionsMenu(true);
         orderedacceptedList = new ArrayList<HashMap<String, String>>();
+        orderedMapList = new ArrayList<HashMap<String, String>>();
+        orderedcompletedMapList = new ArrayList<HashMap<String, String>>();
         initView(root);
-        //  orderSpinner.setOnItemSelectedListener(this);
-        // getAllMyOrders();
+        Utils.myorderfilterValue = "All Orders";
+        getAllMyOrders();
+
 
         tablyout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -102,20 +105,15 @@ public class MyorderFragment extends Fragment {
                         recyclerView_myorders.setVisibility(View.VISIBLE);
                         recyclerView_ordersCompleted.setVisibility(View.GONE);
 
-                       /* Comparator c = Collections.reverseOrder();
-                        Collections.sort(orderedMapList, c);*/
-                        getAllMyOrders();
+                        //   getAllMyOrders();
                         if (((orderedMapList == null || orderedMapList.size() == 0) && (orderedacceptedList.size() == 0 || orderedacceptedList == null))) {
 
                             layout_noorders.setVisibility(View.VISIBLE);
 
-                          /*  Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
-                              getString(R.string.noOrders), Snackbar.LENGTH_LONG);
-                            snackBar.show();*/
                         }
                         break;
                     case 1:
-                        getAllMyOrders();
+                        //   getAllMyOrders();
                         //  orderSpinner.setVisibility(View.GONE);
                         img_filter.setVisibility(View.GONE);
                         layout_myorders.setVisibility(View.VISIBLE);
@@ -126,9 +124,7 @@ public class MyorderFragment extends Fragment {
                         if (orderedcompletedMapList.size() == 0) {
 
                             tv_noorder.setVisibility(View.VISIBLE);
-                         /*   Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
-                                    getString(R.string.nodeliverredOrders), Snackbar.LENGTH_LONG);
-                            snackBar.show();*/
+
                         }
                         break;
 
@@ -152,13 +148,65 @@ public class MyorderFragment extends Fragment {
             public void onClick(View v) {
 
 
-                Toast.makeText(getActivity(), "Fliter", Toast.LENGTH_SHORT).show();
+                // inflate the layout of the popup window
+                LayoutInflater inflater = (LayoutInflater)
+                        getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+                final View popupView = inflater.inflate(R.layout.popup_layout, null);
+                // create the popup window
+                /*int width = LinearLayout.LayoutParams.WRAP_CONTENT;.
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;*/
 
-                //  getActivity().openOptionsMenu();
+                int width = 500;
+                int height = 400;
 
-                // getActivity().invalidateOptionsMenu();
+                boolean focusable = true; // lets taps outside the popup also dismiss it
+                final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
-                //  orderSpinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) getActivity());
+                popupWindow.showAtLocation(v, Gravity.RIGHT, 60, -700);
+
+                ListView listView;
+                listView = popupView.findViewById(R.id.listView);
+                ArrayList filterList = new ArrayList();
+                filterList.add("All Orders");
+                filterList.add("Accepted Orders");
+
+
+                String pageData = "myOrders";
+                Filteradpter filteradpter = new Filteradpter(getActivity(), filterList, Utils.myorderfilterValue, pageData);
+                listView.setAdapter(filteradpter);
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        String value = String.valueOf(parent.getItemAtPosition(position));
+                        popupWindow.dismiss();
+
+                        if (value.equalsIgnoreCase("0")) {
+                            Utils.myorderfilterValue = "All Orders";
+                            getAllMyOrders();
+
+                        } else {
+                            Utils.myorderfilterValue = "Accepted Orders";
+                            acceptedOrders();
+                        }
+
+                    }
+                });
+
+
+                popupView.setOnTouchListener(new View.OnTouchListener() {
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+
+
+                        popupWindow.dismiss();
+                        return true;
+                    }
+                });
+
+
             }
         });
 
@@ -168,7 +216,7 @@ public class MyorderFragment extends Fragment {
 
                 Intent chatList = new Intent(getActivity(), UserListActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("pageData","Allchats");
+                bundle.putString("pageData", "Allchats");
                 chatList.putExtras(bundle);
                 getActivity().startActivity(chatList);
 
@@ -206,40 +254,9 @@ public class MyorderFragment extends Fragment {
         progressBar.setProgress(20);
     }
 
-
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getActivity().getMenuInflater().inflate(R.menu.menu_orders, menu);
-        return true;
-
-       /* inflater.inflate(R.menu.menu_sample, menu);
-        super.onCreateOptionsMenu(menu,inflater);*/
-
-
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
     private void getAllMyOrders() {
 
-        orderedMapList = new ArrayList<HashMap<String, String>>();
-
-        orderedcompletedMapList = new ArrayList<HashMap<String, String>>();
-
+        orderedMapList.clear();
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -299,7 +316,7 @@ public class MyorderFragment extends Fragment {
 
                     orderredMap.put("ownerRating", String.valueOf(snapshot1.child("ownerRating").getValue()));
                     orderredMap.put("partnerRating", String.valueOf(snapshot1.child("partnerRating").getValue()));
-
+                    orderredMap.put("orderImg", String.valueOf(snapshot1.child("orderImg").getValue()));
 
 
                   /*  if (!snapshot1.child("customerUserId").getValue().equals(Utils.userId)) {
@@ -386,7 +403,7 @@ public class MyorderFragment extends Fragment {
 
     private void acceptedOrders() {
 
-
+        orderedacceptedList.clear();
         //  orderedcompletedMapList = new ArrayList<HashMap<String, String>>();
 
 
@@ -447,6 +464,8 @@ public class MyorderFragment extends Fragment {
                     orderredMap.put("resturntPostalCode", String.valueOf(snapshot1.child("resturntPostalCode").getValue()));
                     orderredMap.put("ownerRating", String.valueOf(snapshot1.child("ownerRating").getValue()));
                     orderredMap.put("partnerRating", String.valueOf(snapshot1.child("partnerRating").getValue()));
+                    orderredMap.put("orderImg", String.valueOf(snapshot1.child("orderImg").getValue()));
+
 
 
 
@@ -466,7 +485,7 @@ public class MyorderFragment extends Fragment {
                         //   orderedcompletedMapList.add(orderredMap);
                         orderedacceptedList.add(orderredMap);
                     } else {
-                        orderedacceptedList.add(orderredMap);
+                        // orderedacceptedList.add(orderredMap);
 
                     }
 

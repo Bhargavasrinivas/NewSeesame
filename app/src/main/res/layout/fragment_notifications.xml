@@ -7,60 +7,6 @@
     tools:context=".ui.Myorders.MyorderFragment">
 
 
-    <RelativeLayout
-        android:orientation="horizontal"
-        android:background="@drawable/topbar_gradient"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-
-
-        <ImageView
-            android:layout_alignParentRight="true"
-            android:id="@+id/img_chats"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="@dimen/text_16"
-            android:src="@drawable/newchat"
-          />
-
-        <ImageView
-            android:layout_marginEnd="50dp"
-            android:layout_alignRight="@+id/img_chats"
-            android:id="@+id/img_filter"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/newfilter"
-            />
-
-
-
-
-
-    </RelativeLayout>
-
-
-
-
-   <!-- <Spinner
-        android:visibility="gone"
-        android:id="@+id/orderSpinner"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/img_filter"
-        app:layout_constraintTop_toTopOf="parent" />-->
-
-
-
-
-
-
     <LinearLayout
         android:id="@+id/layout_noorders"
         android:layout_width="match_parent"
@@ -90,6 +36,17 @@
             android:textSize="@dimen/text_16" />
 
     </LinearLayout>
+
+
+    <!-- <Spinner
+         android:visibility="gone"
+         android:id="@+id/orderSpinner"
+         android:layout_width="0dp"
+         android:layout_height="50dp"
+         android:layout_marginStart="10dp"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toEndOf="@+id/img_filter"
+         app:layout_constraintTop_toTopOf="parent" />-->
 
 
     <LinearLayout
@@ -134,6 +91,38 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/topbar_gradient"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+            android:id="@+id/img_chats"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/newchat" />
+
+        <ImageView
+            android:id="@+id/img_filter"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignRight="@+id/img_chats"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="60dp"
+            android:src="@drawable/newfilter" />
+
+
+    </RelativeLayout>
+
+
     <TextView
         android:id="@+id/tv_noorder"
         android:layout_width="match_parent"
@@ -165,10 +154,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.tabs.TabLayout
-        android:layout_marginTop="30dp"
         android:id="@+id/tablyout"
         android:layout_width="430dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -25,6 +26,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.Utils;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.screens.ChatActivity;
 import com.screens.UserListActivity;
 import com.seesame.R;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -75,9 +79,13 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
 
 
             orderedMapList.get(position);
+
+            //  Glide.with(context).load(orderedMapList.get(position).get("orderImg")).apply(new RequestOptions().override(100, 100)).into(holder.img_myorder);
+            Picasso.with(context).load(orderedMapList.get(position).get("orderImg")).fit().into(holder.img_myorder);
+
             holder.tv_hotlename.setText(orderedMapList.get(position).get("resturntName"));
             holder.tv_price.setText(orderedMapList.get(position).get("orderPrice") + "$");
-            holder.tv_expiretime.setText("Exprires in " + orderedMapList.get(position).get("expireTime") + "mins");
+            //  holder.tv_expiretime.setText("Exprires in " + orderedMapList.get(position).get("expireTime") + "mins");
             holder.btn_accept.setText(orderedMapList.get(position).get("orderStatus"));
 
 
@@ -109,9 +117,10 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
 
             SimpleDateFormat timeFormate = new SimpleDateFormat("HH:mm:ss");
             currentTime = timeFormate.format(new Date());
-            expiryTime = Integer.parseInt(orderedMapList.get(position).get("expireTime"));
+
 
             orderTime = orderedMapList.get(position).get("orderTime");
+
 
             if ((orderedMapList.get(position).get("orderStatus").equalsIgnoreCase("Accepted"))) {
                 holder.tv_expiretime.setVisibility(View.GONE);
@@ -162,19 +171,18 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                 }
             });
 
-
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
             try {
 
                 SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
                 Date currentT = format.parse(currentTime);
                 Date OldT = format.parse(orderTime);
-                long differncetime = currentT.getTime() - OldT.getTime();
-                //      int mins = (int) (differncetime / (1000 * 60)) % 60;
-
-
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
                 String currentDate = dateFormat.format(calendar.getTime());
+
 
                 String dateOrder = orderedMapList.get(position).get("orderStatusDate");
                 Date d1 = dateFormat.parse(currentDate);
@@ -186,76 +194,180 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                 long difference_In_Hours = (difference_In_Time / (1000 * 60 * 60)) % 24;
 
 
-                holder.tv_expiretime.setText("Exprires in " + difference_In_Minutes + " mins");
-
-                if (difference_In_Hours >= 1) {
-                    // holder.tv_expiretime.setText("Exprired");
-                    holder.tv_expiretime.setVisibility(View.GONE);
-                    holder.btn_accept.setText("Exprired");
-                    holder.layout_expiretime.setVisibility(View.VISIBLE);
-                    holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
-                    deletingCategoriData(orderedMapList.get(position).get("orderStatus"));
-                    return;
-
-                }
-
                 String expTime = orderedMapList.get(position).get("expireTime");
 
                 if ((expTime.equalsIgnoreCase("1 Day") || expTime.equalsIgnoreCase("3 Day") ||
                         expTime.equalsIgnoreCase("5 Day") || expTime.equalsIgnoreCase("7 Day"))) {
 
 
+                    if (expTime.equalsIgnoreCase("1 Day")) {
+
+                       /* long finalhour = 24 - 24;
+                        long finalminutes = 60 - 60;*/
+                        long hoursaDay = 24;
+                        long minsinhour = 60;
+
+                        long finalhour = 24 - difference_In_Hours;
+                        long finalminutes = 60 - difference_In_Minutes;
+                        if (finalhour == 0) {
+
+                            if (finalminutes == 0) {
+                                holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                                holder.tv_expiretime.setText(" Expired");
+                            } else {
+
+                                holder.tv_expiretime.setText(" Expires in " + finalminutes + " Minutes");
+                            }
+
+                        } else {
+
+                            if (difference_In_Hours == 0) {
+                                holder.tv_expiretime.setText("Expires in " + 1 + " Day");
+
+                            } else {
+
+                                holder.tv_expiretime.setText(" Expires in " + finalhour + " hours" + " " + finalminutes + " Minutes");
+                            }
+
+                        }
+
+
+                    } else if (expTime.equalsIgnoreCase("3 Day")) {
+
+                        long daysLeftover = (3 - difference_In_Days);
+                        if (difference_In_Days > 3) {
+                            holder.tv_expiretime.setText(" Expired");
+                            holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                        } else if (daysLeftover == 1) {
+                            long finalhour = 24 - difference_In_Hours;
+                            long finalminutes = 60 - difference_In_Minutes;
+                            if (finalhour == 0) {
+
+                                if (difference_In_Minutes == 0) {
+                                    holder.tv_expiretime.setText(" Expired");
+                                    holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                                } else {
+                                    holder.tv_expiretime.setText(" Expires in " + finalminutes);
+
+                                }
+                            } else {
+                                holder.tv_expiretime.setText(" Expires in " + finalhour + " hours" + " " + finalminutes + " Minutes");
+                            }
+                        } else {
+                            long daysLeft = (3 - difference_In_Days);
+                            holder.tv_expiretime.setText(" Expires in " + daysLeft + " Days ");
+                        }
+
+                    } else if (expTime.equalsIgnoreCase("5 Day")) {
+
+                        long daysLeftover = (5 - difference_In_Days);
+                        if (difference_In_Days > 5) {
+                            holder.tv_expiretime.setText(" Expired");
+                            holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                        } else if (daysLeftover == 1) {
+                            long finalhour = 24 - difference_In_Hours;
+                            long finalminutes = 60 - difference_In_Minutes;
+                            if (finalhour == 0) {
+
+                                if (difference_In_Minutes == 0) {
+                                    holder.tv_expiretime.setText(" Expired");
+                                    holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                                } else {
+                                    holder.tv_expiretime.setText(" Expires in " + finalminutes);
+
+                                }
+                            } else {
+                                holder.tv_expiretime.setText(" Expires in " + finalhour + " hours" + " " + finalminutes + " Minutes");
+                            }
+                        } else {
+                            long daysLeft = (5 - difference_In_Days);
+                            holder.tv_expiretime.setText(" Expires in " + daysLeft + " Days " );
+                        }
+
+                    } else {
+
+                        // 7 Days
+
+                        long daysLeftover = (7 - difference_In_Days);
+                        if (difference_In_Days > 7) {
+                            holder.tv_expiretime.setText(" Expired");
+                            holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                        } else if (daysLeftover == 1) {
+                            long finalhour = 24 - difference_In_Hours;
+                            long finalminutes = 60 - difference_In_Minutes;
+                            if (finalhour == 0) {
+
+                                if (difference_In_Minutes == 0) {
+                                    holder.tv_expiretime.setText(" Expired");
+                                    holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                                } else {
+                                    holder.tv_expiretime.setText(" Expires in " + finalminutes);
+
+                                }
+                            } else {
+                                holder.tv_expiretime.setText(" Expires in " + finalhour + " hours" + " " + finalminutes + " Minutes");
+                            }
+                        } else {
+                            long daysLeft = (7 - difference_In_Days);
+                            holder.tv_expiretime.setText(" Expires in " + daysLeft + " Days ");
+                        }
+
+                    }
                 } else {
+                    //   expiryTime = Integer.parseInt(orderedMapList.get(position).get("expireTime"));
+                    expiryTime = Integer.parseInt(orderedMapList.get(position).get("expireTime"));
+                    if (difference_In_Hours >= 1) {
+
+                        holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                        holder.tv_expiretime.setText("Exprired");
+                        holder.tv_chat.setVisibility(View.GONE);
+                        String orderId = orderedMapList.get(position).get("orderId");
+                        DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
+                        dbreference.child(orderId).child("orderStatus").setValue("Exprired");
+                        return;
+
+                    }
 
 
                     if (difference_In_Days > 0) {
 
                         holder.tv_expiretime.setText("Exprired");
                         holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
-                        holder.tv_expiretime.setVisibility(View.GONE);
-                        holder.btn_accept.setText("Exprired");
-                        holder.layout_expiretime.setVisibility(View.VISIBLE);
+                        reference.child(orderedMapList.get(position).get("orderId")).child("orderStatus").setValue("Expired");
+                        holder.tv_chat.setVisibility(View.GONE);
                         String orderId = orderedMapList.get(position).get("orderId");
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
-                        reference.child(orderId).child("orderStatus").setValue("Exprired");
-                        deletingCategoriData(orderedMapList.get(position).get("orderStatus"));
-
+                        DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
+                        dbreference.child(orderId).child("orderStatus").setValue("Exprired");
+                        notifyDataSetChanged();
                     } else {
 
-                        // int mins = (int) (differncetime / (1000 * 60)) % 60;
 
                         if (difference_In_Minutes < 0) {
 
                             holder.tv_expiretime.setText("Exprired");
                             holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
-                            holder.tv_expiretime.setVisibility(View.GONE);
-                            holder.btn_accept.setText("Exprired");
-                            holder.layout_expiretime.setVisibility(View.VISIBLE);
+                            reference.child(orderedMapList.get(position).get("orderId")).child("orderStatus").setValue("Expired");
+                            holder.tv_chat.setVisibility(View.GONE);
                             String orderId = orderedMapList.get(position).get("orderId");
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
-                            reference.child(orderId).child("orderStatus").setValue("Exprired");
-
-                            deletingCategoriData(orderedMapList.get(position).get("orderStatus"));
-
-
+                            DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
+                            dbreference.child(orderId).child("orderStatus").setValue("Exprired");
+                            notifyDataSetChanged();
                         } else {
 
                             int differnceTime = (int) (expiryTime - difference_In_Minutes);
                             if (differnceTime <= 0) {
                                 holder.tv_expiretime.setText("Exprired");
                                 holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
-                                holder.tv_expiretime.setVisibility(View.GONE);
-                                holder.btn_accept.setText("Exprired");
-                                holder.layout_expiretime.setVisibility(View.VISIBLE);
+                                reference.child(orderedMapList.get(position).get("orderId")).child("orderStatus").setValue("Expired");
+                                holder.tv_chat.setVisibility(View.GONE);
                                 String orderId = orderedMapList.get(position).get("orderId");
-                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
-                                reference.child(orderId).child("orderStatus").setValue("Exprired");
-                                deletingCategoriData(orderedMapList.get(position).get("orderStatus"));
-
+                                DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
+                                dbreference.child(orderId).child("orderStatus").setValue("Exprired");
+                                notifyDataSetChanged();
                             } else {
-                                // Log.i("GrandTime ", String.valueOf(differnceTime));
+
                                 holder.tv_expiretime.setText("Exprires in " + differnceTime + " mins");
-                                //  Log.i("DiffernceTime ", String.valueOf(differnceTime));
+
                             }
 
                         }
@@ -317,7 +429,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                             bundle.putString("OrderName", orderedMapList.get(position).get("resturntName"));
                             bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
                             bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
-                            bundle.putString("pageData","Mychats");
+                            bundle.putString("pageData", "Mychats");
                             orderinfo.putExtras(bundle);
                             context.startActivity(orderinfo);
                         } else {
@@ -338,7 +450,6 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
 
 
                     }
-
 
 
                 }
@@ -376,6 +487,8 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                                             reference.child(orderedMapList.get(position).get("orderId")).child("partnerRating").setValue("true");
                                         }
                                         notifyDataSetChanged();
+                                        dialog.cancel();
+
 
                                     }
                                 })
@@ -429,6 +542,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
                             //  myorderAdpter.notifyDataSetChanged();
                             //  notifyItemRangeChanged(Integer.parseInt(orderId), orderedMapList.size());
                             notifyDataSetChanged();
+                            deletingCategoriData(orderedMapList.get(position).get("cuisines"));
                             Toast.makeText(context, "Succesfully cancelled order", Toast.LENGTH_SHORT).show();
 
 
@@ -473,6 +587,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
         private Switch switch_order;
         private Spinner spinner_expiretime;
         private View layout_expiretime;
+        private ImageView img_myorder;
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
@@ -487,6 +602,7 @@ public class MyorderAdpter extends RecyclerView.Adapter<MyorderAdpter.Viewholder
             switch_order = itemView.findViewById(R.id.switch_order);
             spinner_expiretime = itemView.findViewById(R.id.spinner_expiretime);
             layout_expiretime = itemView.findViewById(R.id.layout_expiretime);
+            img_myorder = itemView.findViewById(R.id.img_myorder);
 
         }
     }

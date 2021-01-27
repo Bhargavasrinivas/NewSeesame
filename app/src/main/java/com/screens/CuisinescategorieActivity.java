@@ -32,12 +32,14 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -50,6 +52,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,10 +86,9 @@ import retrofit2.Response;
 
 public class CuisinescategorieActivity extends AppCompatActivity {
 
-    //  private WebView webView;
+    //private WebView webView;
     private VideoView videoView;
     MediaController mediaController;
-    private Object Drawable;
     private TextView tv_skip;
     private ArrayList<CuisinesData> cuisinesDataArrayList;
     private RecyclerView recyclerView_cuisinesCategorie;
@@ -107,18 +109,17 @@ public class CuisinescategorieActivity extends AppCompatActivity {
     private static final String VIDEO_SAMPLE = "https://www.akunatech.com/image/about/akuna_video.mp4";
     // Current playback position (in milliseconds).
     private int mCurrentPosition = 0;
-
+    private CardView layoutimg_one, layoutimg_two, layoutimg_three;
+    private static int SPLASH_TIME_OUT = 9000;
     // Tag for the instance state bundle.
     private static final String PLAYBACK_TIME = "play_time";
     private WebView webview;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cuisinescategorie);
- /*       Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
         imgVw = findViewById(R.id.imgVw);
 
         imgVw.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +128,14 @@ public class CuisinescategorieActivity extends AppCompatActivity {
                 notification();
             }
         });
+
+
+        layoutimg_one = findViewById(R.id.layoutimg_one);
+        layoutimg_two = findViewById(R.id.layoutimg_two);
+        layoutimg_three = findViewById(R.id.layoutimg_three);
+        progressBar = findViewById(R.id.progressBar);
+
+        cuisinesData = new CuisinesData();
 
         webview = findViewById(R.id.webview);
         webview.setBackgroundResource(R.drawable.sharebanner);
@@ -138,9 +147,6 @@ public class CuisinescategorieActivity extends AppCompatActivity {
         webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         webview.loadUrl("https://www.akunatech.com/image/about/akuna_video.mp4");
 
-   /* fuser = FirebaseAuth.getInstance().getCurrentUser();
-        fuser.getUid();*/
-
 
         mFusedLocationClient
                 = LocationServices
@@ -149,76 +155,44 @@ public class CuisinescategorieActivity extends AppCompatActivity {
 
         getLastLocation();
 
-        Bundle b = getIntent().getExtras();
+/*        Bundle b = getIntent().getExtras();
         currentlatitude = b.getDouble("lat");
-        currentlongitude = b.getDouble("longi");
+        currentlongitude = b.getDouble("longi");*/
 
         //    count = count - 1;
-
-        int count = 0;
 /*
+        int count = 0;
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
         //  reference.child("mobileNo").setValue(edt_mobileno.getText().toString().trim());
-        reference.child("-MRJV30mPjqfN1hxeSG").child("count").setValue(count);*/
+        reference.child("-MRcA_jtFt-P2Wc6-hj6").child("count").setValue(count);*/
 
 
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
         initView();
 
-       /* videoView.setVideoURI(Uri.parse("http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4"));
-        videoView.setMediaController(new MediaController(this));
-        videoView.start();*/
-
-        // Set up the media controller widget and attach it to the video view.
-    /*    MediaController controller = new MediaController(this);
-        controller.setMediaPlayer(videoView);
-        videoView.setMediaController(controller);*/
-
-
-
-    /*    Uri uri = Uri.parse("https://www.akunatech.com/image/about/akuna_video.mp4");
-        videoView.setMediaController(new MediaController(this));
-        videoView.setVideoURI(uri);
-        videoView.requestFocus();
-        videoView.start();*/
-
-     /*   videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-
-                videoView.start();
-                videoView.requestFocus();
-            }
-
-        });
-*/
-
-
-
-      /*  MediaController mediaController = new MediaController(this);
-        mediaController.setAnchorView(videoView);*/
-
-       /* videoView.setMediaController(new MediaController(getApplication()));
-        Uri uri = Uri.parse("http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4");
-
-
-
-
-        videoView.setVideoURI(uri);*/
-
         if (savedInstanceState != null) {
             mCurrentPosition = savedInstanceState.getInt(PLAYBACK_TIME);
         }
 
-        // Set up the media controller widget and attach it to the video view.
-     /*   MediaController controller = new MediaController(this);
-        controller.setMediaPlayer(videoView);
-        videoView.setMediaController(controller);
-*/
 
         updateToken(FirebaseInstanceId.getInstance().getToken());
 
-        //   fetchCategoriValues();
+
+        /* Method to fetch categories from db*/
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setMax(100);
+                progressBar.setProgress(20);
+                progressBar.setVisibility(View.VISIBLE);
+                fetchCategoriValues();
+
+            }
+        }, SPLASH_TIME_OUT);
+
 
         tv_skip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -235,7 +209,7 @@ public class CuisinescategorieActivity extends AppCompatActivity {
 
             }
         });
-
+        //    categoireTypes();
 
     }
 
@@ -314,7 +288,7 @@ public class CuisinescategorieActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
+        // Toast.makeText(getApplicationContext(), "onPause", Toast.LENGTH_SHORT).show();
         // Load the media each time onStart() is called.
         //  initializePlayer();
     }
@@ -323,6 +297,9 @@ public class CuisinescategorieActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
+
+        //  Toast.makeText(getApplicationContext(), "onPause", Toast.LENGTH_SHORT).show();
 
         // In Android versions less than N (7.0, API 24), onPause() is the
         // end of the visual lifecycle of the app.  Pausing the video here
@@ -341,7 +318,10 @@ public class CuisinescategorieActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        // Toast.makeText(getApplicationContext(), "onStop", Toast.LENGTH_SHORT).show();
 
+
+        webview.stopLoading();
         // Media playback takes a lot of resources, so everything should be
         // stopped and released at this time.
         //  releasePlayer();
@@ -487,8 +467,14 @@ public class CuisinescategorieActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     long count = (long) snapshot1.child("count").getValue();
                     //   String categorieId = (String) snapshot1.child("id").getValue();
-                    Log.i("Count ", String.valueOf(count));
-                    if (count != 0) {
+
+                    //    if ((count != 0 && count < 0)) {
+
+                    if (count > 0) {
+
+                        Log.i("Count ", String.valueOf(count));
+
+                        String counst = String.valueOf(count);
                         cuisinesData = new CuisinesData();
                        /* count = count + 1;
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
@@ -502,34 +488,35 @@ public class CuisinescategorieActivity extends AppCompatActivity {
                         cuisinesData.setCount((Long) snapshot1.child("count").getValue());
                         cuisinesDataArrayList.add(cuisinesData);
                         // cuisinesDataArrayList.add(snapshot1.child("count").getValue());
-
-
                     }
 
                 }
 
-                if (cuisinesDataArrayList.size() > 0) {
-
-                    //     videoView.setVisibility(View.INVISIBLE);
-                    tv_skip.setVisibility(View.GONE);
-                } else {
-
-                    tv_skip.setVisibility(View.VISIBLE);
-                }
-
-
+                progressBar.setVisibility(View.GONE);
                 CuisinesAdpater cuisinesAdpater = new CuisinesAdpater(CuisinescategorieActivity.this, cuisinesDataArrayList, currentlatitude, currentlongitude);
                 GridLayoutManager layoutManager = new GridLayoutManager(getApplication(), 2);
                 recyclerView_cuisinesCategorie.setLayoutManager(layoutManager);
                 recyclerView_cuisinesCategorie.setAdapter(cuisinesAdpater);
                 // recyclerView_cuisinesCategorie.setVisibility(View.GONE);
                 //   scrollView.setTop(300dp);
+                if (cuisinesDataArrayList.size() > 2) {
+                    tv_skip.setVisibility(View.GONE);
+                    webview.setVisibility(View.GONE);
+                    layoutimg_one.setVisibility(View.GONE);
+                    layoutimg_two.setVisibility(View.GONE);
+                    layoutimg_three.setVisibility(View.GONE);
+                } else if (cuisinesDataArrayList.size() == 1) {
 
+                    webview.setVisibility(View.GONE);
+                    layoutimg_one.setVisibility(View.VISIBLE);
+                    layoutimg_two.setVisibility(View.VISIBLE);
+                    layoutimg_three.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -537,21 +524,21 @@ public class CuisinescategorieActivity extends AppCompatActivity {
     }
 
 
-    private void categoireTypes() {
+    /*private void categoireTypes() {
 
-        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/hotlethree.jpg?alt=media&token=82f60ce1-7a8b-4dad-a74d-067998370983", "Indian", 0, "ind"));
-        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/hotlethree.jpg?alt=media&token=82f60ce1-7a8b-4dad-a74d-067998370983", "Beverages", 0, "ber"));
-        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/hotlethree.jpg?alt=media&token=82f60ce1-7a8b-4dad-a74d-067998370983", "FastFood", 0, "ind"));
-        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/hotlethree.jpg?alt=media&token=82f60ce1-7a8b-4dad-a74d-067998370983", "Desserts", 0, "ber"));
-        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/hotlethree.jpg?alt=media&token=82f60ce1-7a8b-4dad-a74d-067998370983", "Groceries", 0, "ind"));
-        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/hotlethree.jpg?alt=media&token=82f60ce1-7a8b-4dad-a74d-067998370983", "Pizza and Subway", 0, "ber"));
-        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/hotlethree.jpg?alt=media&token=82f60ce1-7a8b-4dad-a74d-067998370983", "Western", 0, "ber"));
-        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/hotlethree.jpg?alt=media&token=82f60ce1-7a8b-4dad-a74d-067998370983", "Chinnes", 0, "ber"));
+        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/indian.jpg?alt=media&token=aba97fe6-cc97-4ae7-948d-e71024177277", "Indian", 0, "ind"));
+        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Beverages.jpg?alt=media&token=786cccfc-428d-47fc-bb2f-14f9a7cfe8e8", "Beverages", 0, "ber"));
+        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/FastFood.jpg?alt=media&token=f8655552-4d54-4ad4-be2d-66f58661ec56", "FastFood", 0, "fstfd"));
+        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Desserts.jpg?alt=media&token=2b760e1e-618c-4731-b82a-9b37689f59a6", "Desserts", 0, "dsrts"));
+        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Groceries.jpg?alt=media&token=90571d68-3dac-47c8-8d41-43345a4173f3", "Groceries", 0, "grc"));
+        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Pizza.jpg?alt=media&token=58de7954-3fb8-4ba1-8514-3ffc36a3a2b0", "Pizza and Subway", 0, "piz"));
+        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Western.jpg?alt=media&token=2fd3e7c8-d4c0-4a81-81f0-2dadf44d0f5d", "Western", 0, "wst"));
+        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Chinnes.jpg?alt=media&token=752eba5a-131e-4086-950c-f361157cc408", "Chinnes", 0, "chn"));
 
         createCusinesDb();
 
 
-    }
+    }*/
 
     private void deletingCategoriData() {
 
@@ -691,6 +678,10 @@ public class CuisinescategorieActivity extends AppCompatActivity {
 
                                             latitude = location.getLatitude();
                                             longititude = location.getLongitude();
+
+                                            currentlatitude = latitude;
+                                            currentlongitude = longititude;
+
                                             // Toast.makeText(getApplicationContext(), "Lat " + location.getLatitude(), Toast.LENGTH_SHORT).show();
                                         }
                                     }

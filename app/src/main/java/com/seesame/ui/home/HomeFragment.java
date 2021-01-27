@@ -1,6 +1,7 @@
 package com.seesame.ui.home;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -62,6 +63,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.screens.UserListActivity;
 import com.seesame.R;
 
 import java.io.IOException;
@@ -97,7 +99,7 @@ public class HomeFragment extends Fragment {
     LocationManager locationManager;
     private Double currentlatitude, currentlongitude;
     private String cuisines;
-    private ImageView img_filter;
+    private ImageView img_filter,newchat;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -116,10 +118,13 @@ public class HomeFragment extends Fragment {
         currentlongitude = b.getDouble("longi");
         cuisines = b.getString("cuisines");
 
-        // Toast.makeText(getActivity(), "cuisines " + cuisines, Toast.LENGTH_SHORT).show();
+        //    Toast.makeText(getActivity(), "cuisines " + cuisines, Toast.LENGTH_SHORT).show();
 
         Utils.userlat = currentlatitude;
         Utils.userlang = currentlongitude;
+
+        /*  Funcation to fetch orders based on Categories*/
+
         getAddresss(currentlatitude, currentlongitude);
 
 
@@ -156,8 +161,8 @@ public class HomeFragment extends Fragment {
                 filterList.add("All Orders");
                 filterList.add("My Orders");
 
-
-                Filteradpter filteradpter = new Filteradpter(getActivity(), filterList, Utils.filterValue);
+                String pageData = "Dashboard";
+                Filteradpter filteradpter = new Filteradpter(getActivity(), filterList, Utils.filterValue, pageData);
                 listView.setAdapter(filteradpter);
 
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -182,19 +187,9 @@ public class HomeFragment extends Fragment {
 
                 popupView.setOnTouchListener(new View.OnTouchListener() {
 
-                    //    TextView tv_allorder,tv_myorder;
-
-
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
 
-
-                      /*  tv_allorder = popupView.findViewById(R.id.tv_allorder);
-                        tv_myorder = popupView.findViewById(R.id.tv_myorder);*/
-
-                        //  String textVal = tv_allorder.getText().toString();
-
-                        //    Toast.makeText(getActivity(), textVal, Toast.LENGTH_SHORT).show();
 
                         popupWindow.dismiss();
                         return true;
@@ -308,6 +303,20 @@ public class HomeFragment extends Fragment {
         //  fetchLocation();
 
 
+        newchat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Intent chatList = new Intent(getActivity(), UserListActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("pageData", "Allchats");
+                chatList.putExtras(bundle);
+                getActivity().startActivity(chatList);
+
+            }
+        });
+
         return root;
     }
 
@@ -329,6 +338,8 @@ public class HomeFragment extends Fragment {
         edt_search_text = view.findViewById(R.id.edt_search_text);
         progressBar = view.findViewById(R.id.progressBar);
         img_filter = view.findViewById(R.id.img_filter);
+        newchat = view.findViewById(R.id.newchat);
+
 
         progressBar.setMax(100);
         progressBar.setProgress(20);
@@ -515,12 +526,34 @@ public class HomeFragment extends Fragment {
             String data = addresses.get(0).getSubLocality();
             String data2 = addresses.get(0).getSubAdminArea();*/
 
-            if ((addresses.get(0).getSubLocality() == null || (addresses.get(0).getSubLocality().isEmpty()))) {
+            String addressline = addresses.get(0).getAddressLine(0);
+            String locality = addresses.get(0).getSubLocality();
+
+
+            if (locality == null) {
+
+                tv_areaName.setText(addressline);
+            } else {
+
+                tv_areaName.setText(locality + " " + addressline);
+            }
+
+            tv_address.setText(addresses.get(0).getAddressLine(0));
+
+
+
+          /*  if ((addresses.get(0).getSubLocality() == null || (addresses.get(0).getSubLocality().isEmpty()))) {
                 tv_areaName.setText(addresses.get(0).getAdminArea());
             } else {
                 tv_areaName.setText(addresses.get(0).getSubLocality());
             }
-            tv_address.setText(addresses.get(0).getAddressLine(0));
+*/
+           /* if (tv_areaName.getText().toString().isEmpty()) {
+                tv_areaName.setVisibility(View.GONE);
+            }*/
+
+
+            //   tv_address.setText(addresses.get(0).getAddressLine(0));
 
            /* Log.i("AdminArea ", addresses.get(0).getAdminArea());
 
@@ -546,8 +579,8 @@ public class HomeFragment extends Fragment {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
         reference.keepSynced(true);
 
-        reference.addValueEventListener(new ValueEventListener() {
-            //  reference.orderByChild("cuisines").equalTo(cuisines).addListenerForSingleValueEvent(new ValueEventListener() {
+        //  reference.addValueEventListener(new ValueEventListener() {
+        reference.orderByChild("cuisines").equalTo(cuisines).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -592,6 +625,7 @@ public class HomeFragment extends Fragment {
                     orderredMap.put("resturntName", String.valueOf(snapshot1.child("resturntName").getValue()));
                     orderredMap.put("resturntAddress", String.valueOf(snapshot1.child("resturntAddress").getValue()));
                     orderredMap.put("resturntPostalCode", String.valueOf(snapshot1.child("resturntPostalCode").getValue()));
+                    orderredMap.put("orderImg", String.valueOf(snapshot1.child("orderImg").getValue()));
 
 
                     String orderStatus = String.valueOf(snapshot1.child("orderStatus").getValue());
@@ -599,10 +633,15 @@ public class HomeFragment extends Fragment {
                     if ((!snapshot1.child("customerUserId").getValue().equals(Utils.userId))) {
 
                         if (orderStatus.equalsIgnoreCase("Pending")) {
-                            orderedMapList.add(orderredMap);
+
                         }
 
                     }
+
+
+                    orderedMapList.add(orderredMap);
+
+
 
                   /*  if ((snapshot1.child("customerUserId").getValue().equals(Utils.userId))) {
 
@@ -631,16 +670,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-
-   /* private void getmyOrders(){
-
-
-        recyclerview_order.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerview_order.setHasFixedSize(true);
-        orderAdpter = new OrderAdpter(getActivity(), myOrderList);
-        recyclerview_order.setAdapter(orderAdpter);
-        orderAdpter.notifyDataSetChanged();
-    }*/
 
     private void getAllMyOrders() {
 
@@ -704,7 +733,7 @@ public class HomeFragment extends Fragment {
 
                     orderredMap.put("ownerRating", String.valueOf(snapshot1.child("ownerRating").getValue()));
                     orderredMap.put("partnerRating", String.valueOf(snapshot1.child("partnerRating").getValue()));
-
+                    orderredMap.put("orderImg", String.valueOf(snapshot1.child("orderImg").getValue()));
 
                     String status = String.valueOf(snapshot1.child("orderStatus").getValue());
 

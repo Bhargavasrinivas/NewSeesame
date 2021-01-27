@@ -42,6 +42,7 @@
         <!-- Location Layout-->
 
         <LinearLayout
+            android:background="@drawable/topbar_gradient"
             android:id="@+id/layout_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,31 +50,34 @@
 
 
             <LinearLayout
-                android:background="@drawable/topbar_gradient"
                 android:weightSum="4"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:layout_weight="0.5"
-                    android:layout_width="wrap_content"
+                    android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/location" />
 
                 <TextView
+                    android:layout_marginBottom="2dp"
+                    android:ellipsize="end"
+                    android:lines="2"
                     android:layout_marginTop="5dp"
                     android:layout_weight="3"
                     android:id="@+id/tv_areaName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/poppins"
                     android:text=""
                     android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/text_16"
+                    android:textSize="@dimen/text_14"
                     android:textStyle="bold" />
 
                 <ImageView
+                    android:id="@+id/newchat"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="0.3"
@@ -95,27 +99,29 @@
 
             </LinearLayout>
 
-
-          <!--  android:text="@string/areaName"-->
-
             <TextView
+                android:visibility="gone"
+                android:lines="3"
+                android:textColor="@color/colorWhite"
                 android:id="@+id/tv_address"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginBottom="2dp"
                 android:fontFamily="@font/poppins_medium"
                 android:text=""
                 android:textStyle="normal" />
+          <!--  android:text="@string/areaName"-->
+
+
         </LinearLayout>
 
 
 
         <LinearLayout
-            android:layout_marginStart="@dimen/text_10"
-            android:layout_marginEnd="@dimen/text_10"
-
+            android:layout_marginStart="@dimen/margin_5"
+            android:layout_marginEnd="@dimen/margin_5"
             android:weightSum="1"
             android:orientation="horizontal"
             android:layout_marginTop="5dp"
@@ -127,8 +133,6 @@
                 android:background="@drawable/search_border"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="5dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
                 <ImageView
@@ -170,7 +174,6 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_order"
-            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_marginBottom="50dp"
             android:layout_height="wrap_content"

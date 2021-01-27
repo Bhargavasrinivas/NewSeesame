@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.Adapters.MessageAdapter;
+import com.Adapters.UserListadapter;
 import com.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -30,6 +31,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -75,6 +77,9 @@ public class ChatActivity extends AppCompatActivity {
     FirebaseUser fuser;
     private TextView tv_welcmmsg;
     private View layout_wlcmmsg;
+    HashMap<String, String> userMap;
+    private ArrayList<HashMap<String, String>> userMapList;
+    private boolean isUserpresent = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +91,7 @@ public class ChatActivity extends AppCompatActivity {
 
         initView();
 
-
+        userMapList = new ArrayList<HashMap<String, String>>();
         //     updateToken(FirebaseInstanceId.getInstance().getToken());
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
@@ -135,7 +140,7 @@ public class ChatActivity extends AppCompatActivity {
         }
 
 
-        Toast.makeText(getApplicationContext(), "PageData " + pagedata, Toast.LENGTH_SHORT).show();
+        //  Toast.makeText(getApplicationContext(), "PageData " + pagedata, Toast.LENGTH_SHORT).show();
 
 
         if (pagedata.equalsIgnoreCase("DeliveryAgent")) {
@@ -167,31 +172,29 @@ public class ChatActivity extends AppCompatActivity {
 
 
                 //  if ((pagedata.equalsIgnoreCase("DeliveryAgent") && listflag == false)) {
-                if ((pagedata.equalsIgnoreCase("DeliveryAgent") && Utils.chatlist)) {
-
-                    Toast.makeText(getApplicationContext(), "inserted to Db ", Toast.LENGTH_SHORT).show();
-                    DatabaseReference refernce = FirebaseDatabase.getInstance().getReference();
-                    String uniqueId = refernce.push().getKey();
-                    HashMap<String, String> orderChatuserList = new HashMap<>();
-                    orderChatuserList.put("chatId", uniqueId);
-                    orderChatuserList.put("orderId", orderId);
-                    orderChatuserList.put("deliveryAgentId", senderId);
-                    orderChatuserList.put("deliveryAgentName", agentName);
-                    refernce.child("OrderDeliveryAgentList").push().setValue(orderChatuserList);
-                    listflag = true;
-
-                    SharedPreferences.Editor editor = sharedpreferences.edit();
-                    editor.putBoolean("mykey", false);
-                    editor.commit();
-
+               /* if ((pagedata.equalsIgnoreCase("DeliveryAgent") && Utils.chatlist)) {
+                    insertdeliveryagents();
                 }
+*/
+                if (pagedata.equalsIgnoreCase("DeliveryAgent")) {
+                    //  fetchUsers();
 
-                if (!text_send.getText().toString().isEmpty()) {
-                    sendMsg(text_send.getText().toString().trim());
-                    text_send.getText().clear();
+                    if (isUserpresent) {
+                        if (!text_send.getText().toString().isEmpty()) {
+                            sendMsg(text_send.getText().toString().trim());
+                            text_send.getText().clear();
+                        }
+                    } else {
+
+                        insertdeliveryagents();
+                    }
+
+                } else {
+                    if (!text_send.getText().toString().isEmpty()) {
+                        sendMsg(text_send.getText().toString().trim());
+                        text_send.getText().clear();
+                    }
                 }
-
-
             }
         });
 
@@ -215,32 +218,6 @@ public class ChatActivity extends AppCompatActivity {
 
                 acceptAdsPopup();
 
-
-               /* Snackbar snackBar = Snackbar.make(parentLayout.findViewById(android.R.id.content),
-                        getString(R.string.acctporder), Snackbar.LENGTH_LONG)
-                        .setAction("NO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                            }
-                        })
-                        .setAction("YES", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
-                                reference.child(orderId).child("orderStatus").setValue("Accepted");
-                                reference.child(orderId).child("partnerUserId").setValue(senderId);
-                                Toast.makeText(getApplicationContext(), "Order has been succfully accepted", Toast.LENGTH_SHORT).show();
-                                finish();
-
-
-                            }
-                        });
-
-                snackBar.setActionTextColor(Color.RED);
-                snackBar.show();
-*/
 
             }
         });
@@ -334,22 +311,14 @@ public class ChatActivity extends AppCompatActivity {
 
     private void sendMsg(String msg) {
 
-
-      /*  fuser =  FirebaseAuth.getInstance().getCurrentUser();
-        dbrefernce = FirebaseDatabase.getInstance().getReference(User)*/
-
-        //  DatabaseReference refernce = FirebaseDatabase.getInstance().getReference("Orders");
-
         DatabaseReference refernce = FirebaseDatabase.getInstance().getReference("chats");
         String uniqueId = refernce.push().getKey();
         HashMap<String, Object> hashMap = new HashMap<>();
-
         hashMap.put("chatId", uniqueId);
         hashMap.put("sender", senderId);
         hashMap.put("receiver", receiverId);
         hashMap.put("message", msg);
         hashMap.put("orderId", orderId);
-
         refernce.child(uniqueId).setValue(hashMap);
 
       /*  hashMap.put("sender", Util.senderId);  // Gan
@@ -384,6 +353,10 @@ public class ChatActivity extends AppCompatActivity {
                         recyclervw.setHasFixedSize(true);
                         messageAdapter = new MessageAdapter(ChatActivity.this, mchat, senderId);
                         recyclervw.setAdapter(messageAdapter);
+
+                        fetchUsers();
+
+
                     }
 
 
@@ -450,49 +423,6 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void deletingCategoriData(String categorie) {
-
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
-        reference.keepSynced(true);
-        reference.orderByChild("categorieName").equalTo(categorie).addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    //   edt_username.setText((CharSequence) snapshot1.child("userName").getValue());
-
-                    long count = (long) snapshot1.child("count").getValue();
-
-                    String categorieId = (String) snapshot1.child("id").getValue();
-
-                    Log.i("Count ", String.valueOf(count));
-
-
-                    //  if (count == 0) {
-
-                    count = count - 1;
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
-                    //  reference.child("mobileNo").setValue(edt_mobileno.getText().toString().trim());
-                    reference.child(categorieId).child("count").setValue(count);
-                    Log.i("CountIncrese ", String.valueOf(count));
-                    //   }
-
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-    }
-
     private void acceptAdsPopup() {
 
         LayoutInflater factory = LayoutInflater.from(getApplication());
@@ -532,5 +462,139 @@ public class ChatActivity extends AppCompatActivity {
 
 
     }
+
+
+    private void deletingCategoriData(String categorie) {
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
+        reference.keepSynced(true);
+        reference.orderByChild("categorieName").equalTo(categorie).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    //   edt_username.setText((CharSequence) snapshot1.child("userName").getValue());
+
+                    long count = (long) snapshot1.child("count").getValue();
+
+                    String categorieId = (String) snapshot1.child("id").getValue();
+
+                    Log.i("Count ", String.valueOf(count));
+
+
+                    //  if (count == 0) {
+
+                    count = count - 1;
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
+                    //  reference.child("mobileNo").setValue(edt_mobileno.getText().toString().trim());
+                    reference.child(categorieId).child("count").setValue(count);
+                    Log.i("CountIncrese ", String.valueOf(count));
+
+                    deletingCategoriData(cuisines);
+
+                    //   }
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+
+    private void fetchUsers() {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("OrderDeliveryAgentList");
+        reference.keepSynced(true);
+        reference.orderByChild("orderId").equalTo(orderId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    userMap = new HashMap<>();
+                    userMap.put("chatId", String.valueOf(snapshot.child("chatId").getValue()));
+                    userMap.put("deliveryAgentId", String.valueOf(snapshot.child("deliveryAgentId").getValue()));
+                    userMap.put("deliveryAgentName", String.valueOf(snapshot.child("deliveryAgentName").getValue()));
+                    userMap.put("orderId", String.valueOf(snapshot.child("orderId").getValue()));
+                    userMap.put("ownerUserId", String.valueOf(snapshot.child("orderId").getValue()));
+                    userMap.put("orderName", orderName);
+                    //     userMapList.add(userMap);
+
+
+                    if ((snapshot.child("deliveryAgentId").getValue().equals(senderId))) {
+
+                        isUserpresent = true;
+                    }
+
+                    //  sendtextmsg(String.valueOf(snapshot.child("deliveryAgentId").getValue()));
+
+                }
+
+
+             /*   if (userMapList.size() == 0) {
+
+                    insertdeliveryagents();
+                }
+*/
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    private void insertdeliveryagents() {
+
+        Toast.makeText(getApplicationContext(), "inserted to Db ", Toast.LENGTH_SHORT).show();
+        DatabaseReference refernce = FirebaseDatabase.getInstance().getReference();
+        String uniqueId = refernce.push().getKey();
+        HashMap<String, String> orderChatuserList = new HashMap<>();
+        orderChatuserList.put("chatId", uniqueId);
+        orderChatuserList.put("orderId", orderId);
+        orderChatuserList.put("deliveryAgentId", senderId);
+        orderChatuserList.put("deliveryAgentName", agentName);
+        orderChatuserList.put("ownerUserId", receiverId);
+        orderChatuserList.put("cuisines", cuisines);
+        refernce.child("OrderDeliveryAgentList").push().setValue(orderChatuserList);
+        listflag = true;
+
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putBoolean("mykey", false);
+        editor.commit();
+
+        if (!text_send.getText().toString().isEmpty()) {
+            sendMsg(text_send.getText().toString().trim());
+            text_send.getText().clear();
+        }
+
+    }
+
+    private void sendtextmsg(String agentId) {
+
+
+        if (agentId.equalsIgnoreCase(senderId)) {
+
+            sendMsg(text_send.getText().toString().trim());
+        } else {
+
+            insertdeliveryagents();
+        }
+
+    }
+
 
 }

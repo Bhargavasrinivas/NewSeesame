@@ -122,7 +122,6 @@ public class ProfileFragment extends Fragment {
 
 
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("userSignup");
-                // reference.child("userName").setValue(edt_username.getText().toString().trim());
                 reference.child(Utils.userId).child("userName").setValue(edt_username.getText().toString().trim());
                 Toast.makeText(getActivity(), "Name updated succesfully", Toast.LENGTH_SHORT).show();
                 edt_username.clearFocus();

@@ -12,10 +12,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.models.CuisinesData;
 import com.screens.CuisinescategorieActivity;
 import com.seesame.MainActivity;
 import com.seesame.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -48,6 +51,10 @@ public class CuisinesAdpater extends RecyclerView.Adapter<CuisinesAdpater.ViewHo
 
         final CuisinesData cuisinesData = cuisinesDataArrayList.get(position);
         holder.tv_cuisinesname.setText(cuisinesData.getCategorieName());
+
+      //  Glide.with(mContext).load(cuisinesData.getImgUrl()).into(holder.imgVw_cuisines);
+
+        Picasso.with(mContext).load(cuisinesData.getImgUrl()).fit().into(holder.imgVw_cuisines);
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override

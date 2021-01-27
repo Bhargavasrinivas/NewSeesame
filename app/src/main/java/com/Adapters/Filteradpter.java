@@ -22,14 +22,15 @@ public class Filteradpter extends BaseAdapter {
 
     private Context context;
     ArrayList list = new ArrayList();
-    String filterValue;
+    String filterValue,pageData;
 
-    public Filteradpter(FragmentActivity activity, ArrayList filterList, String filterValue) {
+    public Filteradpter(FragmentActivity activity, ArrayList filterList, String filterValue,String pageData) {
 
         this.context = activity;
         this.list = filterList;
         this.filterValue = filterValue;
         this.inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.pageData = pageData;
     }
 
 
@@ -66,14 +67,21 @@ public class Filteradpter extends BaseAdapter {
         String value = String.valueOf(list.get(position));
 
 
-        if (value.equals(filterValue)) {
+        if(pageData.equalsIgnoreCase("myOrders")){
 
-            rightarrow.setVisibility(View.VISIBLE);
+            if (value.equals(filterValue)) {
 
-        } /*else if (orderlbl.getText().equals(filterValue)) {
-            rightarrow.setVisibility(View.VISIBLE);
+                rightarrow.setVisibility(View.VISIBLE);
+            }
+        }else {
 
-        }*/
+            if (value.equals(filterValue)) {
+
+                rightarrow.setVisibility(View.VISIBLE);
+            }
+        }
+
+
 
 
         return vi;

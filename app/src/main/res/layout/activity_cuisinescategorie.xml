@@ -16,7 +16,7 @@
             android:id="@+id/main_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/topbar_gradient"
             android:gravity="center"
             android:weightSum="3">
 
@@ -31,7 +31,6 @@
                 android:layout_alignBottom="@+id/txttilte"
                 android:layout_alignParentLeft="true"
                 android:layout_marginTop="5dp"
-                android:onClick="btnback_OnClick"
                 android:src="@drawable/close" />
 
             <TextView
