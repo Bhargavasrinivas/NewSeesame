@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.Adapters.AutoScrollPagerAdapter;
+import com.InternetCheck.CheckNetwork;
 import com.Utils;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -94,11 +95,15 @@ public class LoginActivity extends AppCompatActivity {
                 = LocationServices
                 .getFusedLocationProviderClient(this);
 
-    //    getLastLocation();
+        //    getLastLocation();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putBoolean("mykey",true);
+        editor.putBoolean("mykey", true);
         editor.commit();
+
+        if (!CheckNetwork.isInternetAvailable(LoginActivity.this)) {
+            Toast.makeText(LoginActivity.this, "Please check your internet connection.Try again later", Toast.LENGTH_SHORT).show();
+        }
 
       /*  progressBar = findViewById(R.id.progressBar);
         progressBar.setMax(100);
@@ -147,7 +152,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                progressHUD.dismiss();
+                if (CheckNetwork.isInternetAvailable(LoginActivity.this)) {
+
+                }else {
+                    Toast.makeText(LoginActivity.this, "Please check your internet connection.Try again later", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -195,8 +204,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                signInToGoogle();
+                if (CheckNetwork.isInternetAvailable(LoginActivity.this)) {
+                    signInToGoogle();
+                }else {
+
+                    Toast.makeText(LoginActivity.this, "Please check your internet connection.Try again later", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -329,13 +342,14 @@ public class LoginActivity extends AppCompatActivity {
             Log.i("trimchar ", s1);*/
 
 
-            Intent main = new Intent(LoginActivity.this, CuisinescategorieActivity.class);
+            Intent main = new Intent(LoginActivity.this, MainActivity.class);
             Bundle bundle = new Bundle();
             bundle.putDouble("lat", latitude);
             bundle.putDouble("longi", longititude);
+            bundle.putString("cuisines", "NoMy");
             main.putExtras(bundle);
             startActivity(main);
-
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             //startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
 
@@ -343,6 +357,8 @@ public class LoginActivity extends AppCompatActivity {
         String mailId = sharedpreferences.getString(Email, "");
         if (mailId != null) {
 
+           // mailId = "bhargavagec@gmail.com";
+            //mailId = "pravinvram@gmail.com";
             readUsertInfo(mailId);
 
         }
@@ -362,59 +378,72 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
 
-                        if (task.isSuccessful()) {
-                            FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
-                            final String userId = current_user.getUid();
-
-                            //  String token_id = FirebaseInstanceId.getInstance().getToken();
-
-                            dbrefernce = FirebaseDatabase.getInstance().getReference("userSignup").child(userId);
-                            Utils.userId = userId;
-                            HashMap<String, String> orderMap = new HashMap<>();
-                            orderMap.put("id", userId);
-                            orderMap.put("userName", userName);
-                            orderMap.put("mailId", email);
-                            orderMap.put("password", "Seesame@123$");
-                            orderMap.put("imgUrl", imgUrl);
-                            orderMap.put("mobileNo", "");
-
-                            dbrefernce.setValue(orderMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                    if (task.isSuccessful()) {
-
-                                        //  Toast.makeText(getApplicationContext(), "Registered Succesfully", Toast.LENGTH_SHORT).show();
-                                        progressHUD.dismiss();
-                                        //startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                        Intent main = new Intent(LoginActivity.this, CuisinescategorieActivity.class);
-                                        Bundle bundle = new Bundle();
-                                        bundle.putDouble("lat", latitude);
-                                        bundle.putDouble("longi", longititude);
-                                        main.putExtras(bundle);
-                                        startActivity(main);
+                        try {
 
 
-                                    } else {
+                            if (task.isSuccessful()) {
+                                FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
+                                final String userId = current_user.getUid();
 
-                                        //  Toast.makeText(getApplicationContext(), "Registered Unsuccesfully", Toast.LENGTH_SHORT).show();
+                                //  String token_id = FirebaseInstanceId.getInstance().getToken();
+
+                                dbrefernce = FirebaseDatabase.getInstance().getReference("userSignup").child(userId);
+                                Utils.userId = userId;
+                                HashMap<String, String> orderMap = new HashMap<>();
+                                orderMap.put("id", userId);
+                                orderMap.put("userName", userName);
+                                orderMap.put("mailId", email);
+                                orderMap.put("password", "Seesame@123$");
+                                orderMap.put("imgUrl", imgUrl);
+                                orderMap.put("mobileNo", "");
+                                Utils.userName = userName;
+
+                                readUsertInfo(email);
+                                // User SignUp
+
+                                dbrefernce.setValue(orderMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                        if (task.isSuccessful()) {
+
+                                            //  Toast.makeText(getApplicationContext(), "Registered Succesfully", Toast.LENGTH_SHORT).show();
+                                            progressHUD.dismiss();
+                                            //startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                            Intent main = new Intent(LoginActivity.this, MainActivity.class);
+                                            Bundle bundle = new Bundle();
+                                            bundle.putDouble("lat", latitude);
+                                            bundle.putDouble("longi", longititude);
+                                            bundle.putString("cuisines", "NoMy");
+                                            main.putExtras(bundle);
+                                            startActivity(main);
+
+
+                                        } else {
+
+                                            Toast.makeText(getApplicationContext(), "Registered Unsuccesfully", Toast.LENGTH_SHORT).show();
+
+                                        }
+
 
                                     }
+                                });
 
 
-                                }
-                            });
-
-
-                        } else {
+                            } else {
 
                          /*   startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             Toast.makeText(getApplicationContext(), task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();*/
 
-                            readUsertInfo(registeredMailId);
+                                readUsertInfo(registeredMailId);
 
-                            //    login();
+                                //    login();
 
+                            }
+
+                        } catch (Exception e) {
+
+                            Toast.makeText(getApplicationContext(), "Excpetion " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
 
 
@@ -446,60 +475,28 @@ public class LoginActivity extends AppCompatActivity {
                     String userId = String.valueOf(snapshot1.child("id").getValue());
 
                     Utils.userId = userId;
-                    Utils.userName = String.valueOf(snapshot1.child("id").getValue());
+                    //  Utils.userName = String.valueOf(snapshot1.child("id").getValue());
+                    Utils.userName = String.valueOf(snapshot1.child("userName").getValue());
                     Utils.mailId = String.valueOf(snapshot1.child("mailId").getValue());
+
 
                     SharedPreferences.Editor editor = sharedpreferences.edit();
                     editor.putString(Email, Utils.mailId);
-                   // editor.putBoolean("key",true);
+                    // editor.putBoolean("key",true);
                     editor.commit();
 
 
-                   /* Utils.userprofilepic = String.valueOf(snapshot1.child("id").getValue());
-                    Utils.mobileNo = "";*/
-
-                    String usr = userId;
-
-                    //    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-
-                   /* Intent main = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putDouble("lat", latitude);
                     bundle.putDouble("longi", longititude);
-                    main.putExtras(bundle);
-                    startActivity(main);*/
-
-                    Intent main = new Intent(LoginActivity.this, CuisinescategorieActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putDouble("lat", latitude);
-                    bundle.putDouble("longi", longititude);
+                    bundle.putString("cuisines", "NoMy");
                     main.putExtras(bundle);
                     startActivity(main);
 
 
-
-
-
-
-
-                    //   login();
-
-                   /* edt_username.setText((CharSequence) snapshot1.child("userName").getValue());
-                    edt_emailId.setText((CharSequence) snapshot1.child("mailId").getValue());
-                    userId = String.valueOf(snapshot1.child("id").getValue());
-                    edt_mobileno .setText((CharSequence) snapshot1.child("mobileNo").getValue());
-                    dbUserName = String.valueOf(snapshot1.child("userName").getValue());
-
-                    img_mobile.setVisibility(View.GONE);
-                    img_uname.setVisibility(View.GONE);
-                    //  Log.i("UserId ", String.valueOf(snapshot1.child("id").getValue()));
-
-                    if ((!snapshot1.child("imgUrl").getValue().toString().isEmpty() || snapshot1.child("imgUrl").getValue().toString() != null)) {
-                        Glide.with(getActivity()).load(snapshot1.child("imgUrl").getValue().toString()).into(user_profilepic);
-                    }*/
                 }
 
-                //    progressBar.setVisibility(View.GONE);
 
             }
 
@@ -551,7 +548,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                             latitude = location.getLatitude();
                                             longititude = location.getLongitude();
-                                          //  Toast.makeText(getApplicationContext(), "Lat " + location.getLatitude(), Toast.LENGTH_SHORT).show();
+                                            //  Toast.makeText(getApplicationContext(), "Lat " + location.getLatitude(), Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
@@ -670,7 +667,7 @@ public class LoginActivity extends AppCompatActivity {
                 getLastLocation();
             } else {
                 startActivity(new Intent(LoginActivity.this, LocationenableActivity.class));
-              //  Toast.makeText(getApplicationContext(), "Denyed by user ", Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(getApplicationContext(), "Denyed by user ", Toast.LENGTH_SHORT).show();
             }
         }
     }

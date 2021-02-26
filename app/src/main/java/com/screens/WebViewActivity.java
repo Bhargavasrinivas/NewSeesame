@@ -77,6 +77,15 @@ public class WebViewActivity extends AppCompatActivity {
                 break;
 
 
+            case "AppVideo":
+
+                webview.loadUrl("https://www.akunatech.com/image/about/akuna_video.mp4");
+
+                break;
+
+
+            //
+
             case "login":
               /*  Intent login = new Intent(WebviewActivity.this, LoginActivity.class);
                 startActivity(login);

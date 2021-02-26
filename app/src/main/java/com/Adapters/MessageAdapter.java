@@ -1,6 +1,8 @@
 package com.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +57,20 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         Chat chat = mChat.get(position);
 
-        holder.show_message.setText(chat.getMessage());
+
+        if (chat.getMessage().contains("SeeSame")) {
+            holder.profile_image.setVisibility(View.GONE);
+            holder.show_message.setText(chat.getMessage());
+            holder.show_message.setBackgroundResource(R.drawable.btnsmall_bg);
+            holder.show_message.setGravity(Gravity.CENTER);
+            holder.txt_seen.setVisibility(View.GONE);
+            holder.show_message.setTextColor(Color.parseColor("#FFFFFF"));
+
+        } else {
+            holder.show_message.setText(chat.getMessage());
+        }
+
+
 
      /*   if (imageurl.equals("default")){
             holder.profile_image.setImageResource(R.mipmap.ic_launcher);

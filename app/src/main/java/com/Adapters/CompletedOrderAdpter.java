@@ -60,31 +60,34 @@ public class CompletedOrderAdpter extends RecyclerView.Adapter<CompletedOrderAdp
             holder.tv_expiretime.setText("Completed");
 
             String customerUserId = orderedcompletedMapList.get(position).get("customerUserId");
-            String ownerating =  orderedcompletedMapList.get(position).get("ownerRating");
-
-            //customerUserId
-
-            if ((Utils.userId.equalsIgnoreCase(customerUserId) &&  ownerating.equalsIgnoreCase("true"))) {
-
-                holder.tv_rateUs.setVisibility(View.GONE);
-            }
-
-
+            String ownerating = orderedcompletedMapList.get(position).get("ownerRating");
             String partnerId = orderedcompletedMapList.get(position).get("partnerUserId");
+            String partnerRating = orderedcompletedMapList.get(position).get("partnerRating");
 
-             String partnerRating = orderedcompletedMapList.get(position).get("partnerRating");
 
+          /*  if ((Utils.userId.equalsIgnoreCase(customerUserId) && ownerating.equalsIgnoreCase("true"))) {
 
-            if(( !partnerId.equalsIgnoreCase(Utils.userId) &&  orderedcompletedMapList.get(position).get("partnerRating").equalsIgnoreCase("ture")  ) ) {
+                holder.tv_rateUs.setVisibility(View.GONE);
+            }
+
+            if ((!partnerId.equalsIgnoreCase(Utils.userId) && orderedcompletedMapList.get(position).get("partnerRating").equalsIgnoreCase("ture"))) {
 
                 holder.tv_rateUs.setVisibility(View.GONE);
 
+            }*/
+
+
+           // Working code
+
+            if (((customerUserId.equalsIgnoreCase(Utils.userId) && orderedcompletedMapList.get(position).get("partnerRating").equalsIgnoreCase("ture")))) {
+                holder.tv_rateUs.setVisibility(View.GONE);
+            } else if (((customerUserId.equalsIgnoreCase(Utils.userId) && orderedcompletedMapList.get(position).get("partnerRating").equalsIgnoreCase("false")))) {
+                holder.tv_rateUs.setVisibility(View.VISIBLE);
+            } else if (((partnerId.equalsIgnoreCase(Utils.userId) && orderedcompletedMapList.get(position).get("ownerRating").equalsIgnoreCase("false")))) {
+                holder.tv_rateUs.setVisibility(View.VISIBLE);
+            } else {
+                holder.tv_rateUs.setVisibility(View.GONE);
             }
-
-
-
-
-
 
             holder.tv_chat.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,13 +107,32 @@ public class CompletedOrderAdpter extends RecyclerView.Adapter<CompletedOrderAdp
                 @Override
                 public void onClick(View v) {
 
-                    Intent orderinfo = new Intent(context, RatingActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("orderId", orderedcompletedMapList.get(position).get("orderId"));
-                    bundle.putString("myuserId", orderedcompletedMapList.get(position).get("customerUserId"));
-                    bundle.putString("deliverusrId", orderedcompletedMapList.get(position).get("partnerUserId"));
-                    orderinfo.putExtras(bundle);
-                    context.startActivity(orderinfo);
+                    if (Utils.userId.equalsIgnoreCase(orderedcompletedMapList.get(position).get("customerUserId"))) {
+
+                        // I have to give comments to Partner
+
+                        Intent orderinfo = new Intent(context, RatingActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("orderId", orderedcompletedMapList.get(position).get("orderId"));
+                        bundle.putString("myuserId", orderedcompletedMapList.get(position).get("customerUserId"));
+                        bundle.putString("deliverusrId", orderedcompletedMapList.get(position).get("partnerUserId"));
+                        bundle.putString("userRole", "owner");
+                        orderinfo.putExtras(bundle);
+                        context.startActivity(orderinfo);
+                    } else {
+
+                        //    I have to give comments to owner
+
+
+                        Intent orderinfo = new Intent(context, RatingActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("orderId", orderedcompletedMapList.get(position).get("orderId"));
+                        bundle.putString("myuserId", orderedcompletedMapList.get(position).get("customerUserId"));
+                        bundle.putString("deliverusrId", orderedcompletedMapList.get(position).get("partnerUserId"));
+                        bundle.putString("userRole", "partner");
+                        orderinfo.putExtras(bundle);
+                        context.startActivity(orderinfo);
+                    }
 
 
                 }

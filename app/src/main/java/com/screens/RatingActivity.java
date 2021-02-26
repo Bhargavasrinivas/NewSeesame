@@ -4,12 +4,17 @@ import android.os.Bundle;
 
 import com.Utils;
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.MenuItem;
@@ -30,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.models.RateModel;
 import com.seesame.R;
+import com.seesame.ui.home.HomeFragment;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -39,7 +45,7 @@ public class RatingActivity extends AppCompatActivity {
     private Button btn_sbmt;
     private CircleImageView user_profilepic;
     private RatingBar ratingBar;
-    private String ratetxt, myUserId, deliveryUserId, orderId, userName, commnets;
+    private String ratetxt, myUserId, deliveryUserId, orderId, userName, commnets, userRole;
     private RateModel rateModel;
     private EditText edt_comments;
     private int rateValue;
@@ -56,10 +62,17 @@ public class RatingActivity extends AppCompatActivity {
         initView();
 
 
+        String userId = Utils.userId;
+
         Bundle b = getIntent().getExtras();
         myUserId = b.getString("myuserId");
         deliveryUserId = b.getString("deliverusrId");
         orderId = b.getString("orderId");
+
+
+
+        userRole = b.getString("userRole");
+
 
         // Db Call to read user info from user id
         readUsertInfo();
@@ -80,13 +93,12 @@ public class RatingActivity extends AppCompatActivity {
                 float rateinFloat = rating;
 
 
-
-
                 if (ratingBar.getRating() == 1) {
 
                     tv_ratingtxt.setText("Tell us, What went wrong?");
                     //   commnets = "Tell us, What went wrong?";
-                   ratings = 1;
+                    edt_comments.setText("Tell us, What went wrong?");
+                    ratings = 1;
                     return;
 
                 }
@@ -94,6 +106,7 @@ public class RatingActivity extends AppCompatActivity {
 
                     tv_ratingtxt.setText("What needs to be improved?");
                     // commnets = "Needs to be improved?";
+                    edt_comments.setText("What needs to be improved?");
                     ratings = 2;
                     return;
 
@@ -102,13 +115,15 @@ public class RatingActivity extends AppCompatActivity {
 
                     tv_ratingtxt.setText("What coluld be done better");
                     //  commnets = "coluld be done better";
-                     ratings = 3;
+                    edt_comments.setText("What coluld be done better");
+                    ratings = 3;
                     return;
 
                 }
                 if (ratingBar.getRating() == 4) {
 
                     tv_ratingtxt.setText("You are  Perfect");
+                    edt_comments.setText("You are  Perfect");
                     //   commnets = "You are  Perfect";
                     ratings = 4;
                     return;
@@ -117,6 +132,7 @@ public class RatingActivity extends AppCompatActivity {
                 if (ratingBar.getRating() == 5) {
 
                     tv_ratingtxt.setText("You are Awesome");
+                    edt_comments.setText("You are Awesome");
                     //  commnets = "You are Awesome ";
                     ratings = 5;
                     return;
@@ -201,7 +217,7 @@ public class RatingActivity extends AppCompatActivity {
 
         Log.i("ratingVlaue ", String.valueOf(ratings));
 
-           insertingtoRateTable(ratings);
+        insertingtoRateTable(ratings);
 
     }
 
@@ -216,17 +232,27 @@ public class RatingActivity extends AppCompatActivity {
         String rateId = refernce.push().getKey();
 
         rateModel = new RateModel();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Orders");
+        if (userRole.equalsIgnoreCase("owner")) {
+            reference.child(orderId).child("partnerRating").setValue("true");
+            rateModel.setCommentorId(myUserId);
+            rateModel.setUserId(deliveryUserId);
+        } else {
+            rateModel.setCommentorId(deliveryUserId);
+            rateModel.setUserId(myUserId);
+            reference.child(orderId).child("ownerRating").setValue("true");
+        }
+
         rateModel.setRateid(rateId);
         rateModel.setComments(edt_comments.getText().toString().trim());
         rateModel.setRateCount(rateval);
-        rateModel.setCommentorId(myUserId);
-        rateModel.setUserId(deliveryUserId);
         rateModel.setUserName(userName);
         rateModel.setOrderId(orderId);
         refernce.child(rateId).setValue(rateModel);
         Toast.makeText(getApplicationContext(), "Rating succesfully posted", Toast.LENGTH_SHORT).show();
         progressBar.setVisibility(View.GONE);
         finish();
+
 
     }
 
@@ -240,6 +266,16 @@ public class RatingActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    @Override
+    public void onBackPressed(){
+        finish();
+      /*  backpress = (backpress + 1);
+        Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
+
+        if (backpress>1) {
+            this.finish();
+        }*/
     }
 
 }

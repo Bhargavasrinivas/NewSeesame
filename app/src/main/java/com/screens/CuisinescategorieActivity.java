@@ -129,6 +129,15 @@ public class CuisinescategorieActivity extends AppCompatActivity {
             }
         });
 
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        //  Toast.makeText(getApplicationContext(), "firebaseUser "+firebaseUser, Toast.LENGTH_SHORT).show();
+
+        String userFirbase = String.valueOf(firebaseUser);
+
+
+
+
 
         layoutimg_one = findViewById(R.id.layoutimg_one);
         layoutimg_two = findViewById(R.id.layoutimg_two);
@@ -153,7 +162,7 @@ public class CuisinescategorieActivity extends AppCompatActivity {
                 .getFusedLocationProviderClient(this);
 
 
-        getLastLocation();
+        //  getLastLocation();
 
 /*        Bundle b = getIntent().getExtras();
         currentlatitude = b.getDouble("lat");
@@ -176,7 +185,7 @@ public class CuisinescategorieActivity extends AppCompatActivity {
         }
 
 
-        updateToken(FirebaseInstanceId.getInstance().getToken());
+        //   updateToken(FirebaseInstanceId.getInstance().getToken());
 
 
         /* Method to fetch categories from db*/
@@ -188,6 +197,7 @@ public class CuisinescategorieActivity extends AppCompatActivity {
                 progressBar.setMax(100);
                 progressBar.setProgress(20);
                 progressBar.setVisibility(View.VISIBLE);
+
                 fetchCategoriValues();
 
             }
@@ -199,17 +209,19 @@ public class CuisinescategorieActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 // startActivity(new Intent(CuisinescategorieActivity.this, MainActivity.class));
-                Intent dashbaord = new Intent(getApplicationContext(), MainActivity.class);
+                /*Intent dashbaord = new Intent(getApplicationContext(), MainActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putDouble("lat", latitude);
                 bundle.putDouble("longi", longititude);
                 bundle.putString("cuisines", "Indian");
                 dashbaord.putExtras(bundle);
-                startActivity(dashbaord);
+                startActivity(dashbaord);*/
+
+                notification();
 
             }
         });
-        //    categoireTypes();
+          // categoireTypes();
 
     }
 
@@ -274,13 +286,9 @@ public class CuisinescategorieActivity extends AppCompatActivity {
             // Media name is an external URL.
             return Uri.parse(mediaName);
         } else {
-
             // you can also put a video file in raw package and get file from there as shown below
-
             return Uri.parse("android.resource://" + getPackageName() +
                     "/raw/" + mediaName);
-
-
         }
     }
 
@@ -472,9 +480,7 @@ public class CuisinescategorieActivity extends AppCompatActivity {
 
                     if (count > 0) {
 
-                        Log.i("Count ", String.valueOf(count));
-
-                        String counst = String.valueOf(count);
+                        //    Log.i("Count ", String.valueOf(count));
                         cuisinesData = new CuisinesData();
                        /* count = count + 1;
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
@@ -500,13 +506,13 @@ public class CuisinescategorieActivity extends AppCompatActivity {
                 // recyclerView_cuisinesCategorie.setVisibility(View.GONE);
                 //   scrollView.setTop(300dp);
                 if (cuisinesDataArrayList.size() > 2) {
-                    tv_skip.setVisibility(View.GONE);
+                    //   tv_skip.setVisibility(View.GONE);
                     webview.setVisibility(View.GONE);
                     layoutimg_one.setVisibility(View.GONE);
                     layoutimg_two.setVisibility(View.GONE);
                     layoutimg_three.setVisibility(View.GONE);
                 } else if (cuisinesDataArrayList.size() == 1) {
-
+                    webview.stopLoading();
                     webview.setVisibility(View.GONE);
                     layoutimg_one.setVisibility(View.VISIBLE);
                     layoutimg_two.setVisibility(View.VISIBLE);
@@ -524,21 +530,36 @@ public class CuisinescategorieActivity extends AppCompatActivity {
     }
 
 
-    /*private void categoireTypes() {
+    private void categoireTypes() {
 
-        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/indian.jpg?alt=media&token=aba97fe6-cc97-4ae7-948d-e71024177277", "Indian", 0, "ind"));
-        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Beverages.jpg?alt=media&token=786cccfc-428d-47fc-bb2f-14f9a7cfe8e8", "Beverages", 0, "ber"));
+
+        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/testimage.jpg?alt=media&token=9e6de9b5-fddd-4751-b568-fb9065c4cb93", "Testing Order", 1, "GF"));
+     //   cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/groceries.jpg?alt=media&token=873ee62c-5e15-49fa-9100-6381fcf9f77f", "Place a group Groceries", 1, "GG"));
+      //  cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Homemade%20Foods.jpg?alt=media&token=e1385348-0ef8-4c32-9a3b-c453870b2c55", "Sell your homemade delicious", 1, "HF"));
+      //  cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/VideoImage.jpg?alt=media&token=da20d577-2e86-4d24-8320-b4487719e055", "Know more on what is SeeSame", 1, "Tour"));
+
+
+        createCusinesDb();
+
+
+       /* cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Beverages.jpg?alt=media&token=786cccfc-428d-47fc-bb2f-14f9a7cfe8e8", "Beverages", 0, "ber"));
         cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/FastFood.jpg?alt=media&token=f8655552-4d54-4ad4-be2d-66f58661ec56", "FastFood", 0, "fstfd"));
         cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Desserts.jpg?alt=media&token=2b760e1e-618c-4731-b82a-9b37689f59a6", "Desserts", 0, "dsrts"));
         cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Groceries.jpg?alt=media&token=90571d68-3dac-47c8-8d41-43345a4173f3", "Groceries", 0, "grc"));
         cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Pizza.jpg?alt=media&token=58de7954-3fb8-4ba1-8514-3ffc36a3a2b0", "Pizza and Subway", 0, "piz"));
         cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Western.jpg?alt=media&token=2fd3e7c8-d4c0-4a81-81f0-2dadf44d0f5d", "Western", 0, "wst"));
-        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Chinnes.jpg?alt=media&token=752eba5a-131e-4086-950c-f361157cc408", "Chinnes", 0, "chn"));
+        cuisinesDataArrayList.add(new CuisinesData("https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Chinnes.jpg?alt=media&token=752eba5a-131e-4086-950c-f361157cc408", "Chinnes", 0, "chn"));*/
 
-        createCusinesDb();
+        //
+        // count = count - 1;
+
+       /* long count = 0;
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Categories");
+        reference.child("-MRcA_jrtSspW0Lq-SOP").child("count").setValue(count);
+        Log.i("CountIncrese ", String.valueOf(count));*/
 
 
-    }*/
+    }
 
     private void deletingCategoriData() {
 
@@ -596,15 +617,18 @@ public class CuisinescategorieActivity extends AppCompatActivity {
 
     private void notification() {
 
+        //PsJAveBgjsVGMUNgLg78fLIvGnf2
+        //6foU1vRBNwhkcF5kzNMwDiCi4sH3
+
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query = tokens.orderByKey().equalTo("PsJAveBgjsVGMUNgLg78fLIvGnf2");
+        Query query = tokens.orderByKey().equalTo("PsJAveBgjsVGMUNgLg78fLIvGnf2"); // senderID
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data("PsJAveBgjsVGMUNgLg78fLIvGnf2", R.mipmap.ic_launcher, "Seesame" + ": " + "Welcome Mesage", "Seesame",
-                            "mjZxHzej3NbFRYj299bHe0oAjVp2");
+                    Data data = new Data("6foU1vRBNwhkcF5kzNMwDiCi4sH3", R.drawable.location, "Bhargava has accepted your ad" + " " + "Hotel Taj", "Seesame",
+                            "PsJAveBgjsVGMUNgLg78fLIvGnf2");
 
                     Sender sender = new Sender(data, token.getToken());
 
@@ -811,16 +835,6 @@ public class CuisinescategorieActivity extends AppCompatActivity {
         super.onResume();
         if (checkPermissions()) {
             getLastLocation();
-        } /*else {
-
-            startActivity(new Intent(LoginActivity.this, LocationenableActivity.class));
-
-          //  Toast.makeText(getApplicationContext(), "Ask for permission ", Toast.LENGTH_SHORT).show();
-          //  requestPermissions();
-        *//*    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);*//*
-            //
-
-        }*/
+        }
     }
 }

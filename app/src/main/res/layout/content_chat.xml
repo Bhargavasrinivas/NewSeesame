@@ -26,7 +26,7 @@
 
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/layout_btns"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/topbar_gradient"
@@ -46,13 +46,14 @@
             android:layout_weight="1"
             android:fontFamily="@font/poppins_medium"
             android:gravity="center"
-            android:text="Cancel"
+            android:text="Close"
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="@dimen/text_16" />
 
 
         <TextView
+
             android:id="@+id/tv_orderacpt"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -64,17 +65,47 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_16" />
 
-        <TextView
-            android:id="@+id/tv_ratings"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
+        <LinearLayout
+            android:id="@+id/layout_rating"
+            android:orientation="vertical"
             android:layout_weight="1"
-            android:fontFamily="@font/poppins_medium"
-            android:gravity="center"
-            android:text="Ratings"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_16" />
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <TextView
+                android:ellipsize="end"
+                android:maxLines="5"
+                android:lines="3"
+                android:id="@+id/tv_partnername"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:text=""
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_16" />
+
+            <TextView
+                android:maxLines="5"
+                android:lines="3"
+                android:id="@+id/tv_ratings"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:text="Ratings"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_16" />
+
+        </LinearLayout>
+
+
+
+
 
     </LinearLayout>
 
@@ -82,14 +113,14 @@
     <RelativeLayout
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:id="@+id/bottom"
+        android:id="@+id/layout_msgVw"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         android:background="@drawable/chatbox_bg"
         android:padding="5dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintBottom_toTopOf="@+id/layout_btns"
         app:layout_constraintEnd_toStartOf="@+id/btn_orderacpt"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -141,7 +172,7 @@
 
         <TextView
             android:id="@+id/tv_welcmmsg"
-            android:textSize="@dimen/text_12"
+            android:textSize="@dimen/text_14"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginStart="8dp"
             android:text="fvhdjfvb"
@@ -156,7 +187,7 @@
         android:id="@+id/recyclervw"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottom"
+        app:layout_constraintBottom_toTopOf="@+id/layout_msgVw"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_wlcmmsg"

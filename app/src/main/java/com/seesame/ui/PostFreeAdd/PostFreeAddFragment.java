@@ -31,6 +31,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.InternetCheck.CheckNetwork;
 import com.Utils;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
@@ -71,14 +72,16 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
     private Spinner spinner_expiretime, spinner_deliverypartner, spinner_cuisines, spinner_groups;
     List<String> delveryPartnerList, timeList, cuisinesList, groupList;
     private AutocompleteSupportFragment autocompleteFragment, autocomplete_pickupfragment;
-    private TextView tv_areaName, tv_address, tv_pickupareaName, tv_pickupaddress, tv_chsfav, tv_cuisineslbl;
-    private View layout_pickuplocation, layout_resturntlocation, layout_restaurant, layout_cuisines;
-    private EditText edtTxt_foodPrice;
+    private TextView tv_areaName,tv_refersh, tv_address, tv_pickupareaName, tv_pickupaddress, tv_chsfav, tv_cuisineslbl, tv_deliverypartnerlbl, tv_pricelbl;
+    private View layout_pickuplocation, layout_resturntlocation, layout_restaurant, layout_cuisines, layout_quantity,
+            layout_allchats, layout_deliverypartner, layout_prodctdscrp,layout_nointernet,layout_main;
+    private EditText edtTxt_foodPrice, edt_prdctcomnts;
     private Button btn_placeorder;
     private ArrayAdapter deliverypartneradpter;
     private ImageView img_chatIcon;
-    EditText favTextInput, pickupTextInput;
-    String completeaddressrestunrt, completeaddresslocation;
+    private EditText favTextInput, pickupTextInput, edt_comments, edtTxt_quntity;
+    private String completeaddressrestunrt, completeaddresslocation;
+    private int check = 0;
     private AutoCompleteTextView autoCompleteTextView;
     private String expiryTime = "a", deliverypartner, cuisines, resturntName, locationName, userAddress, placeId, resturntPostalCode, locationpostalCode, currentDate, currentTime,
             userName, userId, pickupAreaName, pickupAddress, orderDateTime, spinnerGroups;
@@ -91,11 +94,7 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         dashboardViewModel =
                 ViewModelProviders.of(this).get(PostFreeAddViewModel.class);
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
-
-
         initUI(root);
-
-
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat simpledf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         orderDateTime = simpledf.format(cal.getTime());
@@ -108,7 +107,16 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
             }
         });
 
-        //   getAddresssbyLatlong(Utils.userlat, Utils.userlang, "location");
+
+
+        if (!CheckNetwork.isInternetAvailable(getActivity())) {
+
+            layout_main.setVisibility(View.GONE);
+            layout_nointernet.setVisibility(View.VISIBLE);
+        }
+
+
+
 
         String apiKey = getString(R.string.api_key);
         Places.initialize(getActivity(), apiKey);
@@ -180,7 +188,7 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
                     public void onClick(View v) {
 
 
-                        Toast.makeText(getActivity(), "Chaticon ", Toast.LENGTH_SHORT).show();
+                        //  Toast.makeText(getActivity(), "Chaticon ", Toast.LENGTH_SHORT).show();
 
                      /*   Intent chatList = new Intent(getActivity(), UserListActivity.class);
                         Bundle bundle = new Bundle();
@@ -192,8 +200,6 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
                 });
 
 
-                //   getAddresssbyLatlong(latitude, longitutude);
-                //var latitude = place.geometry.location.lat();
                 getAddresssbyLatlong(latitude, longitutude, "resturntant");
             }
 
@@ -202,6 +208,20 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
+
+
+        layout_allchats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent chatList = new Intent(getActivity(), UserListActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("pageData", "Allchats");
+                chatList.putExtras(bundle);
+                getActivity().startActivity(chatList);
+            }
+        });
+
 
         autocomplete_pickupfragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete_pickupfragment);
 
@@ -252,71 +272,69 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onClick(View v) {
 
+                if (CheckNetwork.isInternetAvailable(getActivity())) {
+                    if (cuisines.contains("Choose cuisines")) {
+                        Toast.makeText(getActivity(), "Please choose cuisines", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                String meetuplocation = tv_pickupareaName.getText().toString();
-                Log.i("MeetUpLocation ", meetuplocation);
+                    if ((spinnerGroups.contains("Group Food")) && tv_areaName.getText().toString().isEmpty()) {
 
-                if (cuisines.contains("Choose cuisines")) {
-                    Toast.makeText(getActivity(), "Please choose cuisines", Toast.LENGTH_SHORT).show();
-                    return;
+                        Toast.makeText(getActivity(), "Please choose your  Favourite Resturnt", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if ((spinnerGroups.contains("Group Food")) && favTextInput.getText().toString().isEmpty()) {
+
+                        Toast.makeText(getActivity(), "Please choose your Favouirute  Resturnt", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (((pickupAreaName == null || pickupAreaName.isEmpty()) && pickupAddress == null)) {
+
+                        Toast.makeText(getActivity(), "Please choose your Meetup Location", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (edtTxt_foodPrice.getText().toString().isEmpty()) {
+
+                        Toast.makeText(getActivity(), "Please enter Price ", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (expiryTime.contains("Choose expriry time")) {
+                        Toast.makeText(getActivity(), "Please choose Expiry Time ", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (deliverypartner.contains("Choose delivery partner")) {
+                        Toast.makeText(getActivity(), "Please choose Delivery Partner", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if ((pickupTextInput.getText().toString().isEmpty())) {
+
+                        Toast.makeText(getActivity(), "Please choose your meetup location ", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    // Conditions for Home made Products
+
+                    if ((spinnerGroups.contains("Sell Home Made Products") && edtTxt_quntity.getText().toString().isEmpty())) {
+
+                        Toast.makeText(getActivity(), "Please enter quantity", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    readUsertInfo();
+                }else {
+                    layout_main.setVisibility(View.GONE);
+                    layout_nointernet.setVisibility(View.VISIBLE);
                 }
 
-                if ((!cuisines.contains("Groceries") && tv_areaName.getText().toString().isEmpty())) {
-
-                    Toast.makeText(getActivity(), "Please choose your  favourite resturnts", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // if (tv_pickupareaName.getText().toString().isEmpty()) {
-                if (((pickupAreaName == null || pickupAreaName.isEmpty()) && pickupAddress == null)) {
-
-                    Toast.makeText(getActivity(), "Please choose your meetup location", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                if (edtTxt_foodPrice.getText().toString().isEmpty()) {
-                    Toast.makeText(getActivity(), "Please enter price ", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                if (expiryTime.contains("Choose expriry time")) {
-                    Toast.makeText(getActivity(), "Please choose expiry time ", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (deliverypartner.contains("Choose delivery partner")) {
-                    Toast.makeText(getActivity(), "Please choose delivery partner", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                //   if(favTextInput.getText().toString().isEmpty()){
-                if ((!cuisines.contains("Groceries") && favTextInput.getText().toString().isEmpty())) {
-
-                    Toast.makeText(getActivity(), "Please choose your favouirute  Resturnt", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if ((pickupTextInput.getText().toString().isEmpty())) {
-
-                    Toast.makeText(getActivity(), "Please choose your meetup location ", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                readUsertInfo();
 
 
             }
         });
 
 
-        //   spinner_expiretime.setEnabled(false);
         expiryTime = "a";
-
-        //  spinner_expiretime.setOnItemClickListener((AdapterView.OnItemClickListener) getActivity());
-        // spinner_expiretime.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) getActivity());
         spinner_expiretime.setOnItemSelectedListener(this);
         spinner_cuisines.setOnItemSelectedListener(this);
         spinner_deliverypartner.setOnItemSelectedListener(this);
@@ -324,10 +342,10 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
 
         timeList = new ArrayList<>();
         //  timeList.add("Choose expriry time");
-        timeList.add("15");
-        timeList.add("30");
-        timeList.add("45");
-        timeList.add("60");
+        timeList.add("15 mins");
+        timeList.add("30 mins");
+        timeList.add("45 mins");
+        timeList.add("60 mins");
         timeList.add("1 Day");
         timeList.add("3 Day");
         timeList.add("5 Day");
@@ -342,20 +360,19 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
 
 
         cuisinesList = new ArrayList<>();
-        cuisinesList.add("Choose cuisines");
+        //cuisinesList.add("Choose cuisines");
         cuisinesList.add("Beverages");
         cuisinesList.add("Chinnes");
         cuisinesList.add("Indian");
         cuisinesList.add("FastFood");
         cuisinesList.add("Desserts");
-        cuisinesList.add("Groceries");
         cuisinesList.add("Pizza and Subway");
         cuisinesList.add("Western");
 
         groupList = new ArrayList<>();
         groupList.add("Group Food");
         groupList.add("Group Groceries");
-        groupList.add("Sell Homemade Products");
+        groupList.add("Sell Home Made Products");
 
         ArrayAdapter groupAdpter = new ArrayAdapter(getActivity(), R.layout.spinner_item, groupList);
         groupAdpter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -374,7 +391,7 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         deliverypartneradpter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_deliverypartner.setAdapter(deliverypartneradpter);
 
-
+        changUIData();
         return root;
     }
 
@@ -399,7 +416,17 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         tv_cuisineslbl = view.findViewById(R.id.tv_cuisineslbl);
         layout_cuisines = view.findViewById(R.id.layout_cuisines);
         img_chatIcon = view.findViewById(R.id.img_chatIcon);
-
+        layout_allchats = view.findViewById(R.id.layout_allchats);
+        layout_deliverypartner = view.findViewById(R.id.layout_deliverypartner);
+        tv_deliverypartnerlbl = view.findViewById(R.id.tv_deliverypartnerlbl);
+        tv_pricelbl = view.findViewById(R.id.tv_pricelbl);
+        layout_prodctdscrp = view.findViewById(R.id.layout_prodctdscrp);
+        edt_prdctcomnts = view.findViewById(R.id.edt_prdctcomnts);
+        layout_quantity = view.findViewById(R.id.layout_quantity);
+        edtTxt_quntity = view.findViewById(R.id.edtTxt_quntity);
+        layout_main = view.findViewById(R.id.layout_main);
+        layout_nointernet = view.findViewById(R.id.layout_nointernet);
+        tv_refersh = view.findViewById(R.id.tv_refersh);
     }
 
     private void getAddresssbyLatlong(double lat, double lang, String data) {
@@ -474,12 +501,6 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
 
             }
 
-
-
-
-
-
-
            /* addresses.get(0).getLongitude();
             addresses.get(0).getLatitude();*/
 
@@ -499,6 +520,8 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         //  dbrefernce = FirebaseDatabase.getInstance().getReference("userSignup").child(userId);
         DatabaseReference refernce = FirebaseDatabase.getInstance().getReference("Orders");
         String uniqueId = refernce.push().getKey();
+
+        String price = edtTxt_foodPrice.getText().toString();
 
         HashMap<String, String> orderMap = new HashMap<>();
         orderMap.put("customerName", userName);
@@ -536,10 +559,24 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         orderMap.put("orderCompleted", "");
         orderMap.put("ownerRating", "false");
         orderMap.put("partnerRating", "false");
+        orderMap.put("productDesciption", edt_prdctcomnts.getText().toString().trim());
+        orderMap.put("groupData", spinnerGroups);
+        orderMap.put("orderQuantity", edtTxt_quntity.getText().toString().trim());
+
         if (cuisines.contains("Groceries")) {
             orderMap.put("resturntName", deliverypartner);
             orderMap.put("resturntAddress", userAddress);
             orderMap.put("resturntPostalCode", "");
+        } else if ((cuisines.contains("Baking") || cuisines.contains("Home Made Foods") || (cuisines.contains("Curry and Powder")))) {
+
+            //  String restruntName = spinnerGroups + " " + cuisines;
+            String restruntName = "Homemade" + "-" + cuisines;
+            orderMap.put("resturntName", restruntName);
+            orderMap.put("resturntAddress", userAddress);
+            orderMap.put("resturntPostalCode", "");
+            cuisines = "Sell your homemade delicacy";
+            orderMap.put("cuisines", cuisines);
+
         } else {
             orderMap.put("resturntName", resturntName);
             orderMap.put("resturntAddress", userAddress);
@@ -570,13 +607,11 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
             orderMap.put("orderImg", Utils.Pizz);
 
         } else if (cuisines.equalsIgnoreCase("Western")) {
-
             orderMap.put("orderImg", Utils.Western);
-
+        } else if ((cuisines.contains("Baking") || cuisines.contains("Home Made Foods") || (cuisines.contains("Curry and Powder")))) {
+            orderMap.put("orderImg", Utils.homeMade);
         } else {
-
             orderMap.put("orderImg", Utils.Chinnes);
-
         }
 
 
@@ -584,7 +619,16 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         progressBar.setVisibility(View.GONE);
         Toast.makeText(getActivity(), "Add's sucessfully posted ", Toast.LENGTH_SHORT).show();
 
-        insertCategoriData(cuisines);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        MyorderFragment myorderFragment = new MyorderFragment();
+        fragmentTransaction.replace(R.id.nav_host_fragment, myorderFragment);
+        fragmentTransaction.commit();
+        BottomNavigationView bottomNavigationView = (getActivity()).findViewById(R.id.nav_view);
+        bottomNavigationView.getMenu().findItem(R.id.navigation_notifications).setChecked(true);
+
+
+        // insertCategoriData(cuisines);
 
 
         //  NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.mobile_navigation);
@@ -613,6 +657,8 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
                     userName = String.valueOf(snapshot1.child("userName").getValue());
                     userId = String.valueOf(snapshot1.child("id").getValue());
                     Utils.userId = String.valueOf(snapshot1.child("id").getValue());
+
+
                     placeOrderApiCall();
 
                 }
@@ -632,6 +678,9 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
     }
 
 
+
+    /*  All Spinner Click listner */
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -648,47 +697,105 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
             return;
         }
 
+        /* Condition to stop preloading of spinner value */
 
-        if (parent.getId() == R.id.spinner_groups) {
-            spinnerGroups = String.valueOf(parent.getItemAtPosition(position));
+        if (++check > 1) {
+            if (parent.getId() == R.id.spinner_groups) {
+                spinnerGroups = String.valueOf(parent.getItemAtPosition(position));
 
-            Log.i("spinnerGroups ", spinnerGroups);
-            spinner_deliverypartner.setSelection(0);
-            spinner_expiretime.setSelection(0);
-            if (spinnerGroups.equalsIgnoreCase("Group Groceries")) {
+                Log.i("spinnerGroups ", spinnerGroups);
+                spinner_deliverypartner.setSelection(0);
+                spinner_expiretime.setSelection(0);
+                layout_restaurant.setVisibility(View.GONE);
+                tv_chsfav.setVisibility(View.GONE);
 
-                layout_cuisines.setVisibility(View.GONE);
+                if (spinnerGroups.equalsIgnoreCase("Group Groceries")) {
+                    layout_prodctdscrp.setVisibility(View.GONE);
+                    layout_cuisines.setVisibility(View.GONE);
+                    tv_cuisineslbl.setVisibility(View.GONE);
+                    layout_deliverypartner.setVisibility(View.VISIBLE);
+                    tv_deliverypartnerlbl.setVisibility(View.VISIBLE);
+                    spinnerdelivertpartnerGroceries();
+                    cuisines = "Groceries";
+                    layout_quantity.setVisibility(View.GONE);
+                    edtTxt_quntity.setVisibility(View.GONE);
+                  /*  tv_pricelbl.setText("Set Pice");
+                    edtTxt_foodPrice.setHint("Price")*/
+                    ;
+
+                } else if (spinnerGroups.equalsIgnoreCase("Sell Home Made Products")) {
+
+              /*  layout_cuisines.setVisibility(View.GONE);
                 tv_cuisineslbl.setVisibility(View.GONE);
-                spinnerdelivertpartnerGroceries();
-                cuisines = "Groceries";
+                cuisines = "Sell Homemade Products";*/
+                    layout_prodctdscrp.setVisibility(View.VISIBLE);
+                    layout_cuisines.setVisibility(View.VISIBLE);
+                    tv_cuisineslbl.setVisibility(View.VISIBLE);
+                    tv_cuisineslbl.setText("Choose Products");
+                    layout_deliverypartner.setVisibility(View.GONE);
+                    tv_deliverypartnerlbl.setVisibility(View.GONE);
+                    cuisinesList.clear();
+                    cuisinesList.add("Baking");
+                    cuisinesList.add("Home Made Foods");
+                    cuisinesList.add("Curry and Powder");
+                    ArrayAdapter cuisinesdpter = new ArrayAdapter(getActivity(), R.layout.spinner_item, cuisinesList);
+                    cuisinesdpter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner_cuisines.setAdapter(cuisinesdpter);
+                    layout_restaurant.setVisibility(View.GONE);
+                    tv_chsfav.setVisibility(View.GONE);
+                    layout_quantity.setVisibility(View.VISIBLE);
+                    edtTxt_quntity.setVisibility(View.VISIBLE);
 
-            } else {
 
-                layout_cuisines.setVisibility(View.VISIBLE);
-                tv_cuisineslbl.setVisibility(View.VISIBLE);
-                spinnerdelivertPartnerFood();
+                } else {
+                    layout_prodctdscrp.setVisibility(View.GONE);
+
+                    cuisinesList.clear();
+                    tv_cuisineslbl.setText("Choose cuisines");
+                    //  cuisinesList.add("Choose cuisines");
+                    cuisinesList.add("Beverages");
+                    cuisinesList.add("Chinnes");
+                    cuisinesList.add("Indian");
+                    cuisinesList.add("FastFood");
+                    cuisinesList.add("Desserts");
+                    cuisinesList.add("Pizza and Subway");
+                    cuisinesList.add("Western");
+                    ArrayAdapter cuisinesdpter = new ArrayAdapter(getActivity(), R.layout.spinner_item, cuisinesList);
+                    cuisinesdpter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner_cuisines.setAdapter(cuisinesdpter);
+                    layout_cuisines.setVisibility(View.VISIBLE);
+                    tv_cuisineslbl.setVisibility(View.VISIBLE);
+                    spinnerdelivertPartnerFood();
+                    layout_deliverypartner.setVisibility(View.VISIBLE);
+                    tv_deliverypartnerlbl.setVisibility(View.VISIBLE);
+                    layout_quantity.setVisibility(View.GONE);
+                    edtTxt_quntity.setVisibility(View.GONE);
+                }
+
+                return;
             }
 
-            return;
-        }
+
+            if (parent.getId() == R.id.spinner_cuisines) {
+                cuisines = String.valueOf(parent.getItemAtPosition(position));
 
 
-        if (parent.getId() == R.id.spinner_cuisines) {
-            cuisines = String.valueOf(parent.getItemAtPosition(position));
+                spinner_deliverypartner.setSelection(0);
+                spinner_expiretime.setSelection(0);
+
+                if (cuisines.equalsIgnoreCase("Groceries")) {
+                    spinnerdelivertpartnerGroceries();
+                } else if ((cuisines.contains("Baking") || cuisines.contains("Home Made Foods") || cuisines.contains("Curry and Powder"))) {
+
+                } else {
+
+                    spinnerdelivertPartnerFood();
+                }
 
 
-            spinner_deliverypartner.setSelection(0);
-            spinner_expiretime.setSelection(0);
-
-            if (cuisines.equalsIgnoreCase("Groceries")) {
-                spinnerdelivertpartnerGroceries();
-            } else {
-
-                spinnerdelivertPartnerFood();
+                return;
             }
 
-
-            return;
         }
 
 
@@ -735,8 +842,8 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
                     //   }
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    MyorderFragment NAME = new MyorderFragment();
-                    fragmentTransaction.replace(R.id.nav_host_fragment, NAME);
+                    MyorderFragment myorderFragment = new MyorderFragment();
+                    fragmentTransaction.replace(R.id.nav_host_fragment, myorderFragment);
                     fragmentTransaction.commit();
                     BottomNavigationView bottomNavigationView = (getActivity()).findViewById(R.id.nav_view);
                     bottomNavigationView.getMenu().findItem(R.id.navigation_notifications).setChecked(true);
@@ -778,6 +885,77 @@ public class PostFreeAddFragment extends Fragment implements AdapterView.OnItemS
         layout_restaurant.setVisibility(View.VISIBLE);
         tv_chsfav.setVisibility(View.VISIBLE);
         deliverypartner = "A";
+    }
+
+
+    private void changUIData() {
+
+        if ((Utils.postcategorieData.contains("Groceries") || Utils.postcategorieData.contains("Group Groceries"))) {
+
+            layout_cuisines.setVisibility(View.GONE);
+            tv_cuisineslbl.setVisibility(View.GONE);
+            // spinner_cuisines.setVisibility(View.GONE);
+            spinnerdelivertpartnerGroceries();
+            spinnerGroups = "Group Groceries";
+            cuisines = "Groceries";
+            spinner_groups.setSelection(1);
+
+        } else if (Utils.postcategorieData.equalsIgnoreCase("FastFood")) {
+            spinner_groups.setSelection(0);
+            spinnerGroups = "Group Food";
+            spinner_cuisines.setSelection(3);
+        } else if (Utils.postcategorieData.equalsIgnoreCase("Beverages")) {
+            spinner_cuisines.setSelection(0);
+            cuisines = "Beverages";
+            spinner_groups.setSelection(0);
+            spinnerGroups = "Group Food";
+        } else if (Utils.postcategorieData.equalsIgnoreCase("Chinese")) {
+            spinner_cuisines.setSelection(1);
+            cuisines = "Chinnes";
+            spinner_groups.setSelection(0);
+            spinnerGroups = "Group Food";
+        } else if (Utils.postcategorieData.equalsIgnoreCase("Indian")) {
+            spinner_cuisines.setSelection(2);
+            cuisines = "Indian";
+            spinner_groups.setSelection(0);
+            spinnerGroups = "Group Food";
+        } else if (Utils.postcategorieData.equalsIgnoreCase("Desserts")) {
+            spinner_cuisines.setSelection(4);
+            cuisines = "Desserts";
+            spinner_groups.setSelection(0);
+            spinnerGroups = "Group Food";
+        } else if (Utils.postcategorieData.equalsIgnoreCase("Pizza and Subway")) {
+            spinner_cuisines.setSelection(5);
+            cuisines = "Pizz and Subway";
+            spinner_groups.setSelection(0);
+            spinnerGroups = "Group Food";
+        } else if (Utils.postcategorieData.equalsIgnoreCase("Western")) {
+            spinner_cuisines.setSelection(6);
+            cuisines = "Western";
+            spinner_groups.setSelection(0);
+            spinnerGroups = "Group Food";
+        } else if (Utils.postcategorieData.equalsIgnoreCase("Sell your homemade delicacy")) {
+
+            spinnerGroups = "Sell Home Made Products";
+            cuisines = "Baking";
+            deliverypartner = "A";
+            spinner_groups.setSelection(2);
+            layout_restaurant.setVisibility(View.GONE);
+            tv_chsfav.setVisibility(View.GONE);
+            layout_deliverypartner.setVisibility(View.GONE);
+            tv_deliverypartnerlbl.setVisibility(View.GONE);
+            layout_quantity.setVisibility(View.VISIBLE);
+            edtTxt_quntity.setVisibility(View.VISIBLE);
+            cuisinesList.clear();
+            cuisinesList.add("Baking");
+            cuisinesList.add("Home Made Foods");
+            cuisinesList.add("Curry and Powder");
+            ArrayAdapter cuisinesdpter = new ArrayAdapter(getActivity(), R.layout.spinner_item, cuisinesList);
+            cuisinesdpter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner_cuisines.setAdapter(cuisinesdpter);
+        }
+
+
     }
 
 }

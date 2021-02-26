@@ -78,5 +78,28 @@
     <string name="todayplan">What are you planning  today?</string>
     <string name="logoutermsg">Are you sure want to logout from account?</string>
     <string name="posturad">Post your Ad</string>
+    <string name="title_categories">Categories</string>
+    <string name="serach">Search</string>
+    <string name="seesametxt">SeeSame</string>
+   <!-- <string name="seesametxt">SeeSame - Realize the power of Community</string>-->
+    <string name="textone">Oops!!We Don\'t find any near by Ads</string>
+    <string name="texttwo">Why don\'t you start by place one.Its Free.</string>
+    <string name="noOrdersinradius">No Orders found.</string>
+    <string name="addamnt">Looking to add</string>
+    <string name="nochats">No Chats found</string>
+    <string name="msgcomplete">Show Completed Orders</string>
+    <string name="prdctdesc">Product Description</string>
+    <string name="prdcthint">Cake,Pastery,Home-Made,Powder</string>
+    <string name="orderAccptmsg"> "Hurray !!! Order is accepted . Please feel free to chat here about the price and when you are planning to meet up to exchange goods etc." This chat will be saved and you can revisit later"</string>
+    <string name="qntity">Set Quantity</string>
+    <string name="allrdrs">All Orders</string>
+    <string name="myordrs">My Orders</string>
+    <string name="nointernet">No internet connection , Please try again later</string>
+    <string name="refrs">Refresh</string>
+    <string name="thanksMsg">Thanks for taking a look at my request , am looking to share</string>
+    <string name="accptMsg"> If you are interested please Accept the order by clicking the below  accept button</string>
+
+
+
 
 </resources>

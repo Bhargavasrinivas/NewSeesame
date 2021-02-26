@@ -6,9 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-
-
-
     <fragment
         android:layout_weight="1"
         android:id="@+id/autocomplete_fragment"
@@ -24,11 +21,9 @@
 
 
 
-
-
     <LinearLayout
         android:background="@color/white"
-        android:id="@+id/linearLayout6"
+        android:id="@+id/layout_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -56,6 +51,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:layout_gravity="center"
                     android:layout_weight="0.5"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -66,9 +62,9 @@
                     android:ellipsize="end"
                     android:lines="2"
                     android:layout_marginTop="5dp"
-                    android:layout_weight="3"
+                    android:layout_weight="2.7"
                     android:id="@+id/tv_areaName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins"
                     android:text=""
@@ -77,25 +73,23 @@
                     android:textStyle="bold" />
 
                 <ImageView
-                    android:id="@+id/newchat"
+                    android:visibility="invisible"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="0.3"
-                    android:layout_marginStart="5dp"
-                    android:src="@drawable/newchat"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp">
-
-                </ImageView>
-                <ImageView
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="0.3"
+                    android:layout_weight="0.5"
                     android:id="@+id/img_filter"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="10dp"
                     android:src="@drawable/newfilter"
                     android:layout_width="25dp"
-                    android:layout_height="25dp">
-                </ImageView>
+                    android:layout_height="35dp"/>
+
+                <ImageView
+                    android:layout_marginEnd="@dimen/margin_5"
+                    android:layout_gravity="center"
+                    android:id="@+id/newchat"
+                    android:src="@drawable/newchat"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"/>
 
             </LinearLayout>
 
@@ -119,7 +113,52 @@
 
 
 
+
         <LinearLayout
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:gravity="center"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/btn_allorders"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/btnsmall_bg"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="@string/allrdrs"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_12" />
+
+
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/btn_myoreders"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/btnsmall_grey"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="@string/myordrs"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_12" />
+
+
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+
             android:layout_marginStart="@dimen/margin_5"
             android:layout_marginEnd="@dimen/margin_5"
             android:weightSum="1"
@@ -159,23 +198,16 @@
                     android:textColorHint="#999999"
                     android:textSize="14sp" />
 
-
-
-
-
             </LinearLayout>
 
         </LinearLayout>
-
-
-
-
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_order"
             android:layout_width="match_parent"
             android:layout_marginBottom="50dp"
+            app:stackFromEnd="true"
+            app:reverseLayout="true"
             android:layout_height="wrap_content"
             tools:listitem="@layout/order_template">
 
@@ -184,6 +216,51 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/layout_nointernet"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/autocomplete_fragment">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:src="@drawable/nointernetimg">
+
+        </ImageView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/top_margin"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text="@string/nointernet"
+            android:textSize="@dimen/text_16" />
+
+        <TextView
+            android:id="@+id/tv_refersh"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="@dimen/top_margin"
+            android:layout_marginEnd="90dp"
+            android:background="@drawable/btnsmall_bg"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text="@string/refrs"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_16" />
+
+
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -197,7 +274,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/layout_noorders"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/autocomplete_fragment">
 
+
+        <ImageView
+
+            android:id="@+id/img_norders"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:src="@drawable/emptyorderimg" />
+
+
+        <TextView
+            android:id="@+id/tv_notxt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text="@string/orderempty"
+            android:textSize="@dimen/text_16" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

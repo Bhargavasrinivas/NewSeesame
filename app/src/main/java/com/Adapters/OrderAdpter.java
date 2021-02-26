@@ -49,14 +49,19 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
     private ArrayList<HashMap<String, String>> dumyorderedList;
     private final static double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
     private double totalDistance, ttlDistanceinmeters;
-    private String currentTime, orderTime, userId;
+    private String currentTime, orderTime, userId, info;
     private int expiryTime;
+    OrderAdpter orderAdpter;
     HashMap<String, String> orderredMap;
+    private  Refresh refresh;
 
 
-    public OrderAdpter(Context context, ArrayList<HashMap<String, String>> orderedMapList) {
+
+    public OrderAdpter(Context context, ArrayList<HashMap<String, String>> orderedMapList, String info,Refresh refresh) {
         this.mContext = context;
         this.orderedMapList = orderedMapList;
+        this.info = info;
+        this.refresh = refresh;
         this.dumyorderedList = new ArrayList<HashMap<String, String>>(orderedMapList);
     }
 
@@ -76,28 +81,43 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
         try {
 
             orderedMapList.get(position);
-
-            /*Glide
-                    .with(mContext).
-                    load(orderedMapList.get(position).get("orderImg"))
-                    .apply(new RequestOptions().override(100, 150))
-                    .into(holder.img_order);*/
-
-            Picasso.with(mContext).load(orderedMapList.get(position).get("orderImg")).fit().into(holder.img_order);
-
-
-            holder.tv_hotlename.setText(orderedMapList.get(position).get("resturntName"));
-            holder.tv_price.setText("Looking to add " + orderedMapList.get(position).get("orderPrice") + "$");
-
             double customerLat = Double.parseDouble(orderedMapList.get(position).get("deliverylatitude"));
             double customerLang = Double.parseDouble(orderedMapList.get(position).get("deliverylongititude"));
-            totalDistance = calculateDistanceInKilometer(Utils.userlat, Utils.userlang, customerLat, customerLang);
-            holder.tv_distance.setText(String.valueOf(totalDistance) + "kms");
 
 
+            if (info.equalsIgnoreCase("Change")) {
+                totalDistance = calculateDistanceInKilometer(Utils.userChanegedlat, Utils.userChanegedlang, customerLat, customerLang);
+            } else {
+                totalDistance = calculateDistanceInKilometer(Utils.userlat, Utils.userlang, customerLat, customerLang);
+            }
+            //  if (totalDistance <= 1) {
+
+            holder.tv_noOrders.setVisibility(View.GONE);
+            if (orderedMapList.get(position).get("customerUserId").equalsIgnoreCase(Utils.userId)) {
+
+                //holder.tv_distance.setText(" ");
+                holder.tv_distance.setVisibility(View.GONE);
+            } else {
+                holder.tv_distance.setText(String.valueOf(totalDistance) + "kms");
+            }
+
+            String groupData = orderedMapList.get(position).get("groupData");
+
+            if (groupData.equalsIgnoreCase("Sell Home Made Product")) {
+                holder.tv_pricelbl.setText("Qunatity-");
+
+                String qty = orderedMapList.get(position).get("orderQuantity");
+                String price = orderedMapList.get(position).get("orderPrice");
+                holder.tv_price.setText(qty + " " + price + "$");
+
+            } else {
+                holder.tv_price.setText(orderedMapList.get(position).get("orderPrice") + "$");
+            }
+
+            Picasso.with(mContext).load(orderedMapList.get(position).get("orderImg")).fit().into(holder.img_order);
+            holder.tv_hotlename.setText(orderedMapList.get(position).get("resturntName"));
             SimpleDateFormat timeFormate = new SimpleDateFormat("HH:mm:ss");
             currentTime = timeFormate.format(new Date());
-            // expiryTime = Integer.parseInt(orderedMapList.get(position).get("expireTime"));
 
 
             String orderDate = orderedMapList.get(position).get("orderStatusDate");
@@ -129,6 +149,16 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                 long difference_In_Hours = (difference_In_Time / (1000 * 60 * 60)) % 24;
 
 
+                if ((orderedMapList.get(position).get("orderStatus").equalsIgnoreCase("Expired"))) {
+                    //    holder.layout_expiretime.setVisibility(View.VISIBLE);
+                 /*   holder.tv_expiretime.setText("Expired");
+                    holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));*/
+                    holder.tv_expiretime.setVisibility(View.GONE);
+                    holder.tv_distance.setVisibility(View.VISIBLE);
+                    holder.tv_distance.setText("Expired");
+
+                }
+
                 String expTime = orderedMapList.get(position).get("expireTime");
 
                 if ((expTime.equalsIgnoreCase("1 Day") || expTime.equalsIgnoreCase("3 Day") ||
@@ -149,6 +179,11 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                             if (finalminutes == 0) {
                                 holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
                                 holder.tv_expiretime.setText(" Expired");
+                                holder.layout_main.setVisibility(View.GONE);
+                                String orderId = orderedMapList.get(position).get("orderId");
+                                DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
+                                dbreference.child(orderId).child("orderStatus").setValue("Expired");
+                                notifyDataSetChanged();
                             } else {
 
                                 holder.tv_expiretime.setText(" Expires in " + finalminutes + " Minutes");
@@ -161,7 +196,8 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
 
                             } else {
 
-                                holder.tv_expiretime.setText(" Expires in " + finalhour + " hours" + " " + finalminutes + " Minutes");
+                                //  holder.tv_expiretime.setText(" Expires in " + finalhour + " hours" + " " + finalminutes + " Minutes");
+                                holder.tv_expiretime.setText(" Expires in " + finalhour + " hours");
                             }
 
                         }
@@ -172,8 +208,15 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                         long daysLeftover = (3 - difference_In_Days);
                         if (difference_In_Days > 3) {
                             holder.tv_expiretime.setText(" Expired");
+                            holder.layout_main.setVisibility(View.GONE);
                             holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
-                        } else if (daysLeftover == 1) {
+                            reference.child(orderedMapList.get(position).get("orderId")).child("orderStatus").setValue("Expired");
+                            holder.tv_chat.setVisibility(View.GONE);
+                            String orderId = orderedMapList.get(position).get("orderId");
+                            DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
+                            dbreference.child(orderId).child("orderStatus").setValue("Expired");
+                            notifyDataSetChanged();
+                        } else if ((daysLeftover == 1 || daysLeftover == 0)) {
                             long finalhour = 24 - difference_In_Hours;
                             long finalminutes = 60 - difference_In_Minutes;
                             if (finalhour == 0) {
@@ -181,16 +224,25 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                                 if (difference_In_Minutes == 0) {
                                     holder.tv_expiretime.setText(" Expired");
                                     holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                                    holder.layout_main.setVisibility(View.GONE);
+                                    reference.child(orderedMapList.get(position).get("orderId")).child("orderStatus").setValue("Expired");
+                                    holder.tv_chat.setVisibility(View.GONE);
+                                    String orderId = orderedMapList.get(position).get("orderId");
+                                    DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
+                                    dbreference.child(orderId).child("orderStatus").setValue("Expired");
+                                    notifyDataSetChanged();
                                 } else {
                                     holder.tv_expiretime.setText(" Expires in " + finalminutes);
 
                                 }
                             } else {
-                                holder.tv_expiretime.setText(" Expires in " + finalhour + " hours" + " " + finalminutes + " Minutes");
+                                //   holder.tv_expiretime.setText(" Expires in " + finalhour + " hours" + " " + finalminutes + " Minutes");
+                                holder.tv_expiretime.setText(" Expires in " + finalhour + " hours");
+
                             }
                         } else {
                             long daysLeft = (3 - difference_In_Days);
-                            holder.tv_expiretime.setText(" Expires in " + daysLeft + " Days " );
+                            holder.tv_expiretime.setText(" Expires in " + daysLeft + " Days ");
                         }
 
                     } else if (expTime.equalsIgnoreCase("5 Day")) {
@@ -198,8 +250,13 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                         long daysLeftover = (5 - difference_In_Days);
                         if (difference_In_Days > 5) {
                             holder.tv_expiretime.setText(" Expired");
+                            holder.layout_main.setVisibility(View.GONE);
                             holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
-                        } else if (daysLeftover == 1) {
+                            String orderId = orderedMapList.get(position).get("orderId");
+                            DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
+                            dbreference.child(orderId).child("orderStatus").setValue("Expired");
+                            notifyDataSetChanged();
+                        } else if ((daysLeftover == 1 || daysLeftover == 0)) {
                             long finalhour = 24 - difference_In_Hours;
                             long finalminutes = 60 - difference_In_Minutes;
                             if (finalhour == 0) {
@@ -207,12 +264,18 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                                 if (difference_In_Minutes == 0) {
                                     holder.tv_expiretime.setText(" Expired");
                                     holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                                    holder.layout_main.setVisibility(View.GONE);
+                                    String orderId = orderedMapList.get(position).get("orderId");
+                                    DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
+                                    dbreference.child(orderId).child("orderStatus").setValue("Expired");
+                                    notifyDataSetChanged();
                                 } else {
                                     holder.tv_expiretime.setText(" Expires in " + finalminutes);
 
                                 }
                             } else {
-                                holder.tv_expiretime.setText(" Expires in " + finalhour + " hours" + " " + finalminutes + " Minutes");
+                                //holder.tv_expiretime.setText(" Expires in " + finalhour + " hours" + " " + finalminutes + " Minutes");
+                                holder.tv_expiretime.setText(" Expires in " + finalhour + " hours");
                             }
                         } else {
                             long daysLeft = (5 - difference_In_Days);
@@ -227,7 +290,13 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                         if (difference_In_Days > 7) {
                             holder.tv_expiretime.setText(" Expired");
                             holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
-                        } else if (daysLeftover == 1) {
+                            holder.layout_main.setVisibility(View.GONE);
+                            String orderId = orderedMapList.get(position).get("orderId");
+                            DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
+                            dbreference.child(orderId).child("orderStatus").setValue("Expired");
+                            notifyDataSetChanged();
+
+                        } else if ((daysLeftover == 1 || daysLeftover == 0)) {
                             long finalhour = 24 - difference_In_Hours;
                             long finalminutes = 60 - difference_In_Minutes;
                             if (finalhour == 0) {
@@ -235,12 +304,18 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                                 if (difference_In_Minutes == 0) {
                                     holder.tv_expiretime.setText(" Expired");
                                     holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
+                                    holder.layout_main.setVisibility(View.GONE);
+                                    String orderId = orderedMapList.get(position).get("orderId");
+                                    DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
+                                    dbreference.child(orderId).child("orderStatus").setValue("Expired");
+                                    notifyDataSetChanged();
                                 } else {
                                     holder.tv_expiretime.setText(" Expires in " + finalminutes);
 
                                 }
                             } else {
-                                holder.tv_expiretime.setText(" Expires in " + finalhour + " hours" + " " + finalminutes + " Minutes");
+                                //   holder.tv_expiretime.setText(" Expires in " + finalhour + " hours" + " " + finalminutes + " Minutes");
+                                holder.tv_expiretime.setText(" Expires in " + finalhour + " hours");
                             }
                         } else {
                             long daysLeft = (7 - difference_In_Days);
@@ -254,51 +329,59 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                     if (difference_In_Hours >= 1) {
 
                         holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
-                        holder.tv_expiretime.setText("Exprired");
+                        holder.tv_expiretime.setText("Expired");
                         holder.tv_chat.setVisibility(View.GONE);
                         String orderId = orderedMapList.get(position).get("orderId");
                         DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
-                        dbreference.child(orderId).child("orderStatus").setValue("Exprired");
+                        dbreference.child(orderId).child("orderStatus").setValue("Expired");
+                        holder.layout_main.setVisibility(View.GONE);
                         return;
 
                     }
+                    String time = orderedMapList.get(position).get("expireTime");
+                    String expiryTimes = time.substring(0, 2);
+                    //    expiryTime = Integer.parseInt(orderedMapList.get(position).get("expireTime"));
+                    expiryTime = Integer.parseInt(expiryTimes);
 
-                    expiryTime = Integer.parseInt(orderedMapList.get(position).get("expireTime"));
+                    //  expiryTime = Integer.parseInt(orderedMapList.get(position).get("expireTime"));
                     if (difference_In_Days > 0) {
 
-                        holder.tv_expiretime.setText("Exprired");
+                        holder.tv_expiretime.setText("Expired");
+                        holder.layout_main.setVisibility(View.GONE);
                         holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
                         reference.child(orderedMapList.get(position).get("orderId")).child("orderStatus").setValue("Expired");
                         holder.tv_chat.setVisibility(View.GONE);
                         String orderId = orderedMapList.get(position).get("orderId");
                         DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
-                        dbreference.child(orderId).child("orderStatus").setValue("Exprired");
+                        dbreference.child(orderId).child("orderStatus").setValue("Expired");
                         notifyDataSetChanged();
                     } else {
 
 
                         if (difference_In_Minutes < 0) {
 
-                            holder.tv_expiretime.setText("Exprired");
+                            holder.tv_expiretime.setText("Expired");
                             holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
                             reference.child(orderedMapList.get(position).get("orderId")).child("orderStatus").setValue("Expired");
                             holder.tv_chat.setVisibility(View.GONE);
                             String orderId = orderedMapList.get(position).get("orderId");
                             DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
-                            dbreference.child(orderId).child("orderStatus").setValue("Exprired");
+                            dbreference.child(orderId).child("orderStatus").setValue("Expired");
                             notifyDataSetChanged();
+                            holder.layout_main.setVisibility(View.GONE);
                         } else {
 
                             int differnceTime = (int) (expiryTime - difference_In_Minutes);
                             if (differnceTime <= 0) {
-                                holder.tv_expiretime.setText("Exprired");
+                                holder.tv_expiretime.setText("Expired");
                                 holder.tv_expiretime.setTextColor(Color.parseColor("#ff1a1a"));
                                 reference.child(orderedMapList.get(position).get("orderId")).child("orderStatus").setValue("Expired");
                                 holder.tv_chat.setVisibility(View.GONE);
                                 String orderId = orderedMapList.get(position).get("orderId");
                                 DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Orders");
-                                dbreference.child(orderId).child("orderStatus").setValue("Exprired");
+                                dbreference.child(orderId).child("orderStatus").setValue("Expired");
                                 notifyDataSetChanged();
+                                holder.layout_main.setVisibility(View.GONE);
                             } else {
 
                                 holder.tv_expiretime.setText("Exprires in " + differnceTime + " mins");
@@ -315,6 +398,17 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
             } catch (Exception e) {
 
             }
+
+/*
+
+            } else {
+
+                holder.layout_main.setVisibility(View.GONE);
+                holder.tv_noOrders.setVisibility(View.VISIBLE);
+
+            }
+*/
+
 
 
             /*   Clicklistner for btn accept */
@@ -348,6 +442,9 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                             bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
                             bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
                             bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
+                            bundle.putString("orderStatus", orderedMapList.get(position).get("orderStatus"));
+                            bundle.putString("groupData", orderedMapList.get(position).get("groupData"));
+                            bundle.putString("deliveryPartner", orderedMapList.get(position).get("deliveryPartner"));
                             userInfo.putExtras(bundle);
                             mContext.startActivity(userInfo);
 
@@ -359,6 +456,9 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                             bundle.putString("OrderName", orderedMapList.get(position).get("resturntName"));
                             bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
                             bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
+                            bundle.putString("orderStatus", orderedMapList.get(position).get("orderStatus"));
+                            bundle.putString("groupData", orderedMapList.get(position).get("groupData"));
+                            bundle.putString("deliveryPartner", orderedMapList.get(position).get("deliveryPartner"));
                             bundle.putString("pageData", "Mychats");
                             orderinfo.putExtras(bundle);
                             mContext.startActivity(orderinfo);
@@ -387,6 +487,10 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                         bundle.putString("cuisines", orderedMapList.get(position).get("cuisines"));
                         bundle.putString("price", orderedMapList.get(position).get("orderPrice"));
                         bundle.putString("resturntName", orderedMapList.get(position).get("resturntName"));
+                        bundle.putString("orderStatus", orderedMapList.get(position).get("orderStatus"));
+                        bundle.putString("groupData", orderedMapList.get(position).get("groupData"));
+                        bundle.putString("deliveryPartner", orderedMapList.get(position).get("deliveryPartner"));
+                        bundle.putString("partnerName", orderedMapList.get(position).get("customerName"));
                         orderInfo.putExtras(bundle);
                         mContext.startActivity(orderInfo);
 
@@ -410,6 +514,18 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
             Log.i("Exception", e.getMessage().toString());
         }
 
+    }
+
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
@@ -443,16 +559,17 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                 } else {
                     String filterPattern = charSequence.toString().toLowerCase().trim();
                     //orderedMapList.get(position);
-
                       /* for(orderedMapList item  : orderedMapfilteredList){
-
-
                        }*/
 
 
                     for (int i = 0; i < orderedMapList.size(); i++) {
 
-                        if ((orderedMapList.get(i).get("resturntName").toLowerCase().contains(filterPattern) || orderedMapList.get(i).get("orderPrice").toLowerCase().contains(filterPattern))) {
+                        String restunntName = orderedMapList.get(i).get("resturntName").toLowerCase();
+
+                        //||restunntName.contains(filterPattern)
+
+                        if ((restunntName.contains(charString.toLowerCase()))) {
 
                             orderredMap = new HashMap<>();
                             orderredMap.put("orderId", orderedMapList.get(i).get("resturntName"));
@@ -500,6 +617,9 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
                             }
 
 
+                        } else {
+
+
                         }
 
 
@@ -507,11 +627,9 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
 
 
                 }
-
-
                 FilterResults results = new FilterResults();
-
                 results.values = orderedMapfilteredList;
+
                 return results;
 
             }
@@ -528,10 +646,18 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
 
 
                 } else {
+                   /* orderedMapList.clear();
+                    orderedMapList = (ArrayList<HashMap<String, String>>) results.values;
+                   // notifyDataSetChanged();
+                    refresh.yourDesiredMethod();*/
+
+
+
+                 //  mContext.orderAdpter. notifyDataSetChanged();
+
                     orderedMapList.clear();
                     orderedMapList.addAll((Collection<? extends HashMap<String, String>>) results.values);
-                    notifyDataSetChanged();
-                    //   Log.i("listSizechnage", String.valueOf(dumyorderedList.size()));
+                    refresh.yourDesiredMethod();
                 }
 
 
@@ -540,10 +666,13 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
     }
 
 
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tv_hotlename, tv_distance, tv_expiretime, tv_price, btn_accept, tv_chat;
+        private TextView tv_hotlename, tv_distance, tv_expiretime, tv_price, btn_accept, tv_chat, tv_noOrders, tv_pricelbl;
         private ImageView img_order;
+        private View layout_main;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -556,6 +685,9 @@ public class OrderAdpter extends RecyclerView.Adapter<OrderAdpter.ViewHolder> im
             btn_accept = itemView.findViewById(R.id.btn_accept);
             tv_chat = itemView.findViewById(R.id.tv_chat);
             img_order = itemView.findViewById(R.id.img_order);
+            layout_main = itemView.findViewById(R.id.layout_main);
+            tv_noOrders = itemView.findViewById(R.id.tv_noOrders);
+            tv_pricelbl = itemView.findViewById(R.id.tv_pricelbl);
         }
     }
 

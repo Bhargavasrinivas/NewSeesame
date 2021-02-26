@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,9 +41,10 @@ public class UserListActivity extends AppCompatActivity {
     private List<User> mUsers;
     private RecyclerView recyclervw_userlist;
     private ArrayList<HashMap<String, String>> userMapList;
-    private String orderId, orderName, price, resturntName, cuisines, pageData;
+    private String orderId, orderName, price, resturntName, cuisines, pageData, orderStatus,IsownerPresent;
     HashMap<String, String> userMap;
     private ProgressBar progressBar;
+    private TextView tv_nochats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +71,8 @@ public class UserListActivity extends AppCompatActivity {
         resturntName = b.getString("resturntName");
         cuisines = b.getString("cuisines");
         pageData = b.getString("pageData");
-
+        orderStatus = b.getString("orderStatus");
+      //  IsownerPresent =  b.getString("Isownerpresent");
 
         userMapList = new ArrayList<HashMap<String, String>>();
         mUsers = new ArrayList<>();
@@ -93,6 +96,8 @@ public class UserListActivity extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("OrderDeliveryAgentList");
         reference.keepSynced(true);
         //  Log.i("MyId ", firebaseUser.getUid());
+     //   reference.orderByChild("orderId").equalTo(orderId).addListenerForSingleValueEvent(new ValueEventListener() {
+       // reference.orderByChild("ownerUserId").equalTo(Utils.userId).addListenerForSingleValueEvent(new ValueEventListener() {
         reference.orderByChild("orderId").equalTo(orderId).addListenerForSingleValueEvent(new ValueEventListener() {
 
             // reference.addValueEventListener(new ValueEventListener() {
@@ -115,9 +120,15 @@ public class UserListActivity extends AppCompatActivity {
                     userMap.put("orderId", String.valueOf(snapshot.child("orderId").getValue()));
                     userMap.put("ownerUserId", String.valueOf(snapshot.child("ownerUserId").getValue()));
                     userMap.put("cuisines", String.valueOf(snapshot.child("cuisines").getValue()));
-                    userMap.put("orderName", orderName);
-
-
+                    //   userMap.put("orderName", orderName);
+                    userMap.put("orderName", String.valueOf(snapshot.child("resturntName").getValue()));
+                    userMap.put("orderCreaterId", String.valueOf(snapshot.child("orderCreaterId").getValue()));
+                    userMap.put("Isownerpresent", String.valueOf(snapshot.child("Isownerpresent").getValue()));
+                    userMap.put("Date", String.valueOf(snapshot.child("Date").getValue()));
+                    userMap.put("groupData", String.valueOf(snapshot.child("groupData").getValue()));
+                    userMap.put("deliveryPartner", String.valueOf(snapshot.child("deliveryPartner").getValue()));
+                    userMap.put("Date", String.valueOf(snapshot.child("Date").getValue()));
+                    userMap.put("orderPrice", String.valueOf(snapshot.child("orderPrice").getValue()));
                     userMapList.add(userMap);
 
 
@@ -125,16 +136,18 @@ public class UserListActivity extends AppCompatActivity {
 
                 }
 
-
                   /*  recyclervw.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                     recyclervw.setHasFixedSize(true);*/
 
                 recyclervw_userlist.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 recyclervw_userlist.setHasFixedSize(true);
-                userListadapter = new UserListadapter(UserListActivity.this, userMapList, false, price, cuisines, orderName);
+                userListadapter = new UserListadapter(UserListActivity.this, userMapList, false, price, cuisines, orderName, orderStatus);
                 recyclervw_userlist.setAdapter(userListadapter);
-
                 progressBar.setVisibility(View.GONE);
+
+                if (userMapList.size() == 0) {
+                    tv_nochats.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -155,6 +168,9 @@ public class UserListActivity extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("OrderDeliveryAgentList");
         reference.keepSynced(true);
         reference.orderByChild("ownerUserId").equalTo(Utils.userId).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            //   reference.addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -165,15 +181,31 @@ public class UserListActivity extends AppCompatActivity {
                     userMap.put("orderId", String.valueOf(snapshot.child("orderId").getValue()));
                     userMap.put("ownerUserId", String.valueOf(snapshot.child("ownerUserId").getValue()));
                     userMap.put("cuisines", String.valueOf(snapshot.child("cuisines").getValue()));
-                    userMap.put("orderName", orderName);
+                    userMap.put("groupData", String.valueOf(snapshot.child("groupData").getValue()));
+                    userMap.put("orderName", String.valueOf(snapshot.child("resturntName").getValue()));
+                    userMap.put("orderCreaterId", String.valueOf(snapshot.child("orderCreaterId").getValue()));
+                    userMap.put("Isownerpresent", String.valueOf(snapshot.child("Isownerpresent").getValue()));
+                    userMap.put("deliveryPartner", String.valueOf(snapshot.child("deliveryPartner").getValue()));
+                    userMap.put("Date", String.valueOf(snapshot.child("Date").getValue()));
+                    userMap.put("groupData", String.valueOf(snapshot.child("groupData").getValue()));
+                    userMap.put("orderPrice", String.valueOf(snapshot.child("orderPrice").getValue()));
                     userMapList.add(userMap);
+
+
                 }
                 recyclervw_userlist.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 recyclervw_userlist.setHasFixedSize(true);
-                userListadapter = new UserListadapter(UserListActivity.this, userMapList, false, price, cuisines, orderName);
+                userListadapter = new UserListadapter(UserListActivity.this, userMapList, false, price, cuisines, orderName, orderStatus);
                 recyclervw_userlist.setAdapter(userListadapter);
 
                 progressBar.setVisibility(View.GONE);
+
+
+                if (userMapList.size() == 0) {
+                    tv_nochats.setVisibility(View.VISIBLE);
+                }
+
+
             }
 
             @Override
@@ -201,6 +233,7 @@ public class UserListActivity extends AppCompatActivity {
 
         recyclervw_userlist = findViewById(R.id.recyclervw_userlist);
         progressBar = findViewById(R.id.progressBar);
+        tv_nochats = findViewById(R.id.tv_nochats);
     }
 
 }

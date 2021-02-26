@@ -40,23 +40,30 @@ public class UserRatelistAdpater extends RecyclerView.Adapter<UserRatelistAdpate
     @Override
     public void onBindViewHolder(@NonNull UserRatelistAdpater.ViewHolder holder, int position) {
 
+        try {
+            RateModel rateModel = userrateList.get(position);
 
-        RateModel rateModel = userrateList.get(position);
+            holder.tv_commnets.setText(rateModel.getComments().toString());
+          //  holder.ratingBar.setNumStars((int) rateModel.getRateCount());
+            float ratings = rateModel.getRateCount();
 
-        holder.tv_commnets.setText(rateModel.getComments().toString());
+            if (ratings == 0) {
+               // holder.ratingBar.setVisibility(View.GONE);
+                holder.ratingBar.setNumStars(1);
+            } else {
+                holder.ratingBar.setVisibility(View.VISIBLE);
+                holder.ratingBar.setNumStars((int) rateModel.getRateCount());
+            }
 
-        float ratings = rateModel.getRateCount();
+        }catch (Exception e){
 
-        if (ratings == 0) {
-            holder.ratingBar.setVisibility(View.GONE);
-        } else {
-            holder.ratingBar.setNumStars((int) rateModel.getRateCount());
         }
 
     }
 
     @Override
     public int getItemCount() {
+        int count =  userrateList.size();
         return userrateList.size();
     }
 

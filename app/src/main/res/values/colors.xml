@@ -10,7 +10,8 @@
     <color name="color_text">#4c4c4c</color>
     <color name="colorTextLight">#bdbdbd</color>
     <color name="google_color">#4285f4</color>
-    <color name="facebk_color">#3f67a9</color>
+  <!--  <color name="facebk_color">#3f67a9</color>-->
+    <color name="facebk_color">#0000b3</color>
     <color name="twitter_color">#55acee</color>
     <color name="colorBlack">#000000</color>
     <color name="colorRed">#ff1a1a</color>
@@ -20,7 +21,7 @@
     <color name="txt_color">#0488d0</color>
     <color name="top_grdcolor">#1f97cc</color>
     <color name="nearwht">#f2f2f2</color>
-
+//55acee
 
 
 

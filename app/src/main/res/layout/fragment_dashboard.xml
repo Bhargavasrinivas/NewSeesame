@@ -4,24 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".ui.PostFreeAdd.PostFreeAddFragment">
 
-
-  <!--  <ImageView
-        android:id="@+id/img_chatIcon"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="5dp"
-        android:fontFamily="@font/poppins_medium"
-        android:src="@drawable/newchat"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
-
-
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/layout_allchats"
         android:gravity="center_vertical"
         android:weightSum="2"
         android:layout_width="match_parent"
@@ -32,12 +19,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
 
-
         <TextView
+            android:layout_marginTop="@dimen/margin_5"
+            android:textSize="@dimen/text_16"
             android:fontFamily="@font/poppins_medium"
             android:textColor="@color/white"
             android:layout_marginStart="@dimen/text_16"
-            android:layout_weight="1.5"
+            android:layout_weight="1.65"
             android:gravity="center_vertical"
             android:text="@string/posturad"
             android:layout_width="wrap_content"
@@ -45,17 +33,17 @@
 
 
     <ImageView
-        android:layout_weight=".5"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/margin_5"
         android:layout_gravity="center"
         android:id="@+id/img_chatIcon"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="5dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="@dimen/margin_5"
         android:fontFamily="@font/poppins_medium"
         android:src="@drawable/newchat"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 
@@ -73,6 +61,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/layout_main"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="40dp"
@@ -89,7 +79,8 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_marginTop="30dp"
+                android:textColor="@color/color_text"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:fontFamily="@font/poppins_medium"
@@ -117,6 +108,7 @@
 
 
             <TextView
+                android:textColor="@color/color_text"
                 android:id="@+id/tv_cuisineslbl"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -148,6 +140,7 @@
 
 
             <TextView
+                android:textColor="@color/color_text"
                 android:id="@+id/tv_chsfav"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -234,6 +227,7 @@
 
 
             <TextView
+                android:textColor="@color/color_text"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
@@ -266,6 +260,49 @@
                     android:layout_marginBottom="20dp" />
 
             </LinearLayout>
+
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/layout_prodctdscrp"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="110dp">
+
+                <TextView
+                    android:textColor="@color/color_text"
+                    android:fontFamily="@font/poppins_medium"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/prdctdesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <EditText
+                    android:textSize="@dimen/text_14"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/textvw_border"
+                    android:id="@+id/edt_prdctcomnts"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="4dp"
+                    android:gravity="center"
+                    android:hint="@string/prdcthint"
+                    android:lines="4"
+                    android:maxLines="4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_ratingtxt" />
+
+
+
+            </LinearLayout>
+
+
 
             <LinearLayout
                 android:visibility="gone"
@@ -316,9 +353,10 @@
             </LinearLayout>
 
             <TextView
+                android:textColor="@color/color_text"
                 android:id="@+id/tv_pricelbl"
-                android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:layout_marginStart="@dimen/top_margin"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:fontFamily="@font/poppins_medium"
                 android:text="@string/pricelbl"
@@ -354,6 +392,7 @@
 
 
             <TextView
+                android:textColor="@color/color_text"
                 android:id="@+id/tv_expirylbl"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -384,6 +423,7 @@
 
 
             <TextView
+                android:textColor="@color/color_text"
                 android:id="@+id/tv_deliverypartnerlbl"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -394,6 +434,7 @@
                 android:layout_height="22dp"/>
 
             <LinearLayout
+                android:id="@+id/layout_deliverypartner"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -411,7 +452,52 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/layout_quantity"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
+
+                <TextView
+                    android:textColor="@color/color_text"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="@string/qntity"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/fab_margin"
+                    android:background="@drawable/layout_border"
+                    android:drawableTint="@color/colorWhite"
+                    android:fontFamily="@font/poppins"
+                    android:textColorHint="@color/color_text"
+                    android:textSize="16sp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtTxt_quntity"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="@dimen/text_16"
+                        android:background="@android:color/transparent"
+                        android:editable="false"
+                        android:ems="10"
+                        android:fontFamily="@font/poppins"
+                        android:hint="ex,500 gms,1kg"
+                        android:inputType="text"
+                        android:paddingStart="10dp"
+                        android:textSize="@dimen/text_14" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </LinearLayout>
             <Button
                 android:id="@+id/btn_placeorder"
                 android:layout_width="match_parent"
@@ -429,16 +515,60 @@
              <Button
                  android:visibility="invisible"
                  android:layout_width="match_parent"
-                 android:layout_height="100dp"/>
-
-
-
+                 android:layout_height="220dp"/>
 
 
         </LinearLayout>
 
 
     </ScrollView>
+
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/layout_nointernet"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_allchats">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:src="@drawable/nointernetimg">
+
+        </ImageView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/top_margin"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text="@string/nointernet"
+            android:textSize="@dimen/text_16" />
+
+        <TextView
+            android:id="@+id/tv_refersh"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="@dimen/top_margin"
+            android:layout_marginEnd="90dp"
+            android:background="@drawable/btnsmall_bg"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text="@string/refrs"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_16" />
+
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

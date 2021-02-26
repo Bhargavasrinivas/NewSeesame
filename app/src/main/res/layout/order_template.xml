@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
 
+
     <androidx.cardview.widget.CardView
+        android:id="@+id/layout_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
@@ -18,12 +19,30 @@
             android:layout_height="wrap_content">
 
 
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_noOrders"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center_horizontal"
+                android:text="@string/noOrdersinradius"
+                android:textColor="@color/color_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </TextView>
+
+
           <!--  Price View-->
 
 
             <!-- Accept View-->
 
             <LinearLayout
+
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:weightSum="3"
@@ -37,14 +56,27 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
                 app:layout_constraintVertical_bias="0.0">
 
-                <TextView
 
+
+
+                <TextView
+                    android:id="@+id/tv_pricelbl"
+                    android:fontFamily="@font/poppins"
+                    android:text="@string/addamnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                </TextView>
+
+                <TextView
+                    android:layout_marginStart="2dp"
+                    android:textStyle="bold"
                     android:textSize="@dimen/text_14"
                     android:id="@+id/tv_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.75"
-                    android:fontFamily="@font/poppins"
+                    android:fontFamily="@font/poppins_medium"
                     android:text="10.5$">
 
                 </TextView>
@@ -141,15 +173,15 @@
                 </TextView>
 
                 <ImageView
+
                     android:layout_gravity="center"
-                    android:layout_weight="1"
                     android:src="@drawable/clock"
                     android:layout_width="20dp"
                     android:layout_height="15dp"/>
 
 
                 <TextView
-
+                    android:layout_marginStart="6dp"
                     android:layout_weight="1"
                     android:textSize="@dimen/text_14"
                     android:id="@+id/tv_expiretime"
@@ -203,6 +235,8 @@
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </androidx.cardview.widget.CardView>
 
 

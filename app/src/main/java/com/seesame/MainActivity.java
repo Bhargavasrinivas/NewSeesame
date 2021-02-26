@@ -1,6 +1,7 @@
 package com.seesame;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,9 +29,13 @@ import com.Utils;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,6 +44,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.screens.CuisinescategorieActivity;
+import com.screens.LocationenableActivity;
+import com.seesame.ui.Myorders.MyorderFragment;
+import com.seesame.ui.home.HomeFragment;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,6 +55,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -67,6 +79,11 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 101;
     BottomNavigationView navigation;
     NavController navController;
+    int PERMISSION_ID = 44;
+    FusedLocationProviderClient mFusedLocationClient;
+    BottomNavigationView bottomNavigationView;
+    String data;
+    FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +93,45 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         this.getSupportActionBar().hide();
 
+        mFusedLocationClient
+                = LocationServices
+                .getFusedLocationProviderClient(this);
+        bottomNavigationView = findViewById(R.id.nav_view);
+        //  bottomNavigationView.getMenu().findItem(R.id.navigation_notifications).setChecked(true);
+        bottomNavigationView.setEnabled(false);
 
-        navigation = findViewById(R.id.nav_view);
+        Bundle b = getIntent().getExtras();
+        data = b.getString("cuisines");
+
+
+        if (data.equalsIgnoreCase("My")) {
+
+/*
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            HomeFragment NAME = new HomeFragment();
+            fragmentTransaction.replace(R.id.nav_host_fragment, NAME);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+            BottomNavigationView bottomNavigationView = findViewById(R.id.nav_view);
+            bottomNavigationView.getMenu().findItem(R.id.navigation_notifications).setChecked(true);*/
+
+
+
+          /*  AppCompatActivity activity = (AppCompatActivity) getApplication();
+            Fragment myFragment = new HomeFragment();
+            activity.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, myFragment).addToBackStack(null).commit();
+            BottomNavigationView bottomNavigationView = activity.findViewById(R.id.nav_view);
+            bottomNavigationView.getMenu().findItem(R.id.navigation_home).setChecked(true);*/
+
+            //    Toast.makeText(getApplicationContext(), "You are in Main Page", Toast.LENGTH_SHORT).show();
+
+        }
+
+
+        getLastLocation();
+
+     /*   navigation = findViewById(R.id.nav_view);
 
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -99,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
+*/
 
         //   R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications, R.id.navigation_profile)
 
@@ -150,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
             //  getWindow().setStatusBarColor(Color.WHITE);
         }
 
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_categories,
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications, R.id.navigation_profile)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -250,6 +304,127 @@ public class MainActivity extends AppCompatActivity {
     }
     });*/
 
+    @SuppressLint("MissingPermission")
+    private void getLastLocation() {
+        // check if permissions are given
+        if (checkPermissions()) {
+
+            // check if location is enabled
+            if (isLocationEnabled()) {
+
+                // getting last
+                // location from
+                // FusedLocationClient
+                // object
+                mFusedLocationClient
+                        .getLastLocation()
+                        .addOnCompleteListener(
+                                new OnCompleteListener<Location>() {
+
+                                    @Override
+                                    public void onComplete(
+                                            @NonNull Task<Location> task) {
+                                        Location location = task.getResult();
+                                        if (location == null) {
+                                            requestNewLocationData();
+                                        } else {
+                                          /*  latTextView
+                                                    .setText(
+                                                            location
+                                                                    .getLatitude()
+                                                                    + "");
+                                            lonTextView
+                                                    .setText(
+                                                            location
+                                                                    .getLongitude()
+                                                                    + "");*/
+
+                                        /*    latitude = location.getLatitude();
+                                            longititude = location.getLongitude();
+
+                                            currentlatitude = latitude;
+                                            currentlongitude = longititude;*/
+
+                                            Utils.userlat = location.getLatitude();
+                                            Utils.userlang = location.getLongitude();
+                                            bottomNavigationView.setEnabled(true);
+                                            //  Toast.makeText(getApplicationContext(), "Lat " + location.getLatitude(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+            } else {
+                //   Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+
+            }
+        } else {
+            // if permissions aren't available,
+            // request for permissions
+            requestPermissions();
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void requestNewLocationData() {
+
+        // Initializing LocationRequest
+        // object with appropriate methods
+        LocationRequest mLocationRequest
+                = new LocationRequest();
+        LocationCallback mLocationCallback = new LocationCallback();
+        mLocationRequest.setPriority(
+                LocationRequest
+                        .PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(5);
+        mLocationRequest.setFastestInterval(0);
+        mLocationRequest.setNumUpdates(1);
+
+        // setting LocationRequest
+        // on FusedLocationClient
+        mFusedLocationClient
+                = LocationServices
+                .getFusedLocationProviderClient(this);
+
+        mFusedLocationClient
+                .requestLocationUpdates(
+                        mLocationRequest,
+                        mLocationCallback,
+                        Looper.myLooper());
+    }
+
+    // method to requestfor permissions
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
+    }
+
+    private boolean checkPermissions() {
+        return ActivityCompat
+                .checkSelfPermission(
+                        this,
+                        Manifest.permission
+                                .ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED
+
+                && ActivityCompat
+                .checkSelfPermission(
+                        this,
+                        Manifest.permission
+                                .ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+
+        // If we want background location
+        // on Android 10.0 and higher,
+        // use:
+        /* ActivityCompat
+                .checkSelfPermission(
+                    this,
+                    Manifest.permission
+                        .ACCESS_BACKGROUND_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        */
+    }
 
     private void fetchLocation() {
         if (ActivityCompat.checkSelfPermission(
@@ -268,16 +443,6 @@ public class MainActivity extends AppCompatActivity {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
-
-
-
-  /*  @Override
-    protected void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }*/
 
 
     private void getAddresss(double lat, double lang) {
@@ -318,26 +483,45 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*public boolean isLocationEnabled() {
-        int locationMode = 0;
-        String locationProviders;
+    @Override
+    public void
+    onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
+        super
+                .onRequestPermissionsResult(
+                        requestCode,
+                        permissions,
+                        grantResults);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            try {
-                locationMode = Settings.Secure.getInt(getApplication().getContentResolver(), Settings.Secure.LOCATION_MODE);
+        if (requestCode == PERMISSION_ID) {
+            if (grantResults.length > 0
+                    && grantResults[0]
+                    == PackageManager
+                    .PERMISSION_GRANTED) {
 
-            } catch (Settings.SettingNotFoundException e) {
-                e.printStackTrace();
-                return false;
+                getLastLocation();
+            } else {
+                startActivity(new Intent(MainActivity.this, LocationenableActivity.class));
+                //  Toast.makeText(getApplicationContext(), "Denyed by user ", Toast.LENGTH_SHORT).show();
             }
-
-            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-
-        } else {
-            locationProviders = Settings.Secure.getString(getApplication().getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-            return !TextUtils.isEmpty(locationProviders);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (checkPermissions()) {
+            getLastLocation();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
 
-    }*/
 }

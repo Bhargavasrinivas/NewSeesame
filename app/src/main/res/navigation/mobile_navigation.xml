@@ -3,7 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_categories">
+
+    <fragment
+        android:id="@+id/navigation_categories"
+        android:name="com.seesame.ui.Categoire.Categories"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_categoires" />
 
     <fragment
         android:id="@+id/navigation_home"
@@ -29,6 +35,9 @@
         android:name="com.seesame.ui.profile.ProfileFragment"
         android:label="@string/title_Profile"
         tools:layout="@layout/fragment_notifications" />
+
+
+
 
 
 </navigation>

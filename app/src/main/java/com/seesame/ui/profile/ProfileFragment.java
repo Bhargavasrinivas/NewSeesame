@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,6 +34,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.Adapters.UserRatelistAdpater;
+import com.InternetCheck.CheckNetwork;
 import com.Utils;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
@@ -47,6 +50,7 @@ import com.screens.LoginActivity;
 import com.screens.UserrateListActivity;
 import com.screens.WebViewActivity;
 import com.seesame.R;
+import com.seesame.VideoActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,12 +69,12 @@ public class ProfileFragment extends Fragment {
     private EditText edt_mobileno, edt_emailId, edt_username;
     private CircleImageView user_profilepic;
     private ConstraintLayout constraintLayout;
-    private View layout_progressbar;
+    private View layout_progressbar, layout_scrollmain, layout_nointernet;
     private ProgressBar progressBar;
     private FirebaseUser firebaseUser;
     private ImageView img_mobile, img_uname;
     private RatingBar rating_bar;
-    String[] mobileArray = {"Ratings", "Contact Us", "FAQ's", "Privacy Policy", "Terms of Service"};
+    String[] mobileArray = {"Ratings", "Contact Us", "FAQ's", "Know more on what is SeeSame", "Privacy Policy", "Terms of Service"};
     private String userId, dbUserName;
     boolean onloadflag = false, datachangeflag = false;
     public static final String MyPREFERENCES = "MyPrefs";
@@ -79,6 +83,7 @@ public class ProfileFragment extends Fragment {
     private ArrayList<RateModel> ratingList = new ArrayList<>();
     private long ttlRateCount = 0;
     private float ttlcountRate;
+    private TextView tv_refersh;
 
     @SuppressLint("ResourceAsColor")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -100,7 +105,15 @@ public class ProfileFragment extends Fragment {
 
         /*   Funcation call to fetch user details */
 
-        readUsertInfo();
+        internetCheck();
+
+
+        tv_refersh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                internetCheck();
+            }
+        });
 
 
         img_mobile.setOnClickListener(new View.OnClickListener() {
@@ -205,47 +218,6 @@ public class ProfileFragment extends Fragment {
 
                     logoutPopup();
 
-
-                 /*   Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content),
-                            getString(R.string.logoutmsg), Snackbar.LENGTH_LONG)
-                            .setAction("NO", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-
-                                }
-                            })
-                            .setAction("YES", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-
-                                    //     FirebaseAuth.getInstance().signOut();
-
-
-                                    if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
-                                        *//*  ((ActivityManager) getActivity().getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();*//* // note: it has a return value!
-
-                                        SharedPreferences.Editor editor = sharedpreferences.edit();
-                                        editor.remove(Email);
-                                        editor.commit();
-
-                                        deleteCache(getActivity());
-                                        Intent intent = new Intent(Intent.ACTION_MAIN);
-                                        intent.addCategory(Intent.CATEGORY_HOME);
-                                        startActivity(intent);
-                                        getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
-
-
-                                    } else {
-
-                                    }
-
-                                }
-                            });
-
-                    snackBar.setActionTextColor(Color.RED);
-                    snackBar.show();
-*/
-
                 }
 
 
@@ -259,11 +231,20 @@ public class ProfileFragment extends Fragment {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                         String value = (String) parent.getItemAtPosition(position);
-                        Intent policy = new Intent(getActivity(), WebViewActivity.class);
-                        policy.putExtra("PageInfo", value);
-                        startActivity(policy);
 
-                        // Toast.makeText(getActivity(), value, Toast.LENGTH_SHORT).show();
+                        if (value.equalsIgnoreCase("Know more on what is SeeSame")) {
+
+                            Intent videovw = new Intent(getActivity(), VideoActivity.class);
+                            startActivity(videovw);
+
+                        } else {
+                            Intent policy = new Intent(getActivity(), WebViewActivity.class);
+                            policy.putExtra("PageInfo", value);
+                            startActivity(policy);
+
+                        }
+
+
                     }
                 });
 
@@ -313,8 +294,9 @@ public class ProfileFragment extends Fragment {
         //   layout_progressbar = view.findViewById(R.id.layout_progressbar);
         img_mobile.setVisibility(View.GONE);
         img_uname.setVisibility(View.GONE);
-
-
+        layout_scrollmain = view.findViewById(R.id.layout_scrollmain);
+        tv_refersh = view.findViewById(R.id.tv_refersh);
+        layout_nointernet = view.findViewById(R.id.layout_nointernet);
     }
 
 
@@ -460,6 +442,20 @@ public class ProfileFragment extends Fragment {
 
     }
 
+    private void internetCheck() {
+        if (CheckNetwork.isInternetAvailable(getActivity())) {
+            readUsertInfo();
+            layout_scrollmain.setVisibility(View.VISIBLE);
+            layout_nointernet.setVisibility(View.GONE);
+            btn_logout.setVisibility(View.VISIBLE);
+        } else {
+            btn_logout.setVisibility(View.GONE);
+            layout_scrollmain.setVisibility(View.GONE);
+            layout_nointernet.setVisibility(View.VISIBLE);
+        }
+
+    }
+
 }
 
 
@@ -469,11 +465,3 @@ public class ProfileFragment extends Fragment {
 
 
 
-
-      /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-           // getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            // edited here
-            getActivity().getWindow().setStatusBarColor(R.color.top_grdcolor);
-        }*/
-
-//getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);

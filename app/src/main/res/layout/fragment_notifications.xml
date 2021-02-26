@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".ui.Myorders.MyorderFragment">
-
 
     <LinearLayout
         android:id="@+id/layout_noorders"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tablyout">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
 
@@ -28,6 +28,7 @@
 
 
         <TextView
+            android:id="@+id/tv_notxt"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fontFamily="@font/poppins_medium"
@@ -37,46 +38,289 @@
 
     </LinearLayout>
 
-
-    <!-- <Spinner
-         android:visibility="gone"
-         android:id="@+id/orderSpinner"
-         android:layout_width="0dp"
-         android:layout_height="50dp"
-         android:layout_marginStart="10dp"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintStart_toEndOf="@+id/img_filter"
-         app:layout_constraintTop_toTopOf="parent" />-->
-
-
     <LinearLayout
-        android:id="@+id/layout_myorders"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="1dp"
-        android:orientation="horizontal"
+
+        android:id="@+id/layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tablyout">
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_myorders"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="36dp" />
+            android:layout_height="40dp"
+            android:background="@drawable/topbar_gradient"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_ordersCompleted"
+            <ImageView
+                android:id="@+id/img_chats"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/margin_5"
+                android:layout_marginEnd="@dimen/margin_5"
+                android:src="@drawable/newchat" />
+
+            <ImageView
+                android:id="@+id/img_filter"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignRight="@+id/img_chats"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:src="@drawable/newfilter"
+                android:visibility="gone" />
+
+
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="36dp" />
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            app:layout_constraintBottom_toTopOf="@+id/layout_myorders"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            app:layout_constraintVertical_bias="0.0">
+
+            <Button
+                android:id="@+id/btn_pending"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/btnsmall_bg"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="Pending"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_12" />
+
+            <Button
+                android:id="@+id/btn_accepted"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/btnsmall_grey"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="Accepted"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/text_12" />
+
+
+            <Button
+                android:id="@+id/btn_expired"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/btnsmall_grey"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="Expired"
+                android:textSize="@dimen/text_12" />
+
+            <Button
+                android:id="@+id/btn_cancelled"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/btnsmall_grey"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="Cancelled"
+                android:textSize="@dimen/text_12" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/searchclr"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+            app:layout_constraintVertical_bias="0.0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/colorWhite"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="2">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_5"
+                    android:layout_weight="2"
+                    android:fontFamily="@font/poppins"
+                    android:text="@string/msgcomplete"
+                    android:textSize="@dimen/text_14" />
+
+                <Switch
+                    android:id="@+id/switch_cmpltordr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_myorders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view2"
+            app:layout_constraintVertical_bias="0.0">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_myorders"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="50dp"
+                app:reverseLayout="true"
+                app:stackFromEnd="true" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_ordersCompleted"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="36dp" />
+
+
+        </LinearLayout>
+
+
+
+
+        <TextView
+            android:id="@+id/tv_noorder"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text="@string/nocompletdrdr"
+            android:textSize="@dimen/text_16"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tablyout" />
+
+        <TextView
+            android:id="@+id/text_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tablyout"
+            android:layout_width="430dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            app:tabIconTint="@color/color_text"
+            app:tabTextColor="@color/color_text">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Order History" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Completed Orders" />
+
+        </com.google.android.material.tabs.TabLayout>
 
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_nointernet"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:src="@drawable/nointernetimg">
+
+        </ImageView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/top_margin"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text="@string/nointernet"
+            android:textSize="@dimen/text_16" />
+
+        <TextView
+            android:id="@+id/tv_refersh"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="@dimen/top_margin"
+            android:layout_marginEnd="90dp"
+            android:background="@drawable/btnsmall_bg"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text="@string/refrs"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_16" />
+
+
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -90,89 +334,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@drawable/topbar_gradient"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-        <ImageView
-            android:id="@+id/img_chats"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="5dp"
-            android:src="@drawable/newchat" />
-
-        <ImageView
-            android:id="@+id/img_filter"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignRight="@+id/img_chats"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="60dp"
-            android:src="@drawable/newfilter" />
-
-
-    </RelativeLayout>
-
-
-    <TextView
-        android:id="@+id/tv_noorder"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:fontFamily="@font/poppins_medium"
-        android:gravity="center"
-        android:text="@string/nocompletdrdr"
-        android:textSize="@dimen/text_16"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tablyout" />
-
-
-    <TextView
-        android:id="@+id/text_notifications"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tablyout"
-        android:layout_width="430dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tabIconTint="@color/color_text"
-        app:tabTextColor="@color/color_text">
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Order History" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Completed Orders" />
-
-    </com.google.android.material.tabs.TabLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

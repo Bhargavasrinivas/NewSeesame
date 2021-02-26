@@ -17,9 +17,16 @@ public class Utils {
     public static String userId = "";
     public static double userlat;
     public static double userlang;
+
+    public static double userChanegedlat;
+    public static double userChanegedlang;
+
+
     public static boolean chatlist = false;
     public static String filterValue = "";
     public static String myorderfilterValue = "";
+    public static String categoriesSelected = "Allorders";
+    public static String postcategorieData = "";
 
 
 
@@ -31,6 +38,7 @@ public class Utils {
     public static String Desserts = "https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Desserts.jpg?alt=media&token=2b760e1e-618c-4731-b82a-9b37689f59a6";
     public static String Groceries = "https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Groceries.jpg?alt=media&token=90571d68-3dac-47c8-8d41-43345a4173f3";
     public static String Pizz = "https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Pizza.jpg?alt=media&token=58de7954-3fb8-4ba1-8514-3ffc36a3a2b0";
+    public static String homeMade = "https://firebasestorage.googleapis.com/v0/b/seesame-go-dutch.appspot.com/o/Homemade%20Foods.jpg?alt=media&token=e1385348-0ef8-4c32-9a3b-c453870b2c55";
 
 
 
